@@ -7,3 +7,32 @@ class Utilisateur(BaseModel):
 
     class Config:
         from_attributes = True
+
+class Taches(BaseModel):
+    id: int
+    titre: str
+    description: str
+    statut: str
+    createurId: int
+    nombreMaxParticipant: int
+
+    class Config:
+        from_attributes = True
+
+class EvaluationTache(BaseModel):
+    id: int
+    utilisateurId: int
+    tacheId: int
+    valeur: float
+
+    class Config:
+        from_attributes = True
+
+class DemandeAccessTache(BaseModel):
+    id: int
+    utilisateurId: int
+    tacheId: int
+    statut: str
+
+    class Config:
+        from_attributes = True

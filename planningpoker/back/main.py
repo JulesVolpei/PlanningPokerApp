@@ -26,8 +26,13 @@ app.add_middleware(
 
 @app.get("/")
 def on_startup():
+    # Mettre ici l'appel à la fonciton qui permet de récupérer les tâches
     initDb()
 
 @app.get("/users", response_model=list[schemas.Utilisateur])
-async def get_users(db: Session = Depends(get_session)):
+async def getUsers(db: Session = Depends(get_session)):
     return crud.getAllUsers(db)
+
+@app.get("/taches", response_model=list[schemas.Taches])
+async def getTaches(db: Session = Depends(get_session)):
+    return crud.getAllTache(db)

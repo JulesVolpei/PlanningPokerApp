@@ -4,3 +4,6 @@ from sqlmodel import select
 
 def getAllUsers(db: Session):
     return db.exec(select(models.Utilisateur)).all()
+
+def getAllTache(db: Session):
+    return db.exec(select(models.Tache)).all()
