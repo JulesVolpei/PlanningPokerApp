@@ -1,12 +1,15 @@
-from dataclasses import Field
-
 from pydantic import BaseModel
-from typing import Optional
 
-class Utilisateur(BaseModel):
-    id: int
-    nom: str
-    motDePasse: str
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
+
+class Utilisateur(Base):
+    __tablename__ = "utilisateurs"
+    id = Column(Integer, primary_key=True, autoincrement=True, index=True)
+    nom = Column(String)
+    motDePasse = Column(String)
 
 class Taches(BaseModel):
     id: int

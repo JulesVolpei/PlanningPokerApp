@@ -1,10 +1,12 @@
 from contextlib import asynccontextmanager
-
+from contextlib import contextmanager
 from fastapi import FastAPI, Depends
 from sqlmodel import Session, select
 from models import Utilisateur
-from connexionDB import initDb, get_session
+from database import initDb, get_session
 from fastapi.middleware.cors import CORSMiddleware
+import schemas
+import crud
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -26,7 +28,6 @@ app.add_middleware(
 def on_startup():
     initDb()
 
-@app.get("/users")
-def get_users(session: Session = Depends(get_session)):
-    users = session.exec(select(Utilisateur)).all()
-    return users
+@app.get("/users", response_model=list[schemas.Utilisateur])
+async def get_users(db: Session = Depends(get_session)):
+    return crud.getAllUsers(db)
