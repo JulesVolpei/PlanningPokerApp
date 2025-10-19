@@ -10,3 +10,14 @@ export async function fetchAllUser() {
     }
     return reponse.json();
 }
+
+export async function fecthAllTaches() {
+    const reponse = await fetch(`${APIURL}/taches`, {
+        method: "GET",
+        headers: {}
+    })
+    if (!reponse) {
+        throw new Error("Aucune tâches en BD");
+    }
+    return reponse.json();
+}

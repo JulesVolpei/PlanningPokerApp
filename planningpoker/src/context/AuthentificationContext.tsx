@@ -17,7 +17,7 @@ interface Authentification {
 const lienURLAPI = "http://localhost:5173/"; // Lien de connexion pour FastAPI et la DB en python le boss
 const AuthentificationContext = createContext<Authentification | undefined>(undefined);
 
-export const AccessAuthentification = () => {
+export const accessAuthentification = () => {
     // Permet d'accéder au contexte, si un utilisateur est connecté ou non, à utilisateur plus tard dans les conditions de composants
     const context = useContext(AuthentificationContext);
     if (!context) {
@@ -75,8 +75,16 @@ export const AuthentificationProvider = ({children } : {children: ReactNode}) =>
     }
 
     return (
-        <AccessAuthentification.Provider value={{ utilisateur, connexion, inscription, deconnexion, estConnecte: !! utilisateur }}>
+        <AuthentificationContext.Provider
+            value={{
+                utilisateur,
+                connexion,
+                inscription,
+                deconnexion,
+                estConnecte: !!utilisateur,
+            }}
+        >
             {children}
-        </AccessAuthentification.Provider>
-    )
+        </AuthentificationContext.Provider>
+    );
 }
