@@ -3,6 +3,8 @@ import os
 from dotenv import load_dotenv
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+import pymysql
+pymysql.install_as_MySQLdb()
 
 load_dotenv()
 engine = create_engine(str(os.getenv("DATABASEURL")), echo=True)
