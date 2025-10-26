@@ -1,6 +1,8 @@
 from contextlib import asynccontextmanager
 from contextlib import contextmanager
-from fastapi import FastAPI, Depends
+from multiprocessing.managers import Token
+
+from fastapi import FastAPI, HTTPException, Depends, status
 from sqlmodel import Session, select
 from models import Utilisateur
 from database import initDb, get_session
@@ -36,3 +38,38 @@ async def getUsers(db: Session = Depends(get_session)):
 @app.get("/taches", response_model=list[schemas.Taches])
 async def getTaches(db: Session = Depends(get_session)):
     return crud.getAllTache(db)
+
+@app.post("/authentification/connexion")
+def connexion(data: schemas.ConnexionInscription, db: Session = Depends(get_session)):
+    utilisateurs = crud.getAllUsers(db)
+    utilisateurDansDB = next(
+        (utilisateur for utilisateur in utilisateurs if utilisateur.nom == data.nom and utilisateur.motDePasse == data.motDePasse),
+        None
+    )
+    if not utilisateurDansDB:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Utilisateur non existant ou mdp incorrect")
+    return {
+        "message": "Connexion réussie !",
+        "utilisateur": {
+            "id": utilisateurDansDB.id,
+            "nom": utilisateurDansDB.nom
+        }
+    }
+
+@app.post("/authentification/inscription")
+def inscription(data: schemas.ConnexionInscription, db: Session = Depends(get_session)):
+    utilisateurs = crud.getAllUsers(db)
+    utilisateursDansDB = next(
+        (utilisateur for utilisateur in utilisateurs if utilisateur.nom == data.nom),
+        None
+    )
+    if utilisateursDansDB:
+        raise HTTPException(status_code=400, detail="Utilisateur déjà inscrit.")
+    nouvelUtilisateur = crud.insertOneUser(db, data)
+    return {
+        "message": "Inscription réussite",
+        "utilisateur": {
+            "id": nouvelUtilisateur.id,
+            "nom": nouvelUtilisateur.nom
+        }
+    }

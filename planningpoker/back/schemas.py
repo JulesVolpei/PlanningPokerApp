@@ -36,3 +36,7 @@ class DemandeAccessTache(BaseModel):
 
     class Config:
         from_attributes = True
+
+class ConnexionInscription(BaseModel):
+    nom: str
+    motDePasse: str
