@@ -16,9 +16,6 @@ class Utilisateur(Base):
     demandeAccess = relationship("DemandeAccessTache", back_populates="utilisateur")
     evaluations = relationship("EvaluationTache", back_populates="utilisateur")
 
-# -----------------------
-# Table Tache
-# -----------------------
 class Tache(Base):
     __tablename__ = "taches"
 
@@ -35,9 +32,6 @@ class Tache(Base):
     evaluations = relationship("EvaluationTache", back_populates="tache")
 
 
-# -----------------------
-# Table EvaluationTache
-# -----------------------
 class EvaluationTache(Base):
     __tablename__ = "evaluationTache"
 
@@ -50,10 +44,6 @@ class EvaluationTache(Base):
     utilisateur = relationship("Utilisateur", back_populates="evaluations")
     tache = relationship("Tache", back_populates="evaluations")
 
-
-# -----------------------
-# Table DemandeAccessTache
-# -----------------------
 class DemandeAccessTache(Base):
     __tablename__ = "demandeAccessTache"
 

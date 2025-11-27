@@ -41,7 +41,7 @@ export const SideBar = () => {
 
                 <button
                     onClick={() => setOuverturePopUp(true)}
-                    className="mt-auto w-10 h-10 rounded-lg flex items-center justify-center bg-sidebar-accent text-sidebar-foreground hover:bg-sidebar-primary transition-smooth"
+                    className="mt-auto w-10 h-10 rounded-lg flex items-center justify-center text-sidebar-foreground hover:bg-sidebar-accent transition-smooth"
                     title="Connexion / Inscription"
                 >
                     <LogIn className="w-5 h-5" />
