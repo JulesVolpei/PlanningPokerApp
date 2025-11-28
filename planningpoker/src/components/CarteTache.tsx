@@ -1,6 +1,9 @@
 import {Button} from "@/components/ui/button"
 import { Users } from 'lucide-react';
 import { LockKeyhole } from 'lucide-react';
+import { LockKeyholeOpen } from 'lucide-react';
+import { PenOff } from 'lucide-react';
+
 import {
     Card,
     CardAction,
@@ -10,11 +13,31 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-import {Label} from "@/components/ui/label"
-import {Input} from "@/components/ui/input.tsx";
+import {Label} from "@/components/ui/label";
 
-const CarteTache = ({donneesTache}) => {
-    console.log(donneesTache);
+type AccessType = "enAttente" | "accepte" | "refuse";
+
+const CarteTache = ({donneesTache, access}) => {
+    const differentsBoutonsAcces: Record<AccessType, JSX.Element> = {
+        enAttente: ( // Il faudra faire un onClick pour demander l'accès lorsque l'on est connecté
+            <Button className="bg-red-600 hover:bg-red-400">
+                <LockKeyhole />
+                <Label> Demander accès </Label>
+            </Button>
+        ),
+        accepte: (
+            <Button>
+                <LockKeyholeOpen />
+                <Label> Accéder </Label>
+            </Button>
+        ),
+        refuse: (
+            <Button className="bg-red-600 hover:bg-red-600">
+                <PenOff />
+                <Label> Refusé </Label>
+            </Button>
+        ),
+    };
     return (
         <Card className="w-full max-w-sm">
             <CardHeader>
@@ -30,13 +53,10 @@ const CarteTache = ({donneesTache}) => {
             </CardContent>
             <CardFooter className="flex-col gap-2 grid grid-cols-2 gap-6">
                 <Button>
-                    <Label> 2 / 5 </Label>
+                    <Label> 0 / {donneesTache.nombreMaxParticipant} </Label>
                     <Users />
                 </Button>
-                <Button className="bg-red-600 hover:bg-red-400">
-                    <LockKeyhole />
-                    <Label> Demander l'accès </Label>
-                </Button>
+                {differentsBoutonsAcces[access]}
             </CardFooter>
         </Card>
     )
