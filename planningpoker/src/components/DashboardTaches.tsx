@@ -1,8 +1,10 @@
-import {useEffect, useState} from 'react';
+import {Component, useEffect, useState} from 'react';
 import {fecthAllTaches, fetchAllUser} from "@/services/api.ts";
 import {useQuery} from "@tanstack/react-query";
-import {Search} from "lucide-react";
-import {Input} from "@/components/ui/input.tsx";
+import BarreDeRecherche from "@/components/BarreDeRecherche.tsx";
+import CarteTache from "@/components/CarteTache.tsx";
+import {Label} from "@/components/ui/label.tsx";
+
 
 const DashboardTaches = ({ titre }) => {
     const [recherche, setRecherche] = useState<string>('');
@@ -11,7 +13,7 @@ const DashboardTaches = ({ titre }) => {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [loading, setLoading] = useState(true);
     const nombreDeTachesParPage = 6;
-    const donnees = [];
+    let donnees = [];
     const totalPages = 0;
 
     //const {data: taches, error, isLoading, isFetching } = listeTacheQuery();
@@ -30,7 +32,7 @@ const DashboardTaches = ({ titre }) => {
     console.log("Succès : ", test.isSuccess);
 
     if (test.isSuccess) {
-        const donnees = test.data;
+        donnees = test.data;
 
         // Utiliser les taches normalisées pour la suite du composant
         const totalPages = Math.ceil(donnees.length / nombreDeTachesParPage);
@@ -39,6 +41,7 @@ const DashboardTaches = ({ titre }) => {
         // TODO: Si la recherche est mise il faut modifier la liste en fonction de la variable recherche
         console.log("Longueur données taches: ", donnees.length);
         console.log("Total pages : ", totalPages);
+        console.log("Données : ", donnees[0]);
     }
 
     return (
@@ -56,26 +59,21 @@ const DashboardTaches = ({ titre }) => {
 
             <div className="mb-8">
                 <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                    <Input
-                        type="search"
-                        placeholder="Rechercher une tâche ..."
-                        className="pl-10 h-12"
-                        value={recherche}
-                        onChange={(e) => setRecherche(e.target.value)}
-                    />
+                    <BarreDeRecherche value={recherche} onChange={(e) => setRecherche(e.target.value)}/>
                 </div>
             </div>
 
             {test.isSuccess ? (
-                    donnees.length > 0 && totalPages >= 1 ? (
-                        <div className="text-center py-12 text-muted-foreground">
-                            Afficher les contenus
-                        </div>
-                    ) : <div className="text-center py-12 text-muted-foreground">
-                        Aucune tâche de trouvé.
+                donnees.length > 0 ? (
+                    <div className="text-center py-12 text-muted-foreground grid grid-cols-3 gap-6">
+                        {donnees.map((donne) => (
+                            <CarteTache donneesTache={donne} />
+                        ))}
                     </div>
-                ) : <p className="text-center py-12 text-muted-foreground"> Chargement ... </p>
+                ) : <div className="text-center py-12 text-muted-foreground grid grid-cols-3 gap-4">
+                    <p className="text-center py-12 text-muted-foreground"> No data ? (comme le meme) </p>
+                </div>
+            ) : <p className="text-center py-12 text-muted-foreground"> Chargement ... </p>
             }
         </div>
     )
