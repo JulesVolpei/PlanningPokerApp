@@ -14,3 +14,16 @@ def insertOneUser(db: Session, nouvelUtilisateur: schemas.ConnexionInscription):
     db.commit()
     db.refresh(utilisateurBD)
     return utilisateurBD
+
+#TO DO:
+# def createTache() :
+#     TO DO
+
+# def getTache() :
+#     TO DO
+
+# def updateTache() :
+#     TO DO
+
+# def deleteTache() :
+#     TO DO
