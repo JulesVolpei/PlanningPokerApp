@@ -1,8 +1,8 @@
 import {Component, useEffect, useState} from 'react';
 import {fecthAllTaches, fetchAllUser} from "@/services/api.ts";
 import {useQuery} from "@tanstack/react-query";
-import BarreDeRecherche from "@/components/BarreDeRecherche.tsx";
-import CarteTache from "@/components/CarteTache.tsx";
+import BarreDeRecherche from "@/components/Index/BarreDeRecherche.tsx";
+import CarteTache from "@/components/Index/CarteTache.tsx";
 import {Label} from "@/components/ui/label.tsx";
 
 
@@ -49,13 +49,6 @@ const DashboardTaches = ({ titre }) => {
             <h1 className="text-4xl font-bold bg-gradient-primary bg-clip-text text-black mb-8">
                 {titre}
             </h1>
-            {/*<h1 className="text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-8">*/}
-            {/*    {test.isSuccess ?*/}
-            {/*        <p className="text-2xl bg-gradient-primary bg-clip-text text-black mb-8"> Données chargées avec succès !</p> :*/}
-            {/*        <p className="text-2xl bg-gradient-primary bg-clip-text text-black mb-8"> Chargement ... </p>*/}
-            {/*        // TODO: Faire un composant d'une carte avec toutes les infos avec la pagination et tout*/}
-            {/*    }*/}
-            {/*</h1>*/}
 
             <div className="mb-8">
                 <div className="relative">

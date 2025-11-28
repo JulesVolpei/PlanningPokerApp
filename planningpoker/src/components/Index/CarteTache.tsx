@@ -1,4 +1,4 @@
-import {Button} from "@/components/ui/button"
+import {Button} from "@/components/ui/button.tsx"
 import { Users } from 'lucide-react';
 import { LockKeyhole } from 'lucide-react';
 import { LockKeyholeOpen } from 'lucide-react';
@@ -12,8 +12,8 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-} from "@/components/ui/card"
-import {Label} from "@/components/ui/label";
+} from "@/components/ui/card.tsx"
+import {Label} from "@/components/ui/label.tsx";
 
 type AccessType = "enAttente" | "accepte" | "refuse";
 

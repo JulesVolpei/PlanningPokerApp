@@ -73,3 +73,7 @@ def inscription(data: schemas.ConnexionInscription, db: Session = Depends(get_se
             "nom": nouvelUtilisateur.nom
         }
     }
+
+@app.get("/taches/user/{user_id}")
+def get_user_taches(user_id: int, db: Session = Depends(get_session)):
+    return crud.getTachesWithUserId(db, user_id)

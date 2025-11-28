@@ -14,3 +14,7 @@ def insertOneUser(db: Session, nouvelUtilisateur: schemas.ConnexionInscription):
     db.commit()
     db.refresh(utilisateurBD)
     return utilisateurBD
+
+def getTachesWithUserId(db: Session, userId: int):
+    statement = select(models.Tache).where(models.Tache.createurId == userId)
+    return db.exec(statement).all()

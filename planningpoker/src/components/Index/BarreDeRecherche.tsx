@@ -1,5 +1,5 @@
 import { Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/input.tsx";
 
 const BarreDeRecherche = ({ value, onChange }: { value: string; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void }) => {
     return (

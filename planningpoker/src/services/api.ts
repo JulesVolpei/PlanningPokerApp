@@ -21,3 +21,14 @@ export async function fecthAllTaches() {
     }
     return reponse.json();
 }
+
+export async function getTachesWithUserId(id: string) {
+    const reponse = await fetch(`${APIURL}/taches/user/${id}`, {
+        method: "GET",
+        headers: {}
+    })
+    if (!reponse) {
+        throw new Error("Utilisateur non trouvé");
+    }
+    return reponse.json();
+}
