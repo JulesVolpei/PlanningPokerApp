@@ -5,10 +5,13 @@ from multiprocessing.managers import Token
 from fastapi import FastAPI, HTTPException, Depends, status
 from sqlmodel import Session, select
 from models import Utilisateur
+from models import Tache
+from schemas import Taches
 from database import initDb, get_session
 from fastapi.middleware.cors import CORSMiddleware
 import schemas
 import crud
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -72,4 +75,28 @@ def inscription(data: schemas.ConnexionInscription, db: Session = Depends(get_se
             "id": nouvelUtilisateur.id,
             "nom": nouvelUtilisateur.nom
         }
+    }
+
+@app.get("/taches/user/{user_id}")
+def getUserTaches(user_id: int, db: Session = Depends(get_session)):
+    return crud.getTachesWithUserId(db, user_id)
+
+
+@app.post("/taches/creer")
+def creerTache(tache: Taches, db: Session = Depends(get_session)):
+    nouvelleTache = Tache(
+        titre=tache.titre,
+        description=tache.description,
+        statut=tache.statut,
+        createurId=int(tache.createurId),
+        nombreMaxParticipant=int(tache.nombreMaxParticipant),
+    )
+
+    db.add(nouvelleTache)
+    db.commit()
+    db.refresh(nouvelleTache)
+
+    return {
+        "message": "Tâche créée",
+        "tache": nouvelleTache
     }

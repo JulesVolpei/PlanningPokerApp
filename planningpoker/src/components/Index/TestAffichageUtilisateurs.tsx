@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchAllUser } from "../services/api";
+import { fetchAllUser } from "../../services/api.ts";
 
 interface User {
     id: number;

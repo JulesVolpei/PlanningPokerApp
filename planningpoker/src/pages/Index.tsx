@@ -1,4 +1,4 @@
-import DashboardTaches from "@/components/DashboardTaches.tsx";
+import DashboardTaches from "@/components/Index/DashboardTaches.tsx";
 
 const Index = () => {
     return (

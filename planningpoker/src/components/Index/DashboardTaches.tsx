@@ -1,8 +1,12 @@
-import {useEffect, useState} from 'react';
+import {Component, useEffect, useState} from 'react';
 import {fecthAllTaches, fetchAllUser} from "@/services/api.ts";
 import {useQuery} from "@tanstack/react-query";
-import {Search} from "lucide-react";
-import {Input} from "@/components/ui/input.tsx";
+import BarreDeRecherche from "@/components/Index/BarreDeRecherche.tsx";
+import CarteTache from "@/components/Index/CarteTache.tsx";
+import {Label} from "@/components/ui/label.tsx";
+import {OrbitProgress} from "react-loading-indicators";
+import * as React from "react";
+
 
 const DashboardTaches = ({ titre }) => {
     const [recherche, setRecherche] = useState<string>('');
@@ -11,7 +15,7 @@ const DashboardTaches = ({ titre }) => {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [loading, setLoading] = useState(true);
     const nombreDeTachesParPage = 6;
-    const donnees = [];
+    let donnees = [];
     const totalPages = 0;
 
     //const {data: taches, error, isLoading, isFetching } = listeTacheQuery();
@@ -30,7 +34,7 @@ const DashboardTaches = ({ titre }) => {
     console.log("Succès : ", test.isSuccess);
 
     if (test.isSuccess) {
-        const donnees = test.data;
+        donnees = test.data;
 
         // Utiliser les taches normalisées pour la suite du composant
         const totalPages = Math.ceil(donnees.length / nombreDeTachesParPage);
@@ -39,6 +43,7 @@ const DashboardTaches = ({ titre }) => {
         // TODO: Si la recherche est mise il faut modifier la liste en fonction de la variable recherche
         console.log("Longueur données taches: ", donnees.length);
         console.log("Total pages : ", totalPages);
+        console.log("Données : ", donnees[0]);
     }
 
     return (
@@ -46,36 +51,24 @@ const DashboardTaches = ({ titre }) => {
             <h1 className="text-4xl font-bold bg-gradient-primary bg-clip-text text-black mb-8">
                 {titre}
             </h1>
-            {/*<h1 className="text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-8">*/}
-            {/*    {test.isSuccess ?*/}
-            {/*        <p className="text-2xl bg-gradient-primary bg-clip-text text-black mb-8"> Données chargées avec succès !</p> :*/}
-            {/*        <p className="text-2xl bg-gradient-primary bg-clip-text text-black mb-8"> Chargement ... </p>*/}
-            {/*        // TODO: Faire un composant d'une carte avec toutes les infos avec la pagination et tout*/}
-            {/*    }*/}
-            {/*</h1>*/}
 
             <div className="mb-8">
                 <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                    <Input
-                        type="search"
-                        placeholder="Rechercher une tâche ..."
-                        className="pl-10 h-12"
-                        value={recherche}
-                        onChange={(e) => setRecherche(e.target.value)}
-                    />
+                    <BarreDeRecherche value={recherche} onChange={(e) => setRecherche(e.target.value)}/>
                 </div>
             </div>
 
             {test.isSuccess ? (
-                    donnees.length > 0 && totalPages >= 1 ? (
-                        <div className="text-center py-12 text-muted-foreground">
-                            Afficher les contenus
-                        </div>
-                    ) : <div className="text-center py-12 text-muted-foreground">
-                        Aucune tâche de trouvé.
+                donnees.length > 0 ? (
+                    <div className="text-center py-12 text-muted-foreground grid grid-cols-3 gap-6">
+                        {donnees.map((donnee) => (
+                            <CarteTache donneesTache={donnee} access={"enAttente"}/>
+                        )) /*Il va falloir accéder aux valeurs d'accès plus tard donc compliqué de boucler sur donnees */}
                     </div>
-                ) : <p className="text-center py-12 text-muted-foreground"> Chargement ... </p>
+                ) : <div className="text-center py-12 text-muted-foreground grid grid-cols-3 gap-4">
+                    <p className="text-center py-12 text-muted-foreground"> No data ? (comme le meme) </p>
+                </div>
+            ) : <OrbitProgress color="#000000" size="medium" text="" textColor="" />
             }
         </div>
     )
