@@ -1,4 +1,5 @@
 import CarteTache from "@/components/Index/CarteTache.tsx";
+import {accessAuthentification} from "@/context/AuthentificationContext.tsx";
 
 const AffichageTaches = ({donnees}) => {
     return (

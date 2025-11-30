@@ -9,6 +9,8 @@ import {fecthAllTaches, getTachesWithUserId} from "@/services/api.ts";
 import { PartyPopper } from 'lucide-react';
 import {useQuery} from "@tanstack/react-query";
 import AffichageTaches from "@/components/AffichageTaches.tsx";
+import {OrbitProgress} from "react-loading-indicators";
+import BoutonCreerTache from "@/components/ModeCreateur/BoutonCreerTache.tsx";
 
 
 const ListeTachesEnCours = ({informationUtilisateur}) => {
@@ -37,11 +39,11 @@ const ListeTachesEnCours = ({informationUtilisateur}) => {
                     </div>
                 </div>
 
-                <AffichageTaches donnees={tacheUtilisateur.data} />
+                {tacheUtilisateur.isSuccess ? <AffichageTaches donnees={tacheUtilisateur.data} /> : <OrbitProgress color="#000000" size="medium" text="" textColor="" />}
 
             </CardContent>
             <CardFooter>
-                <Button><Plus /> Créer une tâche </Button>
+                <BoutonCreerTache informationUtilisateur={informationUtilisateur}/>
             </CardFooter>
         </>
     )

@@ -48,7 +48,7 @@ const CarteTache = ({donneesTache, access}) => {
             </CardHeader>
             <CardContent>
                 <div className="flex flex-col gap-6">
-                    <Label className="flex justify-center w-full"> Afficher l'estimation de la tâche </Label>
+                    <Label className="flex justify-center w-full"> Afficher l'état de la tâche </Label>
                 </div>
             </CardContent>
             <CardFooter className="flex-col gap-2 grid grid-cols-2 gap-6">

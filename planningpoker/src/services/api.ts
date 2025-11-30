@@ -32,3 +32,19 @@ export async function getTachesWithUserId(id: string) {
     }
     return reponse.json();
 }
+
+export async function createNewTask(nouvelleTache: any) {
+    const reponse = await fetch(`${APIURL}/taches/creer`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(nouvelleTache),
+    });
+
+    if (!reponse.ok) {
+        throw new Error("Échec lors de la création de la tâche");
+    }
+
+    return await reponse.json();
+}

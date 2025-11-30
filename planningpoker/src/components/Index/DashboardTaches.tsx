@@ -4,6 +4,8 @@ import {useQuery} from "@tanstack/react-query";
 import BarreDeRecherche from "@/components/Index/BarreDeRecherche.tsx";
 import CarteTache from "@/components/Index/CarteTache.tsx";
 import {Label} from "@/components/ui/label.tsx";
+import {OrbitProgress} from "react-loading-indicators";
+import * as React from "react";
 
 
 const DashboardTaches = ({ titre }) => {
@@ -66,7 +68,7 @@ const DashboardTaches = ({ titre }) => {
                 ) : <div className="text-center py-12 text-muted-foreground grid grid-cols-3 gap-4">
                     <p className="text-center py-12 text-muted-foreground"> No data ? (comme le meme) </p>
                 </div>
-            ) : <p className="text-center py-12 text-muted-foreground"> Chargement ... </p>
+            ) : <OrbitProgress color="#000000" size="medium" text="" textColor="" />
             }
         </div>
     )

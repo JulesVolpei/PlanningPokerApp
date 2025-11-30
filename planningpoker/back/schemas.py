@@ -9,7 +9,6 @@ class Utilisateur(BaseModel):
         from_attributes = True
 
 class Taches(BaseModel):
-    id: int
     titre: str
     description: str
     statut: str
