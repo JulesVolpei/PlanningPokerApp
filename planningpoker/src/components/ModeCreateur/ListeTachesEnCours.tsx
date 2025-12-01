@@ -15,6 +15,7 @@ import BoutonCreerTache from "@/components/ModeCreateur/BoutonCreerTache.tsx";
 
 const ListeTachesEnCours = ({informationUtilisateur}) => {
     const [recherche, setRecherche] = React.useState('');
+    const [open, setOpen] = React.useState(false);
     const tacheUtilisateur = useQuery({
         queryKey: ["tachesUser", informationUtilisateur.id],
         queryFn: () => getTachesWithUserId(informationUtilisateur.id),
@@ -39,11 +40,11 @@ const ListeTachesEnCours = ({informationUtilisateur}) => {
                     </div>
                 </div>
 
-                {tacheUtilisateur.isSuccess ? <AffichageTaches donnees={tacheUtilisateur.data} /> : <OrbitProgress color="#000000" size="medium" text="" textColor="" />}
+                {tacheUtilisateur.isSuccess ? <AffichageTaches donnees={tacheUtilisateur.data} maxElement={3}/> : <OrbitProgress color="#000000" size="medium" text="" textColor="" />}
 
             </CardContent>
             <CardFooter>
-                <BoutonCreerTache informationUtilisateur={informationUtilisateur}/>
+                <BoutonCreerTache informationUtilisateur={informationUtilisateur} open={open} setOpen={setOpen}/>
             </CardFooter>
         </>
     )

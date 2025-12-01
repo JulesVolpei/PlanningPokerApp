@@ -20,7 +20,7 @@ type AccessType = "enAttente" | "accepte" | "refuse";
 const CarteTache = ({donneesTache, access}) => {
     const differentsBoutonsAcces: Record<AccessType, JSX.Element> = {
         enAttente: ( // Il faudra faire un onClick pour demander l'accès lorsque l'on est connecté
-            <Button className="bg-red-600 hover:bg-red-400">
+            <Button className="bg-red-600 hover:bg-red-400 gap-1">
                 <LockKeyhole />
                 <Label> Demander accès </Label>
             </Button>
