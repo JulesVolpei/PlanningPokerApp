@@ -5,10 +5,13 @@ from multiprocessing.managers import Token
 from fastapi import FastAPI, HTTPException, Depends, status
 from sqlmodel import Session, select
 from models import Utilisateur
+from models import Tache
+from schemas import Taches
 from database import initDb, get_session
 from fastapi.middleware.cors import CORSMiddleware
 import schemas
 import crud
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -73,3 +76,41 @@ def inscription(data: schemas.ConnexionInscription, db: Session = Depends(get_se
             "nom": nouvelUtilisateur.nom
         }
     }
+
+@app.get("/taches/user/{user_id}")
+def getUserTaches(user_id: int, db: Session = Depends(get_session)):
+    return crud.getTachesWithUserId(db, user_id)
+
+
+@app.post("/taches/creer")
+def creerTache(tache: Taches, db: Session = Depends(get_session)):
+    nouvelleTache = Tache(
+        titre=tache.titre,
+        description=tache.description,
+        statut=tache.statut,
+        createurId=int(tache.createurId),
+        nombreMaxParticipant=int(tache.nombreMaxParticipant),
+    )
+
+    db.add(nouvelleTache)
+    db.commit()
+    db.refresh(nouvelleTache)
+
+    return {
+        "message": "Tâche créée",
+        "tache": nouvelleTache
+    }
+
+@app.get("/taches/{tache_id}/createur", response_model=schemas.Utilisateur)
+def getCreateurTache(tache_id: int, db: Session = Depends(get_session)):
+    # Étape 1 : récupérer la tâche
+    tache = db.get(Tache, tache_id)
+    if not tache:
+        raise HTTPException(status_code=404, detail="Tâche non trouvée")
+
+    # Étape 2 : récupérer le créateur
+    createur = db.get(Utilisateur, tache.createurId)
+    if not createur:
+        raise HTTPException(status_code=404, detail="Créateur introuvable")
+
+    return createur
