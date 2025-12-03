@@ -21,7 +21,7 @@ import {
 import {createNewTask} from "@/services/api.ts";
 import {toast} from "sonner";
 
-const BoutonCreerTache = ({informationUtilisateur}) => {
+const BoutonCreerTache = ({informationUtilisateur, open, setOpen}) => {
     const [titre, setTitre] = useState("");
     const [description, setDescription] = useState("");
     const [evaluation, setEvaluation] = useState("Aucune");
@@ -44,6 +44,7 @@ const BoutonCreerTache = ({informationUtilisateur}) => {
 
             const resultat = await createNewTask(nouvelleTache);
             toast.success(`Tâche ${titre} crée`);
+            setOpen(false);
         } catch (error) {
             console.error(error);
             toast.error(error);
@@ -51,7 +52,7 @@ const BoutonCreerTache = ({informationUtilisateur}) => {
     };
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button>
                     <Plus className="mr-2 h-4 w-4" />

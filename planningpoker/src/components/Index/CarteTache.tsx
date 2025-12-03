@@ -17,10 +17,10 @@ import {Label} from "@/components/ui/label.tsx";
 
 type AccessType = "enAttente" | "accepte" | "refuse";
 
-const CarteTache = ({donneesTache, access}) => {
+const CarteTache = ({donneesTache, access, onClick}) => {
     const differentsBoutonsAcces: Record<AccessType, JSX.Element> = {
         enAttente: ( // Il faudra faire un onClick pour demander l'accès lorsque l'on est connecté
-            <Button className="bg-red-600 hover:bg-red-400">
+            <Button className="bg-red-600 hover:bg-red-400 gap-1">
                 <LockKeyhole />
                 <Label> Demander accès </Label>
             </Button>
@@ -39,27 +39,34 @@ const CarteTache = ({donneesTache, access}) => {
         ),
     };
     return (
-        <Card className="w-full max-w-sm">
+        <Card
+            className="w-full max-w-sm cursor-pointer hover:shadow-lg transition"
+            onClick={onClick}
+        >
             <CardHeader>
-                <CardTitle> {donneesTache.titre} </CardTitle>
+                <CardTitle>{donneesTache.titre}</CardTitle>
                 <CardDescription>
                     Created by ...
                 </CardDescription>
             </CardHeader>
+
             <CardContent>
-                <div className="flex flex-col gap-6">
-                    <Label className="flex justify-center w-full"> Afficher l'état de la tâche </Label>
-                </div>
+                <Label className="flex justify-center w-full">
+                    Afficher l'état de la tâche
+                </Label>
             </CardContent>
+
             <CardFooter className="flex-col gap-2 grid grid-cols-2 gap-6">
                 <Button>
                     <Label> 0 / {donneesTache.nombreMaxParticipant} </Label>
                     <Users />
                 </Button>
+
                 {differentsBoutonsAcces[access]}
             </CardFooter>
         </Card>
-    )
-}
+    );
+};
+
 
 export default CarteTache;

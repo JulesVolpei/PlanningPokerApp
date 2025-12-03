@@ -58,7 +58,7 @@ export const AuthentificationProvider = ({children } : {children: ReactNode}) =>
         const data = await reponse.json()
         console.log("Données retour connexion : ", data);
         //localStorage.setItem("token", data.accessToken)
-        localStorage.setItem("utlisateur", JSON.stringify(data.utilisateur))
+        localStorage.setItem("utilisateur", JSON.stringify(data.utilisateur))
         const utilisateurConnete = {"id": data.utilisateur.id, "nom": data.utilisateur.nom};
         setUtilisateur(utilisateurConnete);
         console.log("Utilisateur connecté :", utilisateurConnete)

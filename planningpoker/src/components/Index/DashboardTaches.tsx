@@ -6,6 +6,7 @@ import CarteTache from "@/components/Index/CarteTache.tsx";
 import {Label} from "@/components/ui/label.tsx";
 import {OrbitProgress} from "react-loading-indicators";
 import * as React from "react";
+import AffichageTaches from "@/components/AffichageTaches.tsx";
 
 
 const DashboardTaches = ({ titre }) => {
@@ -60,11 +61,7 @@ const DashboardTaches = ({ titre }) => {
 
             {test.isSuccess ? (
                 donnees.length > 0 ? (
-                    <div className="text-center py-12 text-muted-foreground grid grid-cols-3 gap-6">
-                        {donnees.map((donnee) => (
-                            <CarteTache donneesTache={donnee} access={"enAttente"}/>
-                        )) /*Il va falloir accéder aux valeurs d'accès plus tard donc compliqué de boucler sur donnees */}
-                    </div>
+                    <AffichageTaches donnees={donnees} maxElement={6}/>
                 ) : <div className="text-center py-12 text-muted-foreground grid grid-cols-3 gap-4">
                     <p className="text-center py-12 text-muted-foreground"> No data ? (comme le meme) </p>
                 </div>
