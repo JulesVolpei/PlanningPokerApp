@@ -1,0 +1,88 @@
+name: Preprod CI
+
+on:
+  push:
+    branches:
+      - preprod
+
+jobs:
+
+  python-tests:
+    name: Run Python Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install Python dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest
+
+      - name: Run tests
+        run: pytest
+
+
+  sphinx-doc:
+    name: Generate Sphinx Documentation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install Sphinx and extensions
+        run: |
+          pip install sphinx sphinx-autobuild sphinx-rtd-theme sphinxcontrib-napoleon
+
+
+      - name: Build Sphinx documentation
+        working-directory: docs
+        run: |
+          sphinx-build -b html . _build/html
+
+      - name: Upload Sphinx artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: sphinx-doc
+          path: docs/_build/html
+
+
+  typedoc-doc:
+    name: Generate TypeDoc Documentation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        run: |
+          npm install
+          npm install typedoc --save-dev
+
+      - name: Run TypeDoc
+        run: |
+          npx typedoc
+
+      - name: Upload TypeDoc artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: typedoc-doc
+          path: ./docs/typedoc
