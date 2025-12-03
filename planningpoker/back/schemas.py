@@ -39,3 +39,17 @@ class DemandeAccessTache(BaseModel):
 class ConnexionInscription(BaseModel):
     nom: str
     motDePasse: str
+
+class TacheCreate(BaseModel):
+    titre: str
+    description: str
+    createurId: int
+    nombreMaxParticipant: int = 5  # valeur par défaut
+    statut: str = "ouverte"
+
+
+class TacheUpdate(BaseModel):
+    titre: str | None = None
+    description: str | None = None
+    statut: str | None = None
+    nombreMaxParticipant: int | None = None

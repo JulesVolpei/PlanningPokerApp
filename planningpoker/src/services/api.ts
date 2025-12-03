@@ -48,3 +48,15 @@ export async function createNewTask(nouvelleTache: any) {
 
     return await reponse.json();
 }
+
+export async function retrouverCreateur(tacheId: number) {
+    const reponse = await fetch(`${APIURL}/taches/${tacheId}/createur`, {
+        method: "GET",
+    });
+
+    if (!reponse.ok) {
+        throw new Error("Créateur introuvable");
+    }
+
+    return reponse.json();
+}
