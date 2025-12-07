@@ -14,6 +14,9 @@ import {
     CardTitle,
 } from "@/components/ui/card.tsx"
 import {Label} from "@/components/ui/label.tsx";
+import {accessAuthentification} from "@/context/AuthentificationContext.tsx";
+import {toast} from "sonner";
+import {demanderAccessTache} from "@/services/api.ts";
 
 /**
  * Type représentant les différents niveaux d'accès possibles à une tâche.
@@ -40,10 +43,27 @@ type AccessType = "enAttente" | "accepte" | "refuse";
  * @param {CarteTacheProps} props Les propriétés reçues par le composant.
  * @returns {JSX.Element} Un composant de carte interactive représentant une tâche.
  */
-const CarteTache = ({donneesTache, access, onClick}) => {
+const CarteTache = ({donneesTache, onClick, idTache, demandes}) => {
+    const { utilisateur, estConnecte } = accessAuthentification();
+    const listeDemande = null;
+
+
+    const handleDemandeAccess = async () => {
+        if (!estConnecte) {
+            toast.error("Tu dois être connecté pour demander l'accès !");
+            return;
+        }
+
+        try {
+            await demanderAccessTache(utilisateur.id, idTache);
+            toast.success("Demande d'accès envoyée !");
+        } catch (e) {
+            toast.error("Erreur : ", e);
+        }
+    };
     const differentsBoutonsAcces: Record<AccessType, JSX.Element> = {
         enAttente: ( // Il faudra faire un onClick pour demander l'accès lorsque l'on est connecté
-            <Button className="bg-red-600 hover:bg-red-400 gap-1">
+            <Button className="bg-red-600 hover:bg-red-400 gap-1" onClick={handleDemandeAccess}>
                 <LockKeyhole />
                 <Label> Demander accès </Label>
             </Button>
@@ -85,7 +105,7 @@ const CarteTache = ({donneesTache, access, onClick}) => {
                     <Users />
                 </Button>
 
-                {differentsBoutonsAcces[access]}
+                {donneesTache.access ? differentsBoutonsAcces[donneesTache.access] : differentsBoutonsAcces["enAttente"]}
             </CardFooter>
         </Card>
     );

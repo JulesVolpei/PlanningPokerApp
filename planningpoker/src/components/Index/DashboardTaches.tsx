@@ -25,6 +25,7 @@ const DashboardTaches = ({ titre }) => {
     const [pageActuelle, setPageActuelle] = useState(1);
     const nombreDeTachesParPage = 6;
     let donnees = [];
+    const idTaches = []
 
 
     const listeTacheQuery = () => {
@@ -41,12 +42,11 @@ const DashboardTaches = ({ titre }) => {
 
     if (test.isSuccess) {
         donnees = test.data;
-
-        // Utiliser les taches normalisées pour la suite du composant
-        const totalPages = Math.ceil(donnees.length / nombreDeTachesParPage);
-        const indexPagination = (pageActuelle - 1) * nombreDeTachesParPage;
-        const tachesAffichees = donnees.slice(indexPagination, indexPagination + nombreDeTachesParPage); //Utiliser plus tard, je slice pour uniquement avoir les tâches à afficher
-        // TODO: Si la recherche est mise il faut modifier la liste en fonction de la variable recherche
+        console.log("TOUTES DONNEES : ", donnees);
+        donnees.map((donnee, cmpt) => {
+            idTaches.push(donnee.createurId);
+        })
+        console.log(idTaches);
     }
 
     return (
@@ -63,7 +63,7 @@ const DashboardTaches = ({ titre }) => {
 
             {test.isSuccess ? (
                 donnees.length > 0 ? (
-                    <AffichageTaches donnees={donnees} maxElement={6}/>
+                    <AffichageTaches donnees={donnees} maxElement={6} listeIdTache={idTaches}/>
                 ) : <div className="text-center py-12 text-muted-foreground grid grid-cols-3 gap-4">
                     <p className="text-center py-12 text-muted-foreground"> No data ? (comme le meme) </p>
                 </div>

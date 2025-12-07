@@ -7,10 +7,14 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table";
-import { Check } from 'lucide-react';
-import { X } from 'lucide-react';
+} from "@/components/ui/table.tsx";
+import {Check} from 'lucide-react';
+import {X} from 'lucide-react';
 import {Button} from "@/components/ui/button.tsx";
+import {getDemandesCreateur} from "@/services/api.ts";
+import {useQuery} from "@tanstack/react-query";
+import {OrbitProgress} from "react-loading-indicators";
+import * as React from "react";
 
 /**
  * Composant affichant les différentes demandes faites à un utilisateur pour accéder à une tâche à évaluer.
@@ -24,6 +28,12 @@ import {Button} from "@/components/ui/button.tsx";
  * @returns {JSX.Element} Retourne un composant permettant de valider l'accès ou non à une tâche à un utilisateur externe.
  */
 const DemandeAcces = ({informationUtilisateur}) => {
+    const {data} = useQuery({
+        queryKey: ["demandesCreateur", informationUtilisateur.id],
+        queryFn: () => getDemandesCreateur(informationUtilisateur.id),
+        refetchInterval: 15000,
+    });
+    console.log(data);
     return (
         <>
             <CardHeader>
@@ -34,7 +44,6 @@ const DemandeAcces = ({informationUtilisateur}) => {
             </CardHeader>
             <CardContent className="grid gap-6">
                 <Table>
-                    <TableCaption>Tant de demandes, vous ne seriez pas ministre pas hasard ?</TableCaption>
                     <TableHeader>
                         <TableRow>
                             <TableHead className="w-[100px]">Utilisateur</TableHead>
@@ -43,18 +52,24 @@ const DemandeAcces = ({informationUtilisateur}) => {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        <TableRow>
-                            <TableCell className="font-medium">User1</TableCell>
-                            <TableCell>GouGouGaGa</TableCell>
-                            <TableCell className="text-right grid grid-cols-2 gap-6">
-                                <Button className="flex items-center justify-center bg-green-600 hover:bg-green-500">
-                                    <Check className="h-4 w-4" />
-                                </Button>
-                                <Button className="flex items-center justify-center bg-red-600 hover:bg-red-500">
-                                    <X className="h-4 w-4" />
-                                </Button>
-                            </TableCell>
-                        </TableRow>
+                        {data ? data.map((donnee, id) => {
+                            return (
+                                <TableRow key={id}>
+                                    <TableCell className="font-medium">{donnee["utilisateur"]["nom"]}</TableCell>
+                                    <TableCell>{donnee["tache"]["titre"]}</TableCell>
+                                    <TableCell className="text-right grid grid-cols-2 gap-6">
+                                        <Button
+                                            className="flex items-center justify-center bg-green-600 hover:bg-green-500">
+                                            <Check className="h-4 w-4"/>
+                                        </Button>
+                                        <Button
+                                            className="flex items-center justify-center bg-red-600 hover:bg-red-500">
+                                            <X className="h-4 w-4"/>
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            );
+                        }) : <OrbitProgress color="#000000" size="medium" text="" textColor="" />}
                     </TableBody>
                 </Table>
             </CardContent>

@@ -53,3 +53,18 @@ class TacheUpdate(BaseModel):
     description: str | None = None
     statut: str | None = None
     nombreMaxParticipant: int | None = None
+
+class DemandeAccessTacheCreate(BaseModel):
+    utilisateurId: int
+    tacheId: int
+
+class DemandeAccessTacheDetail(BaseModel):
+    id: int
+    utilisateurId: int
+    tacheId: int
+    statut: str
+    utilisateur: Utilisateur
+    tache: Taches
+
+    class Config:
+        from_attributes = True

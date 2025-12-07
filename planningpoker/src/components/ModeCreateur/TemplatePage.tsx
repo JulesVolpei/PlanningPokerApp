@@ -3,9 +3,9 @@ import {Label} from "@/components/ui/label.tsx";
 import {Input} from "@/components/ui/input.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {LockKeyhole, LockKeyholeOpen, PenOff} from "lucide-react";
-import ListeTachesEnCours from "@/components/ModeCreateur/ListeTachesEnCours.tsx";
-import DemandeAcces from "@/components/ModeCreateur/DemandeAcces.tsx";
-import TachesArchivees from "@/components/ModeCreateur/TachesArchivees.tsx";
+import ListeTachesEnCours from "@/components/ModeCreateur/TachesEnCours/ListeTachesEnCours.tsx";
+import DemandeAcces from "@/components/ModeCreateur/DemandesAcces/DemandeAcces.tsx";
+import TachesArchivees from "@/components/ModeCreateur/TachesArchivees/TachesArchivees.tsx";
 import {accessAuthentification} from "@/context/AuthentificationContext.tsx";
 
 /**

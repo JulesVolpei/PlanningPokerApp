@@ -16,6 +16,8 @@ import {
     DialogTitle,
     DialogDescription,
 } from "@/components/ui/dialog";
+import {accessAuthentification} from "@/context/AuthentificationContext.tsx";
+import {getDemandesUtilisateur} from "@/services/api.ts";
 
 /**
  * Composant permettant d'afficher un certain nombre de tâches données en paramètre.
@@ -32,10 +34,11 @@ import {
  * @param maxElement Variable indiquant le nombre de tâche à afficher.
  * @returns {JSX.Element} Retourne un composant gérant l'affichage et la pagination des tâches.
  */
-const AffichageTaches = ({ donnees, maxElement }) => {
+const AffichageTaches = ({ donnees, maxElement, listeIdTache }) => {
     const [page, setPage] = useState(1);
     const [open, setOpen] = useState(false);
     const [tacheSelectionnee, setTacheSelectionnee] = useState(null);
+    const {estConnecte, utilisateur} = accessAuthentification();
 
     const totalPages = Math.ceil(donnees.length / maxElement);
 
@@ -43,6 +46,21 @@ const AffichageTaches = ({ donnees, maxElement }) => {
     const fin = debut + maxElement;
 
     const donneesPage = donnees.slice(debut, fin);
+    const listeIdTachePage = listeIdTache ? listeIdTache.slice(debut, fin) : [];
+
+    const correspondanceUtilisateurEtTache = []
+    let listeAcces = null;
+
+    if (listeIdTachePage && estConnecte) {
+        for (let i = 0; i < donneesPage.length; i++) {
+            utilisateur.id == listeIdTachePage[i] ? donneesPage[i]["access"] = "accepte" : donneesPage[i]["access"] = "enAttente";
+            // TODO: Savoir si un utilisateur est refusé d'une tâche
+        }
+    }
+
+    if (estConnecte) {
+        listeAcces = getDemandesUtilisateur(utilisateur.id);
+    }
 
     const ouvrirDialog = (tache) => {
         setTacheSelectionnee(tache);
@@ -52,12 +70,13 @@ const AffichageTaches = ({ donnees, maxElement }) => {
     return (
         <div className="flex flex-col gap-8">
             <div className="text-center py-12 text-muted-foreground grid grid-cols-3 gap-6">
-                {donneesPage.map((donnee) => (
+                {donneesPage.map((donnee, idTache) => (
                     <CarteTache
                         key={donnee.id}
                         donneesTache={donnee}
-                        access={"enAttente"}
                         onClick={() => ouvrirDialog(donnee)}
+                        idTache = {idTache}
+                        demandes={listeAcces}
                     />
                 ))}
             </div>

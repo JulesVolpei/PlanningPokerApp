@@ -7,7 +7,7 @@ import { PartyPopper } from 'lucide-react';
 import {useQuery} from "@tanstack/react-query";
 import AffichageTaches from "@/components/AffichageTaches.tsx";
 import {OrbitProgress} from "react-loading-indicators";
-import BoutonCreerTache from "@/components/ModeCreateur/BoutonCreerTache.tsx";
+import BoutonCreerTache from "@/components/ModeCreateur/TachesEnCours/BoutonCreerTache.tsx";
 
 /**
  * Composant affichant la liste des tâches en cours pour un utilisateur donné.

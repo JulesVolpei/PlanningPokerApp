@@ -6,6 +6,7 @@ from fastapi import FastAPI, HTTPException, Depends, status
 from sqlmodel import Session, select
 from models import Utilisateur
 from models import Tache
+from models import DemandeAccessTache
 from schemas import Taches
 from database import initDb, get_session
 from fastapi.middleware.cors import CORSMiddleware
@@ -114,3 +115,74 @@ def getCreateurTache(tache_id: int, db: Session = Depends(get_session)):
         raise HTTPException(status_code=404, detail="Créateur introuvable")
 
     return createur
+
+@app.post("/demandeAcces", response_model=schemas.DemandeAccessTache)
+def DemanderAcces(demande: schemas.DemandeAccessTacheCreate, db: Session = Depends(get_session)):
+
+    demandeExistante = db.exec(
+        select(DemandeAccessTache)
+        .where(DemandeAccessTache.utilisateurId == demande.utilisateurId)
+        .where(DemandeAccessTache.tacheId == demande.tacheId)
+    ).first()
+
+    if demandeExistante:
+        raise HTTPException(
+            status_code=400,
+            detail="Une demande existe déjà pour cette utilisateur"
+        )
+
+    demandeAcces = DemandeAccessTache(
+        utilisateurId=demande.utilisateurId,
+        tacheId=demande.tacheId,
+        statut="enAttente"
+    )
+    db.add(demandeAcces)
+    db.commit()
+    db.refresh(demandeAcces)
+    return demandeAcces
+
+@app.get("/demandeAcces", response_model=list[schemas.DemandeAccessTache])
+def getDemandesAcces(db: Session = Depends(get_session)):
+    return db.exec(select(DemandeAccessTache)).all()
+
+@app.get("/demandeAcces/tache/{tacheId}", response_model=list[schemas.DemandeAccessTache])
+def getDemandeParTache(tacheId: int, db: Session = Depends(get_session)):
+    return db.exec(
+        select(DemandeAccessTache).where(DemandeAccessTache.tacheId == tacheId)
+    ).all()
+
+@app.get("/demandeAcces/utilisateur/{utilisateurID}", response_model=list[schemas.DemandeAccessTache])
+def getDemandeParTache(utilisateurID: int, db: Session = Depends(get_session)):
+    return db.exec(
+        select(DemandeAccessTache).where(DemandeAccessTache.utilisateurId == utilisateurID)
+    ).all()
+
+@app.get("/demandeAcces/createur/{utilisateurID}", response_model=list[schemas.DemandeAccessTacheDetail])
+def demandesCreateur(utilisateurID: int, db: Session = Depends(get_session)):
+    requete = db.exec(
+        select(DemandeAccessTache)
+        .join(Tache)
+        .where(Tache.createurId == utilisateurID)
+    ).all()
+    return requete
+
+@app.post("/demandeAcces/{demandeId}/accepter")
+def accepter_demande(demandeId: int, db: Session = Depends(get_session)):
+    demande = db.get(DemandeAccessTache, demandeId)
+    if not demande:
+        raise HTTPException(404, "Demande introuvable")
+
+    demande.statut = "accepte"
+    db.commit()
+    return {"message": "Demande acceptée"}
+
+@app.post("/demandeAcces/{demandeId}/refuser")
+def refuser_demande(demandeId: int, db: Session = Depends(get_session)):
+    demande = db.get(DemandeAccessTache, demandeId)
+    if not demande:
+        raise HTTPException(404, "Demande introuvable")
+
+    demande.statut = "refuse"
+    db.commit()
+    return {"message": "Demande refusée"}
+

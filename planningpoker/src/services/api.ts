@@ -95,3 +95,39 @@ export async function retrouverCreateur(tacheId: number) {
 
     return reponse.json();
 }
+
+export const demanderAccessTache = async (utilisateurId: number, tacheId: number) => {
+    const reponse = await fetch(`${APIURL}/demandeAcces`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            utilisateurId,
+            tacheId,
+        }),
+    });
+
+    if (!reponse.ok) {
+        throw new Error("Erreur lors de la demande d'accès");
+    }
+
+    return await reponse.json();
+};
+
+export const getDemandesUtilisateur = async (userId: number) => {
+    const r = await fetch(`${APIURL}/demandeAcces/utilisateur/${userId}`);
+    if (!r.ok) {
+        throw new Error("Erreur lors de la demande d'accès");
+    }
+    return await r.json();
+};
+
+export const getDemandesCreateur = async (userId: number) => {
+    const r = await fetch(`${APIURL}/demandeAcces/createur/${userId}`);
+    return await r.json();
+};
+
+export const accepterDemande = (id: number) =>
+    fetch(`${APIURL}/demandeAcces/${id}/accepter`, { method: "POST" });
+
+export const refuserDemande = (id: number) =>
+    fetch(`${APIURL}/demandeAcces/${id}/refuser`, { method: "POST" });
