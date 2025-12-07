@@ -8,18 +8,23 @@ import {OrbitProgress} from "react-loading-indicators";
 import * as React from "react";
 import AffichageTaches from "@/components/AffichageTaches.tsx";
 
-
+/**
+ * Composant d'affichage principal des tâches.
+ *
+ * Le composant permet de :
+ * - récupèrer la liste des tâches depuis l'API via *React Query*,
+ * - afficher un champ de recherche,
+ * - gèrer une pagination interne,
+ * - afficher les tâches via le composant {@link AffichageTaches},
+ * - montrer un loader tant que les données ne sont pas disponibles.
+ *
+ * @param {string} titre Titre de la tâche.
+ */
 const DashboardTaches = ({ titre }) => {
     const [recherche, setRecherche] = useState<string>('');
     const [pageActuelle, setPageActuelle] = useState(1);
-    const [carteSelectionnee, setCarteSelectionnee] = useState('');
-    const [dialogOpen, setDialogOpen] = useState(false);
-    const [loading, setLoading] = useState(true);
     const nombreDeTachesParPage = 6;
     let donnees = [];
-    const totalPages = 0;
-
-    //const {data: taches, error, isLoading, isFetching } = listeTacheQuery();
 
 
     const listeTacheQuery = () => {
@@ -42,9 +47,6 @@ const DashboardTaches = ({ titre }) => {
         const indexPagination = (pageActuelle - 1) * nombreDeTachesParPage;
         const tachesAffichees = donnees.slice(indexPagination, indexPagination + nombreDeTachesParPage); //Utiliser plus tard, je slice pour uniquement avoir les tâches à afficher
         // TODO: Si la recherche est mise il faut modifier la liste en fonction de la variable recherche
-        console.log("Longueur données taches: ", donnees.length);
-        console.log("Total pages : ", totalPages);
-        console.log("Données : ", donnees[0]);
     }
 
     return (

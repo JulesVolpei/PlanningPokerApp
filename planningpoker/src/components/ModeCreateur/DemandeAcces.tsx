@@ -12,7 +12,17 @@ import { Check } from 'lucide-react';
 import { X } from 'lucide-react';
 import {Button} from "@/components/ui/button.tsx";
 
-
+/**
+ * Composant affichant les différentes demandes faites à un utilisateur pour accéder à une tâche à évaluer.
+ *
+ * Permet :
+ * - D'afficher les demandes d'accès à une tâche précisée par un utilisateur indiqué par son nom.
+ * - D'accepter la demande d'accès à l'utilisateur.
+ * - De refuser la demande d'accès faite par l'utilisateur.
+ *
+ * @param informationUtilisateur Variable contenant les informations liées à l'utilisateur connecté via le contexte d'authentification de l'application.
+ * @returns {JSX.Element} Retourne un composant permettant de valider l'accès ou non à une tâche à un utilisateur externe.
+ */
 const DemandeAcces = ({informationUtilisateur}) => {
     return (
         <>

@@ -100,3 +100,17 @@ def creerTache(tache: Taches, db: Session = Depends(get_session)):
         "message": "Tâche créée",
         "tache": nouvelleTache
     }
+
+@app.get("/taches/{tache_id}/createur", response_model=schemas.Utilisateur)
+def getCreateurTache(tache_id: int, db: Session = Depends(get_session)):
+    # Étape 1 : récupérer la tâche
+    tache = db.get(Tache, tache_id)
+    if not tache:
+        raise HTTPException(status_code=404, detail="Tâche non trouvée")
+
+    # Étape 2 : récupérer le créateur
+    createur = db.get(Utilisateur, tache.createurId)
+    if not createur:
+        raise HTTPException(status_code=404, detail="Créateur introuvable")
+
+    return createur

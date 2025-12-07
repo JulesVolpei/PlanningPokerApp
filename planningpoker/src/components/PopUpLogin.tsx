@@ -7,13 +7,31 @@ import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs';
 import {toast} from 'sonner';
 import {accessAuthentification} from "@/context/AuthentificationContext.tsx";
 
+/**
+ * Interface permettant de définir si le PopUp s'ouvre ou non via le dialogue shadcn/ui.
+ * @this {open} Variable booléenne déterminant l'ouverture ou non.
+ * @this {onOpenChange} Fonction permettant de faire le lien entre le hooker et l'ouverture du dialogue shadcn/ui.
+ */
 interface LoginDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-} // Permet de savoir si on ouvre le popup ou non lorsque l'utilisateur clique dessus
+}
 
+/**
+ * Composant affichant un dialogue shadcn/ui comportant le formulaire d'inscription et de connexion et la gestion de la réussite ou non de la fonction voulues.
+ *
+ *
+ * @this {connexion, inscription} Fonctions du contexte d'authentification permettant de gérer la connexion et l'inscription.
+ * @this {[isLoading, setIsLoading]} Hooker permettant de savoir l'état de la connexion.
+ * @this {[connexionData, setConnexionData]} Hooker permettant de stocker les valeurs de connexion rentrées par l'utilisateur.
+ * @this {[inscriptionData, setInscriptionData]}  Hooker permettant de stocker les valeurs d'inscription rentrées par l'utilisateur.
+ * @this {handleLogin()} Fonction asynchrone permettant de gérer l'état de la connexion en fonction du retour de la connexion dans le contexte d'authentification.
+ * @this {handleRegister()} Fonction asynchrone permettant de gérer l'état de l'inscription en fonction du retour de l'inscription dans le contexte d'authentification.
+ * @param open Variable booléenne indiquant l'ouverture ou non du dialogue shadcn/ui.
+ * @param onOpenChange Fonction permettant de changer la valeurs de open et d'ouvrir le dialogque shadcn/ui.
+ */
 const PopUpLogin = ({open, onOpenChange}: LoginDialogProps) => {
-    const {connexion, inscription, estConnecte, deconnexion} = accessAuthentification();
+    const {connexion, inscription} = accessAuthentification();
     const [isLoading, setIsLoading] = useState(false);
     const [connexionData, setConnexionData] = useState({nom: '', motDePasse: ''});
     const [inscriptionData, setInscriptionData] = useState({nom: '', motDePasse: ''});
@@ -77,8 +95,7 @@ const PopUpLogin = ({open, onOpenChange}: LoginDialogProps) => {
                                 <Label htmlFor="connexion-motDePasse">Mot de passe</Label>
                                 <Input
                                     id="connexion-motDePasse"
-                                    type="motDePasse"
-                                    placeholder="********"
+                                    type="password"
                                     value={connexionData.motDePasse}
                                     onChange={(e) => setConnexionData({...connexionData, motDePasse: e.target.value})}
                                     required
@@ -108,7 +125,6 @@ const PopUpLogin = ({open, onOpenChange}: LoginDialogProps) => {
                                 <Input
                                     id="inscription-motDePasse"
                                     type="password"
-                                    placeholder="********"
                                     value={inscriptionData.motDePasse}
                                     onChange={(e) => setInscriptionData({
                                         ...inscriptionData,

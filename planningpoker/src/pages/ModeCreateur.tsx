@@ -6,26 +6,18 @@ import {
     TabsTrigger,
 } from "@/components/ui/tabs"
 import TemplatePage from "@/components/ModeCreateur/TemplatePage.tsx";
+import {Component} from "react";
+import TableMatieresModeCreateur from "@/components/ModeCreateur/TableMatieresModeCreateur.tsx";
 
+/**
+ * Composant à la racine de l'affichage des composants dans la page du mode créateur.
+ *
+ * @constructor
+ */
 const ModeCreateur = () => {
     return (
         <div className="flex w-full max-w-sm flex-col gap-6">
-            <Tabs defaultValue="taches">
-                <TabsList>
-                    <TabsTrigger value="taches">Tâches en cours</TabsTrigger>
-                    <TabsTrigger value="demandeAcces">Demande d'accès</TabsTrigger>
-                    <TabsTrigger value="tachesArchivees">Tâches archivées</TabsTrigger>
-                </TabsList>
-                <TabsContent value={"taches"} >
-                    <TemplatePage page={"taches"} />
-                </TabsContent>
-                <TabsContent value={"demandeAcces"}>
-                    <TemplatePage page={"demandeAcces"} />
-                </TabsContent>
-                <TabsContent value={"tachesArchivees"}>
-                    <TemplatePage page={"tachesArchivees"} />
-                </TabsContent>
-            </Tabs>
+            <TableMatieresModeCreateur />
         </div>
     )
 }

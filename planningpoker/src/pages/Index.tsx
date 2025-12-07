@@ -1,5 +1,9 @@
 import DashboardTaches from "@/components/Index/DashboardTaches.tsx";
 
+/**
+ * Composant à la racine de l'affichage des composants du menu principal.
+ *
+ */
 const Index = () => {
     return (
         <div className="min-h-screen bg-background">

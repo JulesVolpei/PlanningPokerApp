@@ -1,5 +1,12 @@
 export const APIURL = "http://localhost:8000";
 
+
+/**
+ * Fonction permettant de récupérer la liste de tous les utilisateurs depuis l'API Python.
+ *
+ * @returns {Promise<Utilisateur[]>} Une promesse résolue avec la liste des utilisateur au format JSON.
+ * @throws {Error} Une erreur indiquant qu'aucun utilisateur n'a été trouvé.
+ */
 export async function fetchAllUser() {
     const reponse = await fetch(`${APIURL}/users`, {
         method: "GET",
@@ -11,6 +18,13 @@ export async function fetchAllUser() {
     return reponse.json();
 }
 
+
+/**
+ * Fonction permettant de récupérer la liste de toutes les tâches depuis l'API Python.
+ *
+ * @returns {Promise<Tache[]>} Une promesse résolue avec la liste des tâches au format JSON.
+ * @throws {Error} Une erreur indiquant qu'aucune tâche n'a été trouvé.
+ */
 export async function fecthAllTaches() {
     const reponse = await fetch(`${APIURL}/taches`, {
         method: "GET",
@@ -22,6 +36,13 @@ export async function fecthAllTaches() {
     return reponse.json();
 }
 
+/**
+ * Fonction permettant de récupérer toutes les tâches associées à un id utilisateur.
+ *
+ * @param id Variable indiquant le numéro unique permettant d'identifier l'utilisateur.
+ * @returns {Promise<Tache[]>} Une promesse résolue avec la liste des tâches d'un utilisateur précis au format JSON.
+ * @throws {Error} Une erreur si l'utilisateur n'est pas trouvable.
+ */
 export async function getTachesWithUserId(id: string) {
     const reponse = await fetch(`${APIURL}/taches/user/${id}`, {
         method: "GET",
@@ -33,6 +54,13 @@ export async function getTachesWithUserId(id: string) {
     return reponse.json();
 }
 
+/**
+ * Fonction permettant la création d'une nouvelle tâche depuis l'API Python.
+ *
+ * @param nouvelleTache Variable contenant toutes les informations liées à la nouvelle tâche à créer.
+ * @returns {Promise<JSON>} Promesse résolue envoyer un message de confirmation de création de la nouvelle tâche au format JSON.
+ * @throws {Error} Erreur indiquant l'impossibilité de créer la nouvelle tâche.
+ */
 export async function createNewTask(nouvelleTache: any) {
     const reponse = await fetch(`${APIURL}/taches/creer`, {
         method: "POST",
@@ -47,4 +75,23 @@ export async function createNewTask(nouvelleTache: any) {
     }
 
     return await reponse.json();
+}
+
+/**
+ * Fonction permettant de retrouver l'utilisateur ayant créée une tâche précise.
+ *
+ * @param tacheId Variable correspondant à l'id permettant d'identifier la tâche.
+ * @returns {Promise<Utilisateur[]>} Promesse résolue avec les informations liées au créateur de la tâche.
+ * @throws {Error} Erreur si l'utilisateur est introuvable.
+ */
+export async function retrouverCreateur(tacheId: number) {
+    const reponse = await fetch(`${APIURL}/taches/${tacheId}/createur`, {
+        method: "GET",
+    });
+
+    if (!reponse.ok) {
+        throw new Error("Créateur introuvable");
+    }
+
+    return reponse.json();
 }

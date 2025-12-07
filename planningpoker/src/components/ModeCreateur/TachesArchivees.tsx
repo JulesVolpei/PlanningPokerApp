@@ -1,9 +1,11 @@
 import {CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card.tsx";
-import {Label} from "@/components/ui/label.tsx";
-import {Input} from "@/components/ui/input.tsx";
-import {Button} from "@/components/ui/button.tsx";
 
 
+/**
+ * Composant permettant d'afficher les différentes tâches archivées.
+ *
+ * @param informationUtilisateur Variable contenant les informations sur l'utilisateur connecté.
+ */
 const TachesArchivees = ({informationUtilisateur}) => {
     return (
         <>

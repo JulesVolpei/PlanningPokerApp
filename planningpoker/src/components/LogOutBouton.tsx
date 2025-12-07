@@ -3,10 +3,14 @@ import {toast} from "sonner";
 import { LogOut } from 'lucide-react';
 import {Button} from "@/components/ui/button.tsx";
 
-
+/**
+ * Composant permettant d'afficher l'icone responsable de la déconnexion et de gérer l'appel à la déconnexion dans le contexte d'authentification.
+ *
+ * @this {deconnexion} Fonction dans le contexte d'authentification permettant de déconnecter l'utilisateur.
+ * @this {handleLogOut()} Fonction permettant de gérer la réponse de la déconnexion dans le contexte d'authentification.
+ */
 const LogOutBouton = () => {
     const {deconnexion} = accessAuthentification();
-    console.log("LOGOUT");
     const hangleLogOut = () => {
         try {
             deconnexion();

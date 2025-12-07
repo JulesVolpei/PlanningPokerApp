@@ -1,18 +1,30 @@
 import {CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import {Label} from "@/components/ui/label.tsx";
-import {Input} from "@/components/ui/input.tsx";
-import {Button} from "@/components/ui/button.tsx";
-import { Plus } from 'lucide-react';
 import BarreDeRecherche from "@/components/Index/BarreDeRecherche.tsx";
 import * as React from "react";
-import {fecthAllTaches, getTachesWithUserId} from "@/services/api.ts";
+import {getTachesWithUserId} from "@/services/api.ts";
 import { PartyPopper } from 'lucide-react';
 import {useQuery} from "@tanstack/react-query";
 import AffichageTaches from "@/components/AffichageTaches.tsx";
 import {OrbitProgress} from "react-loading-indicators";
 import BoutonCreerTache from "@/components/ModeCreateur/BoutonCreerTache.tsx";
 
-
+/**
+ * Composant affichant la liste des tâches en cours pour un utilisateur donné.
+ *
+ * Permet de :
+ * - Afficher un message de bienvenue personnalisé.
+ * - Rechercher parmi les tâches.
+ * - Afficher les tâches en cours ou un indicateur de chargement.
+ * - Ouvrir un dialogue pour créer une nouvelle tâche via un formulaire.
+ *
+ * @param {informationUtilisateur} Variable contenant des informations liées à l'utilisateur via le contexte d'authentification.
+ * @this {[recherche, setRecherche]} Hooker permettant de mettre à jour la valeur dans la barre de recherche.
+ * @this {[open, setOpen]} Hooker permettant d'ouvrir le dialogue shadcn/ui du détail de la tâche.
+ * @this {tacheUtilisateur()} UseQuery permettant de faire un appel à la base de données toutes les X secondes pour avoir une actualisation des tâches à afficher.
+ * @returns {JSX.Element} Un composant contenant la liste des tâches en cours pour un utilisateur.
+ *
+ */
 const ListeTachesEnCours = ({informationUtilisateur}) => {
     const [recherche, setRecherche] = React.useState('');
     const [open, setOpen] = React.useState(false);

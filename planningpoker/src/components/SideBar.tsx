@@ -5,10 +5,17 @@ import { accessAuthentification } from '@/context/AuthentificationContext';
 import PopUpLogin from "@/components/PopUpLogin.tsx";
 import LogOutBouton from "@/components/LogOutBouton.tsx";
 
+/**
+ * Composant correspondant à la sidebar dans l'application.
+ *
+ * @this {[ouverturePopUp, setOuverturePopUp]} Hooker permettant de modifier l'affichage ou non du formulaire d'inscription et de connexion.
+ * @this {estConnecte} Variable du contexte d'authentification permettant de savoir si l'utilisateur est connecté ou non.
+ *
+ * @constructor
+ */
 export const SideBar = () => {
     const [ouverturePopUp, setOuverturePopUp] = useState(false);
-    const { estConnecte, utilisateur } = accessAuthentification();
-    console.log(`Utilisateur connecté sidebar : ${utilisateur?.nom} ${estConnecte}`);
+    const { estConnecte } = accessAuthentification();
     return (
         <>
             <aside className="fixed left-0 top-0 h-screen w-16 bg-sidebar border-r border-sidebar-border flex flex-col items-center py-6 gap-6 z-50">

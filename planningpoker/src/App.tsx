@@ -12,6 +12,20 @@ import ModeCreateur from "@/pages/ModeCreateur.tsx";
 
 const queryClient = new QueryClient();
 
+/**
+ * Composant principal de l'application. Il fournit les contextes et les routes nécessaires au bon fonctionnement de l'application.
+ * @example
+ * ```tsx
+ *  <QueryClientProvider client={queryClient}> {//Fournisseur de contexte pour ReactQuery}
+ *      <AuthentificationProvider> {//Composant fournissant les informations sur l'état de la connexion de l'utilsateur et ses informations une fois connecté}
+ *          <TooltipProvider> {//Composant shadcn/ui permettant l'utilisation des tooltips dans le programme}
+ *              <Toaster /> {//Composant shadcn/ui permettant l'utilisation des notifications toaster dans le programme}
+ *                  <BrowserRouter> {//Composant permettant la gestion des routes dans l'application}
+ *                      <SideBar /> {//Composant représentant la sidebar de l'application. Ce composant est dans l'App pour être accessible de partout.}
+ *                      <Routes> {//Composant permettant de gérer un ensemble de routes dans l'application.}
+ *                          <Route> {//Composant de route individuelle.}
+ * ```
+ */
 const App=  () => {
     return (
         <QueryClientProvider client={queryClient}>
@@ -28,7 +42,6 @@ const App=  () => {
                     </BrowserRouter>
                 </TooltipProvider>
             </AuthentificationProvider>
-            {/* Mettre les routes des différentes pages */}
         </QueryClientProvider>
     )
 }

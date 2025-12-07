@@ -17,6 +17,21 @@ import {
     DialogDescription,
 } from "@/components/ui/dialog";
 
+/**
+ * Composant permettant d'afficher un certain nombre de tâches données en paramètre.
+ *
+ * @this {[page, setPage]} Hooker permettant de mettre à jour la page courante.
+ * @this {[open, setOpen]} Hooker permettant de mettre à jour l'ouverture ou non du dialogue shadcn/ui affichant le détail de la tâche.
+ * @this {[tacheSelectionnee, setTacheSelectionnee]} Hooker permettant de mettre à jour la tâche sélectionnée par l'utilisateur.
+ * @this {totalPages} Variable correspondant au nombre de pages pour la pagination en fonction du nombre de tâche et du nombre de tâche à afficher.
+ * @this {debut} Variable correspondant à la première page de la pagination.
+ * @this {fin} Variable correspondant à la dernière page de la pagination.
+ * @this {donneesPage} Variable correspondant à un slice sur l'ensemble des tâche en partant de la variable debut à la variable fin.
+ * @this {ouvrirDialog} Fonction permettant d'appeler les hooker pour modifier la valeur de la tâche sélectionnée et de l'ouverture du dialogue shadcn/ui.
+ * @param donnees Variable contenant toutes les données relatives aux tâches.
+ * @param maxElement Variable indiquant le nombre de tâche à afficher.
+ * @returns {JSX.Element} Retourne un composant gérant l'affichage et la pagination des tâches.
+ */
 const AffichageTaches = ({ donnees, maxElement }) => {
     const [page, setPage] = useState(1);
     const [open, setOpen] = useState(false);

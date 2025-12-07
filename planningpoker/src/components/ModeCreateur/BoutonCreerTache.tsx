@@ -21,6 +21,19 @@ import {
 import {createNewTask} from "@/services/api.ts";
 import {toast} from "sonner";
 
+/**
+ * Composant correspondant au formulaire d'ajout d'une tâche lorsque l'utilisateur appuie sur le bouton de création d'une tâche.
+ *
+ * @example :
+ * ```tsx
+ * <BoutonCreerTache informationUtilisateur={informationUtilisateur} open={open} setOpen={setOpen}/>
+ * ```
+ *
+ *
+ * @param informationUtilisateur Variable correspondant aux informations de l'utilisateur actuellement connecté sur la session.
+ * @param open Variable boléenne déterminant l'ouverture ou non du formulaire.
+ * @param setOpen Hooker permettant de modifier la valeur de la variable "open".
+ */
 const BoutonCreerTache = ({informationUtilisateur, open, setOpen}) => {
     const [titre, setTitre] = useState("");
     const [description, setDescription] = useState("");
