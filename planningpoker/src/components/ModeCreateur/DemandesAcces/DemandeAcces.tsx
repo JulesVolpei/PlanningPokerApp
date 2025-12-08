@@ -11,7 +11,7 @@ import {
 import {Check} from 'lucide-react';
 import {X} from 'lucide-react';
 import {Button} from "@/components/ui/button.tsx";
-import {getDemandesCreateur} from "@/services/api.ts";
+import {accepterDemande, getDemandesCreateur, refuserDemande} from "@/services/api.ts";
 import {useQuery} from "@tanstack/react-query";
 import {OrbitProgress} from "react-loading-indicators";
 import * as React from "react";
@@ -31,9 +31,11 @@ const DemandeAcces = ({informationUtilisateur}) => {
     const {data} = useQuery({
         queryKey: ["demandesCreateur", informationUtilisateur.id],
         queryFn: () => getDemandesCreateur(informationUtilisateur.id),
-        refetchInterval: 15000,
+        refetchInterval: 3000,
     });
-    console.log(data);
+    const resultats = data || [];
+    const resultatsFiltres = resultats.filter(item => item.utilisateurId !== informationUtilisateur.id && item.statut === "enAttente");
+    console.log(resultatsFiltres);
     return (
         <>
             <CardHeader>
@@ -52,19 +54,24 @@ const DemandeAcces = ({informationUtilisateur}) => {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {data ? data.map((donnee, id) => {
+                        {resultatsFiltres ? resultatsFiltres.map((donnee, id) => {
                             return (
                                 <TableRow key={id}>
                                     <TableCell className="font-medium">{donnee["utilisateur"]["nom"]}</TableCell>
                                     <TableCell>{donnee["tache"]["titre"]}</TableCell>
                                     <TableCell className="text-right grid grid-cols-2 gap-6">
                                         <Button
-                                            className="flex items-center justify-center bg-green-600 hover:bg-green-500">
-                                            <Check className="h-4 w-4"/>
+                                            className="flex items-center justify-center bg-green-600 hover:bg-green-500"
+                                            onClick={() => accepterDemande(donnee.id)}
+                                        >
+                                            <Check className="h-4 w-4" />
                                         </Button>
+
                                         <Button
-                                            className="flex items-center justify-center bg-red-600 hover:bg-red-500">
-                                            <X className="h-4 w-4"/>
+                                            className="flex items-center justify-center bg-red-600 hover:bg-red-500"
+                                            onClick={() => refuserDemande(donnee.id)}
+                                        >
+                                            <X className="h-4 w-4" />
                                         </Button>
                                     </TableCell>
                                 </TableRow>

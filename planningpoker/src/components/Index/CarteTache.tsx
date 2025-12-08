@@ -58,7 +58,8 @@ const CarteTache = ({donneesTache, onClick, idTache, demandes}) => {
             await demanderAccessTache(utilisateur.id, idTache);
             toast.success("Demande d'accès envoyée !");
         } catch (e) {
-            toast.error("Erreur : ", e);
+            toast.error("Erreur : Demande déjà envoyée");
+            console.log(e);
         }
     };
     const differentsBoutonsAcces: Record<AccessType, JSX.Element> = {

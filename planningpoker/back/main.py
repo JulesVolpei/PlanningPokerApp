@@ -141,10 +141,6 @@ def DemanderAcces(demande: schemas.DemandeAccessTacheCreate, db: Session = Depen
     db.refresh(demandeAcces)
     return demandeAcces
 
-@app.get("/demandeAcces", response_model=list[schemas.DemandeAccessTache])
-def getDemandesAcces(db: Session = Depends(get_session)):
-    return db.exec(select(DemandeAccessTache)).all()
-
 @app.get("/demandeAcces/tache/{tacheId}", response_model=list[schemas.DemandeAccessTache])
 def getDemandeParTache(tacheId: int, db: Session = Depends(get_session)):
     return db.exec(
@@ -161,28 +157,37 @@ def getDemandeParTache(utilisateurID: int, db: Session = Depends(get_session)):
 def demandesCreateur(utilisateurID: int, db: Session = Depends(get_session)):
     requete = db.exec(
         select(DemandeAccessTache)
-        .join(Tache)
+        .join(Tache, Tache.id == DemandeAccessTache.tacheId)
         .where(Tache.createurId == utilisateurID)
     ).all()
+
     return requete
 
-@app.post("/demandeAcces/{demandeId}/accepter")
-def accepter_demande(demandeId: int, db: Session = Depends(get_session)):
+@app.put("/demandeAcces/{demandeId}/accepter")
+def accepterDemande(demandeId: int, db: Session = Depends(get_session)):
     demande = db.get(DemandeAccessTache, demandeId)
+
     if not demande:
         raise HTTPException(404, "Demande introuvable")
 
-    demande.statut = "accepte"
+    demande.statut = "acceptee"
+    db.add(demande)
     db.commit()
-    return {"message": "Demande acceptée"}
+    db.refresh(demande)
 
-@app.post("/demandeAcces/{demandeId}/refuser")
-def refuser_demande(demandeId: int, db: Session = Depends(get_session)):
+    return {"message": "Demande acceptée", "demande": demande}
+
+@app.put("/demandeAcces/{demandeId}/refuser")
+def refuserDemande(demandeId: int, db: Session = Depends(get_session)):
     demande = db.get(DemandeAccessTache, demandeId)
+
     if not demande:
         raise HTTPException(404, "Demande introuvable")
 
-    demande.statut = "refuse"
+    demande.statut = "refusee"
+    db.add(demande)
     db.commit()
-    return {"message": "Demande refusée"}
+    db.refresh(demande)
+
+    return {"message": "Demande refusée", "demande": demande}
 

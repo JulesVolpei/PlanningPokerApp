@@ -122,12 +122,34 @@ export const getDemandesUtilisateur = async (userId: number) => {
 };
 
 export const getDemandesCreateur = async (userId: number) => {
-    const r = await fetch(`${APIURL}/demandeAcces/createur/${userId}`);
-    return await r.json();
+    const response = await fetch(`${APIURL}/demandeAcces/createur/${userId}`);
+
+    if (!response.ok) {
+        throw new Error("Erreur lors de la demande d'accès")
+    }
+    return await response.json();
 };
 
-export const accepterDemande = (id: number) =>
-    fetch(`${APIURL}/demandeAcces/${id}/accepter`, { method: "POST" });
+export const accepterDemande = async (demandeId: number) => {
+    console.log("Envoyé à API : ", demandeId);
+    const response = await fetch(`${APIURL}/demandeAcces/${demandeId}/accepter`, {
+        method: "PUT",
+    });
 
-export const refuserDemande = (id: number) =>
-    fetch(`${APIURL}/demandeAcces/${id}/refuser`, { method: "POST" });
+    if (!response.ok){
+        throw new Error("Erreur acceptation demande");
+    }
+    return await response.json();
+};
+
+export const refuserDemande = async (demandeId: number) => {
+    console.log("Envoyé à API : ", demandeId);
+    const response = await fetch(`${APIURL}/demandeAcces/${demandeId}/refuser`, {
+        method: "PUT",
+    });
+
+    if (!response.ok) {
+        throw new Error("Erreur refus demande");
+    }
+    return await response.json();
+};
