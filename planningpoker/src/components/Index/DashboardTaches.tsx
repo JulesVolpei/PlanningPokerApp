@@ -38,15 +38,11 @@ const DashboardTaches = ({ titre }) => {
 
     const test = listeTacheQuery();
 
-    console.log("Succès : ", test.isSuccess);
-
     if (test.isSuccess) {
         donnees = test.data;
-        console.log("TOUTES DONNEES : ", donnees);
         donnees.map((donnee, cmpt) => {
             idTaches.push(donnee.createurId);
         })
-        console.log(idTaches);
     }
 
     return (

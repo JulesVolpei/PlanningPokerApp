@@ -91,6 +91,7 @@ def creerTache(tache: Taches, db: Session = Depends(get_session)):
         statut=tache.statut,
         createurId=int(tache.createurId),
         nombreMaxParticipant=int(tache.nombreMaxParticipant),
+        methodeEvaluation=tache.methodeEvaluation,
     )
 
     db.add(nouvelleTache)
@@ -191,3 +192,15 @@ def refuserDemande(demandeId: int, db: Session = Depends(get_session)):
 
     return {"message": "Demande refusée", "demande": demande}
 
+
+@app.get("/demandeAcces/tache/{tacheId}/acceptees")
+def demandesAcceptees(tacheId: int, db: Session = Depends(get_session)):
+    demandes = db.exec(
+        select(DemandeAccessTache)
+        .where(DemandeAccessTache.tacheId == tacheId)
+        .where(DemandeAccessTache.statut == "acceptee")
+    ).all()
+
+    return demandes
+
+# TODO: Modifier le nombre d'utilisateur possible et modifier le bouton d'accès si la session est pleine (bien penser à compter le créateur)

@@ -17,7 +17,8 @@ import {
     DialogDescription,
 } from "@/components/ui/dialog";
 import {accessAuthentification} from "@/context/AuthentificationContext.tsx";
-import {getDemandesUtilisateur} from "@/services/api.ts";
+import {fecthAllTaches, getDemandesUtilisateur} from "@/services/api.ts";
+import {useQuery} from "@tanstack/react-query";
 
 /**
  * Composant permettant d'afficher un certain nombre de tâches données en paramètre.
@@ -39,28 +40,35 @@ const AffichageTaches = ({ donnees, maxElement, listeIdTache }) => {
     const [open, setOpen] = useState(false);
     const [tacheSelectionnee, setTacheSelectionnee] = useState(null);
     const {estConnecte, utilisateur} = accessAuthentification();
+    const {data: demandesAcces = [], isLoading: loadingDemandes} = useQuery({
+        queryKey: ["demandesAcces", utilisateur?.id],
+        queryFn: () => getDemandesUtilisateur(utilisateur.id),
+        enabled: estConnecte && Boolean(utilisateur?.id),
+        refetchInterval: 15000,
+    });
 
     const totalPages = Math.ceil(donnees.length / maxElement);
 
     const debut = (page - 1) * maxElement;
     const fin = debut + maxElement;
+    if (demandesAcces) {
+        for (let i = 0; i < demandesAcces.length; i++) {
+            console.log("TEST : ", demandesAcces[i]["tacheId"])
+            donnees[demandesAcces[i]["tacheId"]]["access"] = demandesAcces[i]["statut"];
+        }
+    }
 
     const donneesPage = donnees.slice(debut, fin);
     const listeIdTachePage = listeIdTache ? listeIdTache.slice(debut, fin) : [];
 
-    const correspondanceUtilisateurEtTache = []
-    let listeAcces = null;
-
     if (listeIdTachePage && estConnecte) {
         for (let i = 0; i < donneesPage.length; i++) {
-            utilisateur.id == listeIdTachePage[i] ? donneesPage[i]["access"] = "accepte" : donneesPage[i]["access"] = "enAttente";
-            // TODO: Savoir si un utilisateur est refusé d'une tâche
+            if (utilisateur.id == listeIdTachePage[i]) {
+                donneesPage[i]["access"] = "acceptee"
+            }
         }
     }
 
-    if (estConnecte) {
-        listeAcces = getDemandesUtilisateur(utilisateur.id);
-    }
 
     const ouvrirDialog = (tache) => {
         setTacheSelectionnee(tache);
@@ -75,8 +83,7 @@ const AffichageTaches = ({ donnees, maxElement, listeIdTache }) => {
                         key={donnee.id}
                         donneesTache={donnee}
                         onClick={() => ouvrirDialog(donnee)}
-                        idTache = {idTache}
-                        demandes={listeAcces}
+                        idTache = {donnee.id}
                     />
                 ))}
             </div>

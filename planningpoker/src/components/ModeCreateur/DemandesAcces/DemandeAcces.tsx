@@ -34,7 +34,7 @@ const DemandeAcces = ({informationUtilisateur}) => {
         refetchInterval: 3000,
     });
     const resultats = data || [];
-    const resultatsFiltres = resultats.filter(item => item.utilisateurId !== informationUtilisateur.id && item.statut === "enAttente");
+    const resultatsFiltres = resultats;
     console.log(resultatsFiltres);
     return (
         <>

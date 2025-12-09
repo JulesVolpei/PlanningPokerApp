@@ -25,6 +25,7 @@ class Tache(Base):
     statut = Column(String, default="ouverte")
     createurId = Column(Integer, ForeignKey("utilisateurs.id"))
     nombreMaxParticipant = Column(Integer, default=5)
+    methodeEvaluation = Column(String, default="Moyenne")
 
     # Relations
     createur = relationship("Utilisateur", back_populates="tacheCreee")

@@ -127,7 +127,9 @@ export const getDemandesCreateur = async (userId: number) => {
     if (!response.ok) {
         throw new Error("Erreur lors de la demande d'accès")
     }
-    return await response.json();
+    const test = await response.json();
+    const resultatsFiltres = test.filter(item => item.utilisateurId !== userId && item.statut === "enAttente");
+    return await resultatsFiltres;
 };
 
 export const accepterDemande = async (demandeId: number) => {

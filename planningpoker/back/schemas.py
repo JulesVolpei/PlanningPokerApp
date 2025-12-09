@@ -8,16 +8,6 @@ class Utilisateur(BaseModel):
     class Config:
         from_attributes = True
 
-class Taches(BaseModel):
-    titre: str
-    description: str
-    statut: str
-    createurId: int
-    nombreMaxParticipant: int
-
-    class Config:
-        from_attributes = True
-
 class EvaluationTache(BaseModel):
     id: int
     utilisateurId: int
@@ -40,19 +30,31 @@ class ConnexionInscription(BaseModel):
     nom: str
     motDePasse: str
 
+class Taches(BaseModel):
+    titre: str
+    description: str
+    statut: str
+    createurId: int
+    nombreMaxParticipant: int
+    methodeEvaluation: str
+
+    class Config:
+        from_attributes = True
+
 class TacheCreate(BaseModel):
     titre: str
     description: str
     createurId: int
-    nombreMaxParticipant: int = 5  # valeur par défaut
+    nombreMaxParticipant: int = 5
     statut: str = "ouverte"
-
+    methodeEvaluation: str = "Moyenne"
 
 class TacheUpdate(BaseModel):
     titre: str | None = None
     description: str | None = None
     statut: str | None = None
     nombreMaxParticipant: int | None = None
+    methodeEvaluation: str | None = None
 
 class DemandeAccessTacheCreate(BaseModel):
     utilisateurId: int

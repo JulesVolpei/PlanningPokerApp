@@ -52,7 +52,8 @@ const BoutonCreerTache = ({informationUtilisateur, open, setOpen}) => {
                 // Ajouter l'évaluation par la suite,
                 statut:"ouverte",
                 createurId: informationUtilisateur.id,
-                nombreMaxParticipant:maxParticipants
+                nombreMaxParticipant:maxParticipants,
+                methodeEvaluation:evaluation,
             };
 
             const resultat = await createNewTask(nouvelleTache);
@@ -117,7 +118,7 @@ const BoutonCreerTache = ({informationUtilisateur, open, setOpen}) => {
                                     Moyenne
                                 </DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => setEvaluation("Médiane")}>
-                                    Automatique
+                                    Médiane
                                 </DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => setEvaluation("Majorité absolue")}>
                                     Majorité absolue

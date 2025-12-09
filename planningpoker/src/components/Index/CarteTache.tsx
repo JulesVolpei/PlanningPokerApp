@@ -3,6 +3,8 @@ import { Users } from 'lucide-react';
 import { LockKeyhole } from 'lucide-react';
 import { LockKeyholeOpen } from 'lucide-react';
 import { PenOff } from 'lucide-react';
+import { Ban } from 'lucide-react';
+import { Ellipsis } from 'lucide-react';
 
 import {
     Card,
@@ -25,7 +27,7 @@ import {demanderAccessTache} from "@/services/api.ts";
  * - `"accepte"`   : L'utilisateur a accès à la tâche.
  * - `"refuse"`    : L'accès à la tâche a été refusé.
  */
-type AccessType = "enAttente" | "accepte" | "refuse";
+type AccessType = "enAttente" | "acceptee" | "refuse" | "full" | "demanderAcces";
 
 /**
  * Composant d'affichage d'une carte de tâche.
@@ -43,9 +45,8 @@ type AccessType = "enAttente" | "accepte" | "refuse";
  * @param {CarteTacheProps} props Les propriétés reçues par le composant.
  * @returns {JSX.Element} Un composant de carte interactive représentant une tâche.
  */
-const CarteTache = ({donneesTache, onClick, idTache, demandes}) => {
+const CarteTache = ({donneesTache, onClick, idTache}) => {
     const { utilisateur, estConnecte } = accessAuthentification();
-    const listeDemande = null;
 
 
     const handleDemandeAccess = async () => {
@@ -55,7 +56,7 @@ const CarteTache = ({donneesTache, onClick, idTache, demandes}) => {
         }
 
         try {
-            await demanderAccessTache(utilisateur.id, idTache);
+            await demanderAccessTache(utilisateur.id, donneesTache.id);
             toast.success("Demande d'accès envoyée !");
         } catch (e) {
             toast.error("Erreur : Demande déjà envoyée");
@@ -63,13 +64,13 @@ const CarteTache = ({donneesTache, onClick, idTache, demandes}) => {
         }
     };
     const differentsBoutonsAcces: Record<AccessType, JSX.Element> = {
-        enAttente: ( // Il faudra faire un onClick pour demander l'accès lorsque l'on est connecté
+        demanderAcces: ( // Il faudra faire un onClick pour demander l'accès lorsque l'on est connecté
             <Button className="bg-red-600 hover:bg-red-400 gap-1" onClick={handleDemandeAccess}>
                 <LockKeyhole />
                 <Label> Demander accès </Label>
             </Button>
         ),
-        accepte: (
+        acceptee: (
             <Button>
                 <LockKeyholeOpen />
                 <Label> Accéder </Label>
@@ -77,10 +78,22 @@ const CarteTache = ({donneesTache, onClick, idTache, demandes}) => {
         ),
         refuse: (
             <Button className="bg-red-600 hover:bg-red-600">
-                <PenOff />
+                <Ban />
                 <Label> Refusé </Label>
             </Button>
         ),
+        full: (
+            <Button>
+                <PenOff />
+                <Label> Complet </Label>
+            </Button>
+        ),
+        enAttente: (
+            <Button>
+                <Ellipsis />
+                <Label> En attente </Label>
+            </Button>
+        )
     };
     return (
         <Card
@@ -106,7 +119,7 @@ const CarteTache = ({donneesTache, onClick, idTache, demandes}) => {
                     <Users />
                 </Button>
 
-                {donneesTache.access ? differentsBoutonsAcces[donneesTache.access] : differentsBoutonsAcces["enAttente"]}
+                {donneesTache.access ? differentsBoutonsAcces[donneesTache.access] : differentsBoutonsAcces["demanderAcces"]}
             </CardFooter>
         </Card>
     );
