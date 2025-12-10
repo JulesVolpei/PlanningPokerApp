@@ -11,9 +11,22 @@ import {OrbitProgress} from "react-loading-indicators";
 import * as React from "react";
 import {Label} from "@/components/ui/label.tsx";
 
+/**
+ * Contenu du dialogue de détails d'une tâche.
+ *
+ * Ce composant affiche une vue complète des informations d'une tâche :
+ * - Titre et description.
+ * - Barre de progression des votes en cours.
+ * - Métadonnées (Participants, Créateur, Méthode, Statut).
+ *
+ * Il effectue également une requête pour récupérer et afficher le nom du créateur
+ * à partir de son ID.
+ *
+ * @category Composants/Tâches
+ * @param {props} props - Les données de la tâche à afficher.
+ * @returns {JSX.Element} Le contenu du dialogue.
+ */
 const TacheDetailContent = ({ tache }) => {
-    if (!tache) return null;
-
     const { data: createur, isLoading } = useQuery({
         queryKey: ["createurTache", tache.id],
         queryFn: () => retrouverCreateur(tache.id),

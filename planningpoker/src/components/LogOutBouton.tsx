@@ -4,10 +4,14 @@ import { LogOut } from 'lucide-react';
 import {Button} from "@/components/ui/button.tsx";
 
 /**
- * Composant permettant d'afficher l'icone responsable de la déconnexion et de gérer l'appel à la déconnexion dans le contexte d'authentification.
+ * Bouton de déconnexion.
  *
- * @this {deconnexion} Fonction dans le contexte d'authentification permettant de déconnecter l'utilisateur.
- * @this {handleLogOut()} Fonction permettant de gérer la réponse de la déconnexion dans le contexte d'authentification.
+ * Ce composant affiche un bouton situé en bas de la barre latérale.
+ * Lorsqu'il est cliqué, il déclenche la fermeture de la session utilisateur via le contexte d'authentification
+ * et affiche une notification de confirmation.
+ *
+ * @category Composants/Authentification
+ * @returns {JSX.Element} Le bouton de déconnexion.
  */
 const LogOutBouton = () => {
     const {deconnexion} = accessAuthentification();

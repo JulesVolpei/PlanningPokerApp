@@ -6,12 +6,18 @@ import PopUpLogin from "@/components/PopUpLogin.tsx";
 import LogOutBouton from "@/components/LogOutBouton.tsx";
 
 /**
- * Composant correspondant à la sidebar dans l'application.
+ * Sidebar persistante.
  *
- * @this {[ouverturePopUp, setOuverturePopUp]} Hooker permettant de modifier l'affichage ou non du formulaire d'inscription et de connexion.
- * @this {estConnecte} Variable du contexte d'authentification permettant de savoir si l'utilisateur est connecté ou non.
+ * Ce composant est ancré sur le côté gauche de l'application et gère la navigation principale.
+ * Il adapte dynamiquement son contenu selon l'état d'authentification de l'utilisateur.
  *
- * @constructor
+ * @remarks
+ * **Logique d'affichage :**
+ * * **Utilisateur Connecté** : Affiche l'accès au "Mode Créateur" et le bouton de déconnexion.
+ * * **Visiteur (Non connecté)** : Affiche des boutons qui déclenchent l'ouverture du dialogue de connexion {@link PopUpLogin}.
+ *
+ * @category Layout
+ * @returns {JSX.Element} La structure HTML de la barre latérale.
  */
 export const SideBar = () => {
     const [ouverturePopUp, setOuverturePopUp] = useState(false);

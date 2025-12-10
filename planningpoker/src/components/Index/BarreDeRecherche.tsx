@@ -3,15 +3,14 @@ import { Input } from "@/components/ui/input.tsx";
 
 
 /**
- * Composant affichant une barre de recherche pour aider à la recherche d'une tâche précise.
+ * Champ de saisie avec icône pour le filtrage.
  *
- * Ce composant permet de :
- * - Gérer la valeur du champ de recherche via les props `value` et `onChange`.
+ * Ce composant est un simple wrapper autour de l'Input shadcn/ui, ajoutant une icône de loupe
+ * et gérant le style standardisé pour la recherche.
  *
- * @param {string} value Valeur dans la barre de recherche.
- * @param {React.ChangeEvent<HTMLInputElement>} onChange Fonction permettant de mettre à jour la valeur dans l'input.
- * @returns {JSX.Element} Une barre de recherche permettant de trier les tâches.
- *
+ * @category Composants/Index
+ * @param {props} props - Les propriétés du champ.
+ * @returns {JSX.Element} L'input de recherche stylisé.
  */
 const BarreDeRecherche = ({ value, onChange }: { value: string; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void }) => {
     return (

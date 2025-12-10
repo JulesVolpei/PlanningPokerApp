@@ -10,16 +10,23 @@ import {accessAuthentification} from "@/context/AuthentificationContext.tsx";
 
 /**
  * Type définissant les différentes valeurs que peuvent les matières dans la table des matières.
+ * @category Type
  */
 type PageType = "taches" | "demandeAcces" | "tachesArchivees";
 
 /**
- * Composant permettant d'afficher les différentes pages en fonction de la valeur donnée.
+ * Routeur interne pour l'affichage du contenu du Mode Créateur.
  *
- * @this {utilisateur} Variable du contexte d'authentification permettant de récupérer les informations d'un utilisateur.
- * @this {differentesPages} Dictionnaire avec comme clé un PageType et en valeur un composant permettant d'afficher le composant en fonction de la variable page.
- * @param page Variable indiquant la valeur de la page à afficher.
- * @returns {JSX.Element} Retourne le composant qui affiche les composants liés aux matières.
+ * Ce composant agit comme un gestionnaired d'onglets : il reçoit un identifiant de page (`page`)
+ * et rend le composant correspondant (Liste des tâches, Demandes d'accès, ou Archives)
+ * à l'intérieur d'une carte qui sert de fond.
+ *
+ * Il injecte également automatiquement les informations de l'utilisateur connecté
+ * dans les sous-composants.
+ *
+ * @category Composants/ModeCreateur
+ * @param {props} props - Les paramètres d'affichage.
+ * @returns {JSX.Element} Le composant correspondant à la page demandée, enveloppé dans une Card qui sert de fond.
  */
 const TemplatePage = ({page}) => {
     const { utilisateur } = accessAuthentification();

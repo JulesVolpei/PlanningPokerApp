@@ -27,19 +27,16 @@ import VoteDialogContent from "@/components/VoteDialog.tsx";
 import TacheDetailContent from "@/components/DetailsTacheDialog.tsx";
 
 /**
- * Composant permettant d'afficher un certain nombre de tâches données en paramètre.
+ * Gestionnaire d'affichage des tâches.
  *
- * @this {[page, setPage]} Hooker permettant de mettre à jour la page courante.
- * @this {[open, setOpen]} Hooker permettant de mettre à jour l'ouverture ou non du dialogue shadcn/ui affichant le détail de la tâche.
- * @this {[tacheSelectionnee, setTacheSelectionnee]} Hooker permettant de mettre à jour la tâche sélectionnée par l'utilisateur.
- * @this {totalPages} Variable correspondant au nombre de pages pour la pagination en fonction du nombre de tâche et du nombre de tâche à afficher.
- * @this {debut} Variable correspondant à la première page de la pagination.
- * @this {fin} Variable correspondant à la dernière page de la pagination.
- * @this {donneesPage} Variable correspondant à un slice sur l'ensemble des tâche en partant de la variable debut à la variable fin.
- * @this {ouvrirDialog} Fonction permettant d'appeler les hooker pour modifier la valeur de la tâche sélectionnée et de l'ouverture du dialogue shadcn/ui.
- * @param donnees Variable contenant toutes les données relatives aux tâches.
- * @param maxElement Variable indiquant le nombre de tâche à afficher.
- * @returns {JSX.Element} Retourne un composant gérant l'affichage et la pagination des tâches.
+ * Ce composant est le chef d'orchestre de la vue principale. Il réalise plusieurs actions :
+ * 1. **Pagination** : Découpe la liste des tâches (`donnees`) en pages.
+ * 2. **Gestion d'accès** : Croise les données des tâches avec les demandes d'accès de l'utilisateur.
+ * 3. **Dialogs** : Gère l'ouverture des boîtes de dialogue pour voir les détails (`TacheDetailContent`) ou pour voter (`VoteDialogContent`).
+ *
+ * @category Composants/Tâches
+ * @param {props} props - Les données et configurations d'affichage.
+ * @returns {JSX.Element} La grille de tâches avec pagination et dialogues.
  */
 const AffichageTaches = ({ donnees, maxElement, listeIdTache }) => {
     const [page, setPage] = useState(1);

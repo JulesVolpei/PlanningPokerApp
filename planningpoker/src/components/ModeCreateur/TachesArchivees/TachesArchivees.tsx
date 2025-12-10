@@ -2,9 +2,17 @@ import {CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@
 
 
 /**
- * Composant permettant d'afficher les différentes tâches archivées.
+ * Vue des tâches terminées et archivées.
  *
- * @param informationUtilisateur Variable contenant les informations sur l'utilisateur connecté.
+ * Ce composant a pour but d'afficher l'historique des sessions de Planning Poker
+ * qui ont été clôturées.
+ *
+ * @remarks
+ * Pas encore développé dans l'application.
+ *
+ * @category Composants/ModeCreateur
+ * @param {props} props - Les informations de l'utilisateur.
+ * @returns {JSX.Element} La structure de la page d'archives.
  */
 const TachesArchivees = ({informationUtilisateur}) => {
     return (

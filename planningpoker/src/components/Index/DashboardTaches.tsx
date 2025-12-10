@@ -9,16 +9,16 @@ import * as React from "react";
 import AffichageTaches from "@/components/AffichageTaches.tsx";
 
 /**
- * Composant d'affichage principal des tâches.
+ * Tableau de bord principal de l'application.
  *
- * Le composant permet de :
- * - récupèrer la liste des tâches depuis l'API via *React Query*,
- * - afficher un champ de recherche,
- * - gèrer une pagination interne,
- * - afficher les tâches via le composant {@link AffichageTaches},
- * - montrer un loader tant que les données ne sont pas disponibles.
+ * Ce composant agit comme le contrôleur de la page d'accueil. Il est responsable de :
+ * 1. **Récupérer** la liste complète des tâches depuis l'API.
+ * 2. **Filtrer** ces tâches via la barre de recherche (filtrage côté client).
+ * 3. **Afficher** le résultat via le composant de présentation {@link AffichageTaches}.
  *
- * @param {string} titre Titre de la tâche.
+ * @category Composants/Pages
+ * @param {props} props - Les propriétés de configuration.
+ * @returns {JSX.Element} La page principale avec recherche et grille de tâches.
  */
 const DashboardTaches = ({ titre }) => {
     const [recherche, setRecherche] = useState<string>('');

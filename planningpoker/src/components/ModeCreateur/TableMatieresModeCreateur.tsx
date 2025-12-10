@@ -2,21 +2,17 @@ import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs.tsx
 import TemplatePage from "@/components/ModeCreateur/TemplatePage.tsx";
 
 /**
- * Composant permettant l'affichage de la table des matières des différentes options présentes dans la page du mode créateur
- * @example
- * ```tsx
- * <Tabs defaultValue="matière1"> {// Composant shadcn/ui permettant d'instancier la table des matières}
- *     <TabsList> {// Composant shadcn/ui permettant d'afficher les différentes matières}
- *         <TabsTrigger value="matière1"> {//Composant shadcn/ui correspondant à }
- *         ...
- *     <TabsList/>
- *     <TabsContent value="matière1"> {// Composant shadcn/ui permettant d'afficher le composant voulu lorsque l'utilisateur clique sur le trigger de la matière correspondante}
- *         <Composant> {//Composant quelconque à afficher}
- *     <TabsContent/>
- *     ...
- * </Tabs>
- * ```
- * @constructor
+ * Système d'onglets pour la navigation dans le Mode Créateur.
+ *
+ * Ce composant structure la page d'administration en trois sections distinctes accessibles via des onglets :
+ * 1. **Tâches en cours** : Gestion des tâches actives.
+ * 2. **Demande d'accès** : Validation des nouveaux participants.
+ * 3. **Tâches archivées** : Historique des sessions terminées.
+ *
+ * Il utilise le composant {@link TemplatePage} pour effectuer le rendu du contenu de chaque onglet.
+ *
+ * @category Composants/ModeCreateur
+ * @returns {JSX.Element} Le conteneur d'onglets complet.
  */
 const TableMatieresModeCreateur = () => {
     return (

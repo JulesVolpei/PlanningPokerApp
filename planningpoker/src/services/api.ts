@@ -1,11 +1,18 @@
+/**
+ * Module de gestion des communications avec l'API Backend (FastAPI).
+ * Ce fichier centralise toutes les requêtes HTTP (GET, POST, PUT) vers le serveur.
+ * @module ServicesAPI
+ */
+
 export const APIURL = "http://localhost:8000";
 
 
 /**
- * Fonction permettant de récupérer la liste de tous les utilisateurs depuis l'API Python.
+ * Récupère la liste complète des utilisateurs enregistrés.
  *
- * @returns {Promise<Utilisateur[]>} Une promesse résolue avec la liste des utilisateur au format JSON.
- * @throws {Error} Une erreur indiquant qu'aucun utilisateur n'a été trouvé.
+ * @category Utilisateurs
+ * @returns {Promise<Utilisateur[]>} Une promesse contenant le tableau de tous les utilisateurs.
+ * @throws {Error} Si la requête échoue ou si la liste est vide.
  */
 export async function fetchAllUser() {
     const reponse = await fetch(`${APIURL}/users`, {
@@ -20,10 +27,11 @@ export async function fetchAllUser() {
 
 
 /**
- * Fonction permettant de récupérer la liste de toutes les tâches depuis l'API Python.
+ * Récupère la liste complète des tâches disponibles.
  *
- * @returns {Promise<Tache[]>} Une promesse résolue avec la liste des tâches au format JSON.
- * @throws {Error} Une erreur indiquant qu'aucune tâche n'a été trouvé.
+ * @category Tâches
+ * @returns {Promise<Tache[]>} Une promesse contenant le tableau de toutes les tâches.
+ * @throws {Error} Si aucune tâche n'est trouvée.
  */
 export async function fecthAllTaches() {
     const reponse = await fetch(`${APIURL}/taches`, {
@@ -37,11 +45,12 @@ export async function fecthAllTaches() {
 }
 
 /**
- * Fonction permettant de récupérer toutes les tâches associées à un id utilisateur.
+ * Récupère les tâches spécifiques associées à un utilisateur (créées ou rejointes).
  *
- * @param id Variable indiquant le numéro unique permettant d'identifier l'utilisateur.
- * @returns {Promise<Tache[]>} Une promesse résolue avec la liste des tâches d'un utilisateur précis au format JSON.
- * @throws {Error} Une erreur si l'utilisateur n'est pas trouvable.
+ * @category Tâches
+ * @param {string} id - L'identifiant unique de l'utilisateur.
+ * @returns {Promise<Tache[]>} Liste des tâches liées à l'utilisateur.
+ * @throws {Error} Si l'utilisateur est introuvable.
  */
 export async function getTachesWithUserId(id: string) {
     const reponse = await fetch(`${APIURL}/taches/user/${id}`, {
@@ -55,11 +64,12 @@ export async function getTachesWithUserId(id: string) {
 }
 
 /**
- * Fonction permettant la création d'une nouvelle tâche depuis l'API Python.
+ * Crée une nouvelle tâche dans la base de données.
  *
- * @param nouvelleTache Variable contenant toutes les informations liées à la nouvelle tâche à créer.
- * @returns {Promise<JSON>} Promesse résolue envoyer un message de confirmation de création de la nouvelle tâche au format JSON.
- * @throws {Error} Erreur indiquant l'impossibilité de créer la nouvelle tâche.
+ * @category Tâches
+ * @param {Partial<Tache>} nouvelleTache - Objet contenant les infos de la tâche (titre, description, etc.).
+ * @returns {Promise<any>} Confirmation de la création (JSON).
+ * @throws {Error} Si la création échoue (validation ou erreur serveur).
  */
 export async function createNewTask(nouvelleTache: any) {
     console.log("NOUVELLE TACHE : ", nouvelleTache);
@@ -79,11 +89,12 @@ export async function createNewTask(nouvelleTache: any) {
 }
 
 /**
- * Fonction permettant de retrouver l'utilisateur ayant créée une tâche précise.
+ * Récupère les informations du créateur d'une tâche spécifique.
  *
- * @param tacheId Variable correspondant à l'id permettant d'identifier la tâche.
- * @returns {Promise<Utilisateur[]>} Promesse résolue avec les informations liées au créateur de la tâche.
- * @throws {Error} Erreur si l'utilisateur est introuvable.
+ * @category Utilisateurs
+ * @param {number} tacheId - L'identifiant de la tâche cible.
+ * @returns {Promise<Utilisateur>} Les informations publiques du créateur.
+ * @throws {Error} Si le créateur est introuvable pour cette tâche.
  */
 export async function retrouverCreateur(tacheId: number) {
     const reponse = await fetch(`${APIURL}/taches/${tacheId}/createur`, {
@@ -97,6 +108,15 @@ export async function retrouverCreateur(tacheId: number) {
     return reponse.json();
 }
 
+/**
+ * Envoie une demande d'accès pour rejoindre une tâche privée.
+ *
+ * @category DemandeAccess
+ * @param {number} utilisateurId - L'ID de l'utilisateur demandant l'accès.
+ * @param {number} tacheId - L'ID de la tâche à rejoindre.
+ * @returns {Promise<DemandeAccess>} L'objet demande créé avec le statut "enAttente".
+ * @throws {Error} Si la demande échoue ou existe déjà.
+ */
 export const demanderAccessTache = async (utilisateurId: number, tacheId: number) => {
     const reponse = await fetch(`${APIURL}/demandeAcces`, {
         method: "POST",
@@ -114,6 +134,13 @@ export const demanderAccessTache = async (utilisateurId: number, tacheId: number
     return await reponse.json();
 };
 
+/**
+ * Récupère toutes les demandes d'accès émises par un utilisateur.
+ *
+ * @category DemandeAccess
+ * @param {number} userId - L'ID de l'utilisateur.
+ * @returns {Promise<DemandeAccess[]>} Liste des demandes effectuées par cet utilisateur.
+ */
 export const getDemandesUtilisateur = async (userId: number) => {
     const r = await fetch(`${APIURL}/demandeAcces/utilisateur/${userId}`);
     if (!r.ok) {
@@ -122,6 +149,14 @@ export const getDemandesUtilisateur = async (userId: number) => {
     return await r.json();
 };
 
+/**
+ * Récupère les demandes d'accès "en attente" pour les tâches créées par un utilisateur.
+ * * Filtre automatiquement les demandes pour ne garder que celles qui nécessitent une action.
+ *
+ * @category DemandeAccess
+ * @param {number} userId - L'ID du créateur (pour voir qui veut rejoindre ses tâches).
+ * @returns {Promise<DemandeAccess[]>} Liste filtrée des demandes en attente venant d'autres utilisateurs.
+ */
 export const getDemandesCreateur = async (userId: number) => {
     const response = await fetch(`${APIURL}/demandeAcces/createur/${userId}`);
 
@@ -133,6 +168,13 @@ export const getDemandesCreateur = async (userId: number) => {
     return await resultatsFiltres;
 };
 
+/**
+ * Valide une demande d'accès (passe le statut à "acceptee").
+ *
+ * @category DemandeAccess
+ * @param {number} demandeId - L'ID de la demande à accepter.
+ * @returns {Promise<DemandeAccess>} La demande mise à jour.
+ */
 export const accepterDemande = async (demandeId: number) => {
     console.log("Envoyé à API : ", demandeId);
     const response = await fetch(`${APIURL}/demandeAcces/${demandeId}/accepter`, {
@@ -145,6 +187,13 @@ export const accepterDemande = async (demandeId: number) => {
     return await response.json();
 };
 
+/**
+ * Refuse une demande d'accès (passe le statut à "refusee").
+ *
+ * @category DemandeAccess
+ * @param {number} demandeId - L'ID de la demande à refuser.
+ * @returns {Promise<DemandeAccess>} La demande mise à jour.
+ */
 export const refuserDemande = async (demandeId: number) => {
     console.log("Envoyé à API : ", demandeId);
     const response = await fetch(`${APIURL}/demandeAcces/${demandeId}/refuser`, {
@@ -157,6 +206,15 @@ export const refuserDemande = async (demandeId: number) => {
     return await response.json();
 };
 
+/**
+ * Envoie un vote (évaluation) pour une tâche donnée.
+ *
+ * @category Votes
+ * @param {number} utilisateurId - L'utilisateur qui vote.
+ * @param {number} tacheId - La tâche concernée.
+ * @param {string} valeur - La valeur du vote (ex: "5", "XS", "cafe").
+ * @returns {Promise<any>} Le résultat de l'enregistrement du vote.
+ */
 export async function envoyerEvaluation(utilisateurId: number, tacheId: number, valeur: string) {
     const reponse = await fetch(`${APIURL}/evaluations/creer`, {
         method: "POST",

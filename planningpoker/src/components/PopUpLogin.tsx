@@ -8,9 +8,8 @@ import {toast} from 'sonner';
 import {accessAuthentification} from "@/context/AuthentificationContext.tsx";
 
 /**
- * Interface permettant de définir si le PopUp s'ouvre ou non via le dialogue shadcn/ui.
- * @this {open} Variable booléenne déterminant l'ouverture ou non.
- * @this {onOpenChange} Fonction permettant de faire le lien entre le hooker et l'ouverture du dialogue shadcn/ui.
+ * Props du composant.
+ * @category Interfaces
  */
 interface LoginDialogProps {
     open: boolean;
@@ -18,17 +17,18 @@ interface LoginDialogProps {
 }
 
 /**
- * Composant affichant un dialogue shadcn/ui comportant le formulaire d'inscription et de connexion et la gestion de la réussite ou non de la fonction voulues.
+ * Modale d'authentification unifiée (Connexion & Inscription).
  *
+ * Ce composant affiche une boîte de dialogue (Dialog) contenant deux onglets :
+ * 1. **Connexion** : Pour les utilisateurs existants.
+ * 2. **Inscription** : Pour la création de compte.
  *
- * @this {connexion, inscription} Fonctions du contexte d'authentification permettant de gérer la connexion et l'inscription.
- * @this {[isLoading, setIsLoading]} Hooker permettant de savoir l'état de la connexion.
- * @this {[connexionData, setConnexionData]} Hooker permettant de stocker les valeurs de connexion rentrées par l'utilisateur.
- * @this {[inscriptionData, setInscriptionData]}  Hooker permettant de stocker les valeurs d'inscription rentrées par l'utilisateur.
- * @this {handleLogin()} Fonction asynchrone permettant de gérer l'état de la connexion en fonction du retour de la connexion dans le contexte d'authentification.
- * @this {handleRegister()} Fonction asynchrone permettant de gérer l'état de l'inscription en fonction du retour de l'inscription dans le contexte d'authentification.
- * @param open Variable booléenne indiquant l'ouverture ou non du dialogue shadcn/ui.
- * @param onOpenChange Fonction permettant de changer la valeurs de open et d'ouvrir le dialogque shadcn/ui.
+ * Il gère automatiquement les appels API via le contexte d'authentification et affiche
+ * des notifications (Toasts) pour informer l'utilisateur du succès ou de l'échec.
+ *
+ * @category Composants/Auth
+ * @param {LoginDialogProps} props - Les propriétés de contrôle de la modale.
+ * @returns {JSX.Element} Le dialogue d'authentification.
  */
 const PopUpLogin = ({open, onOpenChange}: LoginDialogProps) => {
     const {connexion, inscription} = accessAuthentification();

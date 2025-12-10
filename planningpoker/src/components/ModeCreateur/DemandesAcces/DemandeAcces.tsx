@@ -17,15 +17,18 @@ import {OrbitProgress} from "react-loading-indicators";
 import * as React from "react";
 
 /**
- * Composant affichant les différentes demandes faites à un utilisateur pour accéder à une tâche à évaluer.
+ * Tableau de gestion des demandes d'accès.
  *
- * Permet :
- * - D'afficher les demandes d'accès à une tâche précisée par un utilisateur indiqué par son nom.
- * - D'accepter la demande d'accès à l'utilisateur.
- * - De refuser la demande d'accès faite par l'utilisateur.
+ * Ce composant liste toutes les demandes "En attente" pour les tâches créées par l'utilisateur connecté.
+ * Il offre deux actions pour chaque demande :
+ * - **Valider** : Donne l'accès à l'utilisateur et ferme la demande.
+ * - **Refuser** : Bloque l'accès et ferme la demande.
  *
- * @param informationUtilisateur Variable contenant les informations liées à l'utilisateur connecté via le contexte d'authentification de l'application.
- * @returns {JSX.Element} Retourne un composant permettant de valider l'accès ou non à une tâche à un utilisateur externe.
+ * Les données sont rafraîchies automatiquement toutes les 3 secondes pour un aspect temps réel.
+ *
+ * @category Composants/ModeCreateur
+ * @param {props} props - Les infos de l'utilisateur connecté.
+ * @returns {JSX.Element} Le tableau des demandes.
  */
 const DemandeAcces = ({informationUtilisateur}) => {
     const {data} = useQuery({

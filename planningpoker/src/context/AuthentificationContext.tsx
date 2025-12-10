@@ -1,28 +1,30 @@
 import {createContext, type ReactNode, useContext, useEffect, useState} from "react";
 
 /**
- * Interface représentant un utilisateur authentifié.
- * @property {number} id Identifiant unique de l’utilisateur.
- * @property {string} nom Nom de l’utilisateur.
+ * Représente les données d'un utilisateur connecté stockées dans l'application.
+ * @category Interfaces
  */
 interface Utilisateur {
+    /** Identifiant unique en base de données */
     id: number;
+    /** Nom d'affichage de l'utilisateur */
     nom: string;
 }
 
 /**
- * Interface définissant le contenu du contexte d'authentification.
- * @property {Utilisateur | null} utilisateur L’utilisateur actuellement connecté (ou null si aucun).
- * @property {(nom: string, motDePasse: string) => Promise<void>} connexion Fonction pour se connecter.
- * @property {(nom: string, motDePasse: string) => Promise<void>} inscription Fonction pour créer un compte et se connecter.
- * @property {() => void} deconnexion Fonction pour se déconnecter.
- * @property {boolean} estConnecte Indique si un utilisateur est actuellement connecté.
+ * Définit la structure des données et méthodes exposées par le contexte d'authentification.
+ * @category Interfaces
  */
 interface Authentification {
-    utilisateur: Utilisateur | null; // Car on est pas forcément connecté
+    /** L'objet utilisateur si connecté, sinon null */
+    utilisateur: Utilisateur | null;
+    /** Envoie les identifiants à l'API pour connecter l'utilisateur */
     connexion: (nom: string, motDePasse: string) => Promise<void>;
+    /** Crée un nouveau compte via l'API puis connecte automatiquement l'utilisateur */
     inscription: (nom: string, motDePasse: string) => Promise<void>;
+    /** Supprime les données locales et déconnecte l'utilisateur */
     deconnexion: () => void;
+    /** Booléen utilitaire pour vérifier rapidement si une session est active */
     estConnecte: boolean;
 }
 
@@ -30,9 +32,14 @@ const lienURLAPI = "http://localhost:8000"; // Lien de connexion pour FastAPI et
 const AuthentificationContext = createContext<Authentification | undefined>(undefined);
 
 /**
- * Hook permettant d'accéder au contexte d'authentification.
- * @throws {Error} Si le hook est utilisé en dehors du AuthentificationProvider.
- * @returns {Authentification} Objet contenant l'utilisateur et les fonctions d'authentification.
+ * Hook permettant de récupérer l'état de la connexion et les actions d'authentification.
+ *
+ * @remarks
+ * Ce hook ne peut être utilisé qu'à l'intérieur d'un `AuthentificationProvider`.
+ *
+ * @category Hooks
+ * @throws {Error} Si le hook est appelé en dehors de l'arbre du Provider.
+ * @returns {Authentification} L'objet contenant l'utilisateur courant et les méthodes de connexion.
  */
 export const accessAuthentification = () => {
     // Permet d'accéder au contexte, si un utilisateur est connecté ou non, à utilisateur plus tard dans les conditions de composants
@@ -44,16 +51,15 @@ export const accessAuthentification = () => {
 }
 
 /**
- * Provider qui englobe l’application et gère toute l’authentification.
+ * Composant responsable de la gestion globale de l'état utilisateur.
  *
- * @param {ReactNode} children Noeuds enfants qui auront accès au contexte.
- * @returns {JSX.Element} Le composant Provider enveloppant l'application.
+ * Il initialise la session utilisateur au démarrage de l'application en vérifiant le stockage local
+ * et met à disposition les fonctions nécessaires pour s'inscrire, se connecter ou se déconnecter.
  *
- * Permet de :
- * - Charger automatiquement l’utilisateur depuis le localStorage.
- * - Proposer des fonctions asynchrones pour se connecter ou s'inscrire.
- * - Stocker l’utilisateur dans le localStorage pour persister après rafraîchissement (même si avec React l'utilisateur n'aurait techniquement pas besoin de recharger la page).
- * - Permet de supprimer les données lors de la déconnexion.
+ * @category Providers
+ * @param {Object} props - Les propriétés du composant.
+ * @param {ReactNode} props.children - Les composants enfants qui auront accès au contexte.
+ * @returns {JSX.Element} Le fournisseur de contexte englobant l'application.
  */
 export const AuthentificationProvider = ({children } : {children: ReactNode}) => {
     const [utilisateur, setUtilisateur] = useState<Utilisateur | null>( null);
@@ -66,16 +72,8 @@ export const AuthentificationProvider = ({children } : {children: ReactNode}) =>
     }, []); // Plus de token d'accès, trop compliqué juste du json
 
     /**
-     * Fonction de connexion envoyant nom et mot de passe à l'API Python.
-     *
-     * Si succès :
-     *  - Récupère les données utilisateur.
-     *  - Les stocke dans le localStorage.
-     *  - Met à jour l'état React.
-     *
-     * @param {string} nom Nom de l’utilisateur.
-     * @param {string} motDePasse Mot de passe de l’utilisateur.
-     * @throws {Error} Si la réponse de l’API est invalide.
+     * Gère la tentative de connexion auprès de l'API.
+     * Met à jour le state et le localStorage en cas de succès.
      */
     const connexion = async (nom: string, motDePasse: string) => {
         const formulaireConnexion = {
@@ -100,13 +98,7 @@ export const AuthentificationProvider = ({children } : {children: ReactNode}) =>
     }
 
     /**
-     * Fonction d’inscription créant un nouvel utilisateur via l’API Python.
-     *
-     * Si succès, la fonction connecte automatiquement l’utilisateur.
-     *
-     * @param {string} nom Nom choisi par le nouvel utilisateur.
-     * @param {string} motDePasse Mot de passe souhaité.
-     * @throws {Error} En cas d’échec durant l’inscription.
+     * Gère la création de compte et enchaîne sur une connexion automatique.
      */
     const inscription = async (nom: string, motDePasse: string) => {
         const formulaireInscription = {

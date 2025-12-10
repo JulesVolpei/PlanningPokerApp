@@ -10,20 +10,17 @@ import {OrbitProgress} from "react-loading-indicators";
 import BoutonCreerTache from "@/components/ModeCreateur/TachesEnCours/BoutonCreerTache.tsx";
 
 /**
- * Composant affichant la liste des tâches en cours pour un utilisateur donné.
+ * Tableau de bord des tâches actives de l'utilisateur.
  *
- * Permet de :
- * - Afficher un message de bienvenue personnalisé.
- * - Rechercher parmi les tâches.
- * - Afficher les tâches en cours ou un indicateur de chargement.
- * - Ouvrir un dialogue pour créer une nouvelle tâche via un formulaire.
+ * Ce composant gère l'affichage principal du mode créateur :
+ * - Message de bienvenue personnalisé.
+ * - Barre de recherche.
+ * - Récupération automatique des tâches toutes les 15 secondes.
+ * - Affichage de la grille de tâches ou d'un indicateur de chargement.
  *
- * @param {informationUtilisateur} Variable contenant des informations liées à l'utilisateur via le contexte d'authentification.
- * @this {[recherche, setRecherche]} Hooker permettant de mettre à jour la valeur dans la barre de recherche.
- * @this {[open, setOpen]} Hooker permettant d'ouvrir le dialogue shadcn/ui du détail de la tâche.
- * @this {tacheUtilisateur()} UseQuery permettant de faire un appel à la base de données toutes les X secondes pour avoir une actualisation des tâches à afficher.
- * @returns {JSX.Element} Un composant contenant la liste des tâches en cours pour un utilisateur.
- *
+ * @category Composants/ModeCreateur
+ * @param {props} props - Les informations de l'utilisateur courant.
+ * @returns {JSX.Element} La vue complète des tâches en cours.
  */
 const ListeTachesEnCours = ({informationUtilisateur}) => {
     const [recherche, setRecherche] = React.useState('');

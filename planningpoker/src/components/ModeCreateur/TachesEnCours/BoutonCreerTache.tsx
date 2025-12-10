@@ -22,17 +22,18 @@ import {createNewTask} from "@/services/api.ts";
 import {toast} from "sonner";
 
 /**
- * Composant correspondant au formulaire d'ajout d'une tâche lorsque l'utilisateur appuie sur le bouton de création d'une tâche.
+ * Bouton et Dialogue modal pour la création d'une nouvelle tâche.
  *
- * @example :
- * ```tsx
- * <BoutonCreerTache informationUtilisateur={informationUtilisateur} open={open} setOpen={setOpen}/>
- * ```
+ * Ce composant affiche un bouton "Créer une tâche". Au clic, il ouvre un formulaire permettant de saisir :
+ * - Titre et description.
+ * - La méthode de vote (Moyenne, Médiane, ...).
+ * - Le nombre maximum de participants.
  *
+ * Une fois validé, il appelle l'API pour insérer la tâche en base de données.
  *
- * @param informationUtilisateur Variable correspondant aux informations de l'utilisateur actuellement connecté sur la session.
- * @param open Variable boléenne déterminant l'ouverture ou non du formulaire.
- * @param setOpen Hooker permettant de modifier la valeur de la variable "open".
+ * @category Composants/ModeCreateur
+ * @param {props} props - Les propriétés du composant.
+ * @returns {JSX.Element} Le bouton déclencheur et sa modale associée.
  */
 const BoutonCreerTache = ({informationUtilisateur, open, setOpen}) => {
     const [titre, setTitre] = useState("");
@@ -49,7 +50,6 @@ const BoutonCreerTache = ({informationUtilisateur, open, setOpen}) => {
             const nouvelleTache = {
                 titre:titre,
                 description:description,
-                // Ajouter l'évaluation par la suite,
                 statut:"ouverte",
                 createurId: informationUtilisateur.id,
                 nombreMaxParticipant:maxParticipants,
