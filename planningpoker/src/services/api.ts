@@ -164,7 +164,7 @@ export const getDemandesCreateur = async (userId: number) => {
         throw new Error("Erreur lors de la demande d'accès")
     }
     const test = await response.json();
-    const resultatsFiltres = test.filter(item => item.utilisateurId !== userId && item.statut === "enAttente");
+    const resultatsFiltres = test.filter((item: any) => item.utilisateurId !== userId && item.statut === "enAttente");
     return await resultatsFiltres;
 };
 

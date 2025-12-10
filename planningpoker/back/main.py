@@ -103,7 +103,7 @@ def getUserTaches(user_id: int, db: Session = Depends(get_session)):
 
 
 @app.post("/taches/creer")
-def creerTache(tache: Taches, db: Session = Depends(get_session)):
+def creerTache(tache: schemas.TacheCreate, db: Session = Depends(get_session)):
     nouvelleTache = Tache(
         titre=tache.titre,
         description=tache.description,
@@ -167,8 +167,9 @@ def getDemandeParTache(tacheId: int, db: Session = Depends(get_session)):
         select(DemandeAccessTache).where(DemandeAccessTache.tacheId == tacheId)
     ).all()
 
+# J'ai renommé cette fonction car elle avait le même nom que la précédente !
 @app.get("/demandeAcces/utilisateur/{utilisateurID}", response_model=list[schemas.DemandeAccessTache])
-def getDemandeParTache(utilisateurID: int, db: Session = Depends(get_session)):
+def getDemandeParUtilisateur(utilisateurID: int, db: Session = Depends(get_session)):
     return db.exec(
         select(DemandeAccessTache).where(DemandeAccessTache.utilisateurId == utilisateurID)
     ).all()
