@@ -98,19 +98,26 @@ const AffichageTaches = ({ donnees, maxElement, listeIdTache }) => {
             console.error(error);
         }
     };
-    console.log(`Participants : ${donneesPageAvecStatus[0].participantsActuels}`)
     return (
         <div className="flex flex-col gap-8">
-            <div className="text-center py-12 text-muted-foreground grid grid-cols-3 gap-6">
-                {donneesPageAvecStatus.map((donnee) => (
-                    <CarteTache
-                        key={donnee.id}
-                        donneesTache={donnee}
-                        onClickDetail={() => ouvrirDialog(donnee)}
-                        onClickVote={() => ouvrirDialogVote(donnee)}
-                    />
-                ))}
-            </div>
+                {donneesPageAvecStatus.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center w-full py-16">
+                        <Label className="text-lg text-muted-foreground text-center">
+                            Aucune tâche à afficher pour le moment.
+                        </Label>
+                    </div>
+                ) : (
+                    <div className="text-center py-12 text-muted-foreground grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {donneesPageAvecStatus.map((donnee) => (
+                            <CarteTache
+                                key={donnee.id}
+                                donneesTache={donnee}
+                                onClickDetail={() => ouvrirDialog(donnee)}
+                                onClickVote={() => ouvrirDialogVote(donnee)}
+                            />
+                        ))}
+                    </div>
+                )}
             <Pagination>
                 <PaginationContent>
                     <PaginationItem>
