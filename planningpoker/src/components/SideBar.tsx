@@ -5,10 +5,23 @@ import { accessAuthentification } from '@/context/AuthentificationContext';
 import PopUpLogin from "@/components/PopUpLogin.tsx";
 import LogOutBouton from "@/components/LogOutBouton.tsx";
 
+/**
+ * Sidebar persistante.
+ *
+ * Ce composant est ancré sur le côté gauche de l'application et gère la navigation principale.
+ * Il adapte dynamiquement son contenu selon l'état d'authentification de l'utilisateur.
+ *
+ * @remarks
+ * **Logique d'affichage :**
+ * * **Utilisateur Connecté** : Affiche l'accès au "Mode Créateur" et le bouton de déconnexion.
+ * * **Visiteur (Non connecté)** : Affiche des boutons qui déclenchent l'ouverture du dialogue de connexion {@link PopUpLogin}.
+ *
+ * @category Layout
+ * @returns {JSX.Element} La structure HTML de la barre latérale.
+ */
 export const SideBar = () => {
     const [ouverturePopUp, setOuverturePopUp] = useState(false);
-    const { estConnecte, utilisateur } = accessAuthentification();
-    console.log(`Utilisateur connecté sidebar : ${utilisateur?.nom} ${estConnecte}`);
+    const { estConnecte } = accessAuthentification();
     return (
         <>
             <aside className="fixed left-0 top-0 h-screen w-16 bg-sidebar border-r border-sidebar-border flex flex-col items-center py-6 gap-6 z-50">

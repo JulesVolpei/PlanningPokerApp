@@ -6,26 +6,22 @@ import {
     TabsTrigger,
 } from "@/components/ui/tabs"
 import TemplatePage from "@/components/ModeCreateur/TemplatePage.tsx";
+import {Component} from "react";
+import TableMatieresModeCreateur from "@/components/ModeCreateur/TableMatieresModeCreateur.tsx";
 
+/**
+ * Page principale du Mode Créateur.
+ * * Ce composant agit comme le conteneur pour toute la section de l'administration/création des tâches et accès.
+ * Il est responsable de la mise en page globale de cette section et intègre les sous-composants de navigation ou de gestion.
+ *  @remarks
+ * Actuellement, il charge principalement le composant {@link TableMatieresModeCreateur}.
+ * @category Pages
+ * @returns {JSX.Element} La structure DOM de la page Mode Créateur.
+ */
 const ModeCreateur = () => {
     return (
         <div className="flex w-full max-w-sm flex-col gap-6">
-            <Tabs defaultValue="taches">
-                <TabsList>
-                    <TabsTrigger value="taches">Tâches en cours</TabsTrigger>
-                    <TabsTrigger value="demandeAcces">Demande d'accès</TabsTrigger>
-                    <TabsTrigger value="tachesArchivees">Tâches archivées</TabsTrigger>
-                </TabsList>
-                <TabsContent value={"taches"} >
-                    <TemplatePage page={"taches"} />
-                </TabsContent>
-                <TabsContent value={"demandeAcces"}>
-                    <TemplatePage page={"demandeAcces"} />
-                </TabsContent>
-                <TabsContent value={"tachesArchivees"}>
-                    <TemplatePage page={"tachesArchivees"} />
-                </TabsContent>
-            </Tabs>
+            <TableMatieresModeCreateur />
         </div>
     )
 }

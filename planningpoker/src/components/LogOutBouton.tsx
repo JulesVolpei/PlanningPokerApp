@@ -3,10 +3,18 @@ import {toast} from "sonner";
 import { LogOut } from 'lucide-react';
 import {Button} from "@/components/ui/button.tsx";
 
-
+/**
+ * Bouton de déconnexion.
+ *
+ * Ce composant affiche un bouton situé en bas de la barre latérale.
+ * Lorsqu'il est cliqué, il déclenche la fermeture de la session utilisateur via le contexte d'authentification
+ * et affiche une notification de confirmation.
+ *
+ * @category Composants/Authentification
+ * @returns {JSX.Element} Le bouton de déconnexion.
+ */
 const LogOutBouton = () => {
     const {deconnexion} = accessAuthentification();
-    console.log("LOGOUT");
     const hangleLogOut = () => {
         try {
             deconnexion();

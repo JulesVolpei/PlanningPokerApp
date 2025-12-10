@@ -8,18 +8,24 @@ import {OrbitProgress} from "react-loading-indicators";
 import * as React from "react";
 import AffichageTaches from "@/components/AffichageTaches.tsx";
 
-
+/**
+ * Tableau de bord principal de l'application.
+ *
+ * Ce composant agit comme le contrôleur de la page d'accueil. Il est responsable de :
+ * 1. **Récupérer** la liste complète des tâches depuis l'API.
+ * 2. **Filtrer** ces tâches via la barre de recherche (filtrage côté client).
+ * 3. **Afficher** le résultat via le composant de présentation {@link AffichageTaches}.
+ *
+ * @category Composants/Pages
+ * @param {props} props - Les propriétés de configuration.
+ * @returns {JSX.Element} La page principale avec recherche et grille de tâches.
+ */
 const DashboardTaches = ({ titre }) => {
     const [recherche, setRecherche] = useState<string>('');
     const [pageActuelle, setPageActuelle] = useState(1);
-    const [carteSelectionnee, setCarteSelectionnee] = useState('');
-    const [dialogOpen, setDialogOpen] = useState(false);
-    const [loading, setLoading] = useState(true);
     const nombreDeTachesParPage = 6;
     let donnees = [];
-    const totalPages = 0;
-
-    //const {data: taches, error, isLoading, isFetching } = listeTacheQuery();
+    const idTaches = []
 
 
     const listeTacheQuery = () => {
@@ -32,21 +38,13 @@ const DashboardTaches = ({ titre }) => {
 
     const test = listeTacheQuery();
 
-    console.log("Succès : ", test.isSuccess);
-
     if (test.isSuccess) {
         donnees = test.data;
-
-        // Utiliser les taches normalisées pour la suite du composant
-        const totalPages = Math.ceil(donnees.length / nombreDeTachesParPage);
-        const indexPagination = (pageActuelle - 1) * nombreDeTachesParPage;
-        const tachesAffichees = donnees.slice(indexPagination, indexPagination + nombreDeTachesParPage); //Utiliser plus tard, je slice pour uniquement avoir les tâches à afficher
-        // TODO: Si la recherche est mise il faut modifier la liste en fonction de la variable recherche
-        console.log("Longueur données taches: ", donnees.length);
-        console.log("Total pages : ", totalPages);
-        console.log("Données : ", donnees[0]);
+        donnees.map((donnee, cmpt) => {
+            idTaches.push(donnee.createurId);
+        })
     }
-
+    console.log("Data dashboard : ", donnees);
     return (
         <div className="w-full max-w-6xl mx-auto px-6 py-8">
             <h1 className="text-4xl font-bold bg-gradient-primary bg-clip-text text-black mb-8">
@@ -61,7 +59,7 @@ const DashboardTaches = ({ titre }) => {
 
             {test.isSuccess ? (
                 donnees.length > 0 ? (
-                    <AffichageTaches donnees={donnees} maxElement={6}/>
+                    <AffichageTaches donnees={donnees} maxElement={6} listeIdTache={idTaches}/>
                 ) : <div className="text-center py-12 text-muted-foreground grid grid-cols-3 gap-4">
                     <p className="text-center py-12 text-muted-foreground"> No data ? (comme le meme) </p>
                 </div>
