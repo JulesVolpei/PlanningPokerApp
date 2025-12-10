@@ -1,10 +1,11 @@
 import {Button} from "@/components/ui/button.tsx"
-import { Users } from 'lucide-react';
+import {MailOpen, Users} from 'lucide-react';
 import { LockKeyhole } from 'lucide-react';
 import { LockKeyholeOpen } from 'lucide-react';
 import { PenOff } from 'lucide-react';
 import { Ban } from 'lucide-react';
 import { Ellipsis } from 'lucide-react';
+import { Mail } from 'lucide-react';
 
 import {
     Card,
@@ -45,60 +46,70 @@ type AccessType = "enAttente" | "acceptee" | "refuse" | "full" | "demanderAcces"
  * @param {CarteTacheProps} props Les propriétés reçues par le composant.
  * @returns {JSX.Element} Un composant de carte interactive représentant une tâche.
  */
-const CarteTache = ({donneesTache, onClick, idTache}) => {
+const CarteTache = ({ donneesTache, onClickDetail, onClickVote }) => {
     const { utilisateur, estConnecte } = accessAuthentification();
-
-
+    console.log("Data tache : ", donneesTache);
     const handleDemandeAccess = async () => {
         if (!estConnecte) {
             toast.error("Tu dois être connecté pour demander l'accès !");
             return;
         }
-
         try {
             await demanderAccessTache(utilisateur.id, donneesTache.id);
             toast.success("Demande d'accès envoyée !");
         } catch (e) {
             toast.error("Erreur : Demande déjà envoyée");
-            console.log(e);
         }
     };
+
     const differentsBoutonsAcces: Record<AccessType, JSX.Element> = {
-        demanderAcces: ( // Il faudra faire un onClick pour demander l'accès lorsque l'on est connecté
-            <Button className="bg-red-600 hover:bg-red-400 gap-1" onClick={handleDemandeAccess}>
-                <LockKeyhole />
-                <Label> Demander accès </Label>
+
+        demanderAcces: (
+            <Button
+                className="bg-red-600 hover:bg-red-400 gap-1 group"
+                onClick={(e) => {
+                    e.stopPropagation();
+                    handleDemandeAccess();
+                }}>
+                <Mail className="block group-hover:hidden" />
+
+                <MailOpen className="hidden group-hover:block" />
+
+                <Label className="cursor-pointer"> Demander accès </Label>
             </Button>
         ),
         acceptee: (
-            <Button>
+            <Button onClick={(e) => {
+                e.stopPropagation(); // Pour pas ouvrir le dialog de la tâche
+                onClickVote();
+            }}>
                 <LockKeyholeOpen />
-                <Label> Accéder </Label>
+                <Label className="cursor-pointer"> Accéder </Label>
             </Button>
         ),
         refuse: (
             <Button className="bg-red-600 hover:bg-red-600">
                 <Ban />
-                <Label> Refusé </Label>
+                <Label className="cursor-pointer"> Refusé </Label>
             </Button>
         ),
         full: (
             <Button>
                 <PenOff />
-                <Label> Complet </Label>
+                <Label className="cursor-pointer"> Complet </Label>
             </Button>
         ),
         enAttente: (
             <Button>
                 <Ellipsis />
-                <Label> En attente </Label>
+                <Label className="cursor-pointer"> En attente </Label>
             </Button>
         )
     };
     return (
         <Card
             className="w-full max-w-sm cursor-pointer hover:shadow-lg transition"
-            onClick={onClick}
+            onClick={onClickDetail}
         >
             <CardHeader>
                 <CardTitle>{donneesTache.titre}</CardTitle>
@@ -106,24 +117,20 @@ const CarteTache = ({donneesTache, onClick, idTache}) => {
                     Created by ...
                 </CardDescription>
             </CardHeader>
-
             <CardContent>
                 <Label className="flex justify-center w-full">
                     Afficher l'état de la tâche
                 </Label>
             </CardContent>
-
             <CardFooter className="flex-col gap-2 grid grid-cols-2 gap-6">
                 <Button>
-                    <Label> 0 / {donneesTache.nombreMaxParticipant} </Label>
+                    <Label> {donneesTache.participantsActuels} / {donneesTache.nombreMaxParticipant} </Label>
                     <Users />
                 </Button>
-
                 {donneesTache.access ? differentsBoutonsAcces[donneesTache.access] : differentsBoutonsAcces["demanderAcces"]}
             </CardFooter>
         </Card>
     );
 };
-
 
 export default CarteTache;

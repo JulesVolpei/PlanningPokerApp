@@ -12,7 +12,7 @@ class EvaluationTache(BaseModel):
     id: int
     utilisateurId: int
     tacheId: int
-    valeur: float
+    valeur: str
 
     class Config:
         from_attributes = True
@@ -31,12 +31,15 @@ class ConnexionInscription(BaseModel):
     motDePasse: str
 
 class Taches(BaseModel):
+    id: int
     titre: str
     description: str
     statut: str
     createurId: int
     nombreMaxParticipant: int
     methodeEvaluation: str
+    participantsActuels: int = 1
+    nombreVotes: int = 0
 
     class Config:
         from_attributes = True
@@ -70,3 +73,8 @@ class DemandeAccessTacheDetail(BaseModel):
 
     class Config:
         from_attributes = True
+
+class EvaluationCreate(BaseModel):
+    utilisateurId: int
+    tacheId: int
+    valeur: str

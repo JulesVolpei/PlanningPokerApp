@@ -62,6 +62,7 @@ export async function getTachesWithUserId(id: string) {
  * @throws {Error} Erreur indiquant l'impossibilité de créer la nouvelle tâche.
  */
 export async function createNewTask(nouvelleTache: any) {
+    console.log("NOUVELLE TACHE : ", nouvelleTache);
     const reponse = await fetch(`${APIURL}/taches/creer`, {
         method: "POST",
         headers: {
@@ -155,3 +156,23 @@ export const refuserDemande = async (demandeId: number) => {
     }
     return await response.json();
 };
+
+export async function envoyerEvaluation(utilisateurId: number, tacheId: number, valeur: string) {
+    const reponse = await fetch(`${APIURL}/evaluations/creer`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            utilisateurId,
+            tacheId,
+            valeur
+        }),
+    });
+
+    if (!reponse.ok) {
+        throw new Error("Erreur lors de l'envoi du vote");
+    }
+
+    return await reponse.json();
+}

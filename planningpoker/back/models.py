@@ -39,7 +39,7 @@ class EvaluationTache(Base):
     id = Column(Integer, primary_key=True, autoincrement=True, index=True)
     utilisateurId = Column(Integer, ForeignKey("utilisateurs.id"))
     tacheId = Column(Integer, ForeignKey("taches.id"))
-    valeur = Column(Float, nullable=False)
+    valeur = Column(String, nullable=False)
 
     # Relations
     utilisateur = relationship("Utilisateur", back_populates="evaluations")

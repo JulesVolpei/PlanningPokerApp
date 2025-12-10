@@ -44,7 +44,7 @@ const DashboardTaches = ({ titre }) => {
             idTaches.push(donnee.createurId);
         })
     }
-
+    console.log("Data dashboard : ", donnees);
     return (
         <div className="w-full max-w-6xl mx-auto px-6 py-8">
             <h1 className="text-4xl font-bold bg-gradient-primary bg-clip-text text-black mb-8">

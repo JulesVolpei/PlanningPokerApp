@@ -33,8 +33,13 @@ const ListeTachesEnCours = ({informationUtilisateur}) => {
         queryFn: () => getTachesWithUserId(informationUtilisateur.id),
         refetchInterval: 15000,
     });
+    const idTaches = []
+    let donnees = [];
     if (tacheUtilisateur.isSuccess) {
-        console.log(tacheUtilisateur.data);
+        donnees = tacheUtilisateur.data;
+        donnees.map((donnee) => {
+            idTaches.push(donnee.createurId);
+        })
     }
     return (
         <>
@@ -52,7 +57,7 @@ const ListeTachesEnCours = ({informationUtilisateur}) => {
                     </div>
                 </div>
 
-                {tacheUtilisateur.isSuccess ? <AffichageTaches donnees={tacheUtilisateur.data} maxElement={3}/> : <OrbitProgress color="#000000" size="medium" text="" textColor="" />}
+                {tacheUtilisateur.isSuccess ? <AffichageTaches donnees={donnees} maxElement={3} listeIdTache={idTaches} /> : <OrbitProgress color="#000000" size="medium" text="" textColor="" />}
 
             </CardContent>
             <CardFooter>
