@@ -84,7 +84,7 @@ class EvaluationTache(Base):
     Modèle représentant une évaluation laissée par un utilisateur sur une tâche.
 
     La table ``evaluationTache`` fait le lien entre un utilisateur et une tâche
-    évaluée. Chaque évaluation possède une valeur numérique (ex. une note).
+    évaluée. Chaque évaluation possède une valeur (ex. une note).
 
     :param id: Identifiant unique de l'évaluation.
     :type id: int
@@ -130,7 +130,7 @@ class DemandeAccessTache(Base):
 
     :relationship utilisateur: Utilisateur ayant effectué la demande d'accès.
     :relationship tache: Tâche visée par la demande.
-    
+
     """
     __tablename__ = "demandeAccessTache"
 
@@ -141,4 +141,4 @@ class DemandeAccessTache(Base):
 
     # Relations
     utilisateur = relationship("Utilisateur", back_populates="demandeAccess")
-    tache = relationship("Tache", back_populates="demandeAccess")
+    tache = relationship("Tache", back_populates="demandeAccess")   

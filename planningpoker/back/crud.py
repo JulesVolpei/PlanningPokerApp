@@ -1,14 +1,54 @@
+"""
+Fonctions CRUD de l'application.
+
+Ce module contient les fonctions permettant d'effectuer
+les opérations de base sur la base de données :
+- création
+- lecture
+- mise à jour
+- suppression
+
+Ces fonctions sont utilisées par les routes FastAPI
+définies dans le fichier ``main.py``.
+"""
+
 from sqlalchemy.orm import Session
 import models, schemas
 from sqlmodel import select
 
 def getAllUsers(db: Session):
+    """
+    Récupère l'ensemble des utilisateurs enregistrés.
+
+    :param db: Session active de base de données.
+    :type db: Session
+    :return: Liste de tous les utilisateurs.
+    :rtype: list[models.Utilisateur]
+    """
     return db.exec(select(models.Utilisateur)).all()
 
 def getAllTache(db: Session):
+    """
+    Récupère l'ensemble des tâches présentes dans la base de données.
+
+    :param db: Session active de base de données.
+    :type db: Session
+    :return: Liste de toutes les tâches.
+    :rtype: list[models.Tache]
+    """
     return db.exec(select(models.Tache)).all()
 
 def insertOneUser(db: Session, nouvelUtilisateur: schemas.ConnexionInscription):
+    """
+    Insère un nouvel utilisateur dans la base de données.
+
+    :param db: Session active de base de données.
+    :type db: Session
+    :param nouvelUtilisateur: Données de l'utilisateur à créer.
+    :type nouvelUtilisateur: ConnexionInscription
+    :return: Utilisateur créé.
+    :rtype: models.Utilisateur
+    """
     utilisateurBD = models.Utilisateur(nom=nouvelUtilisateur.nom, motDePasse=nouvelUtilisateur.motDePasse)
     db.add(utilisateurBD)
     db.commit()
@@ -16,10 +56,30 @@ def insertOneUser(db: Session, nouvelUtilisateur: schemas.ConnexionInscription):
     return utilisateurBD
 
 def getTachesWithUserId(db: Session, userId: int):
+    """
+    Récupère toutes les tâches créées par un utilisateur donné.
+
+    :param db: Session active de base de données.
+    :type db: Session
+    :param userId: Identifiant de l'utilisateur.
+    :type userId: int
+    :return: Liste des tâches créées par l'utilisateur.
+    :rtype: list[models.Tache]
+    """
     statement = select(models.Tache).where(models.Tache.createurId == userId)
     return db.exec(statement).all()
 
 def createTache(db: Session, nouvelleTache: schemas.TacheCreate):
+    """
+    Crée une nouvelle tâche dans la base de données.
+
+    :param db: Session active de base de données.
+    :type db: Session
+    :param nouvelleTache: Données nécessaires à la création de la tâche.
+    :type nouvelleTache: TacheCreate
+    :return: Tâche créée.
+    :rtype: models.Tache
+    """
     tacheBD = models.Tache(
         titre=nouvelleTache.titre,
         description=nouvelleTache.description,
@@ -35,11 +95,35 @@ def createTache(db: Session, nouvelleTache: schemas.TacheCreate):
 
 
 def getTache(db: Session, tacheId: int):
+    """
+    Récupère une tâche à partir de son identifiant.
+
+    :param db: Session active de base de données.
+    :type db: Session
+    :param tacheId: Identifiant de la tâche.
+    :type tacheId: int
+    :return: Tâche correspondante ou ``None`` si elle n'existe pas.
+    :rtype: models.Tache | None
+    """
     statement = select(models.Tache).where(models.Tache.id == tacheId)
     return db.exec(statement).first()
 
 
 def updateTache(db: Session, tacheId: int, tacheUpdate: schemas.TacheUpdate):
+    """
+    Met à jour une tâche existante.
+
+    Seuls les champs fournis dans ``tacheUpdate`` sont modifiés.
+
+    :param db: Session active de base de données.
+    :type db: Session
+    :param tacheId: Identifiant de la tâche à modifier.
+    :type tacheId: int
+    :param tacheUpdate: Données de mise à jour de la tâche.
+    :type tacheUpdate: TacheUpdate
+    :return: Tâche mise à jour ou ``None`` si elle n'existe pas.
+    :rtype: models.Tache | None
+    """
     tacheBD = db.get(models.Tache, tacheId)
     if not tacheBD:
         return None
@@ -55,6 +139,16 @@ def updateTache(db: Session, tacheId: int, tacheUpdate: schemas.TacheUpdate):
 
 
 def deleteTache(db: Session, tacheId: int):
+    """
+    Supprime une tâche de la base de données.
+
+    :param db: Session active de base de données.
+    :type db: Session
+    :param tacheId: Identifiant de la tâche à supprimer.
+    :type tacheId: int
+    :return: ``True`` si la suppression a réussi, ``None`` sinon.
+    :rtype: bool | None
+    """
     tacheBD = db.get(models.Tache, tacheId)
     if not tacheBD:
         return None
@@ -64,4 +158,14 @@ def deleteTache(db: Session, tacheId: int):
     return True
 
 def getUserById(db: Session, user_id: int):
+    """
+    Récupère un utilisateur à partir de son identifiant.
+
+    :param db: Session active de base de données.
+    :type db: Session
+    :param user_id: Identifiant de l'utilisateur.
+    :type user_id: int
+    :return: Utilisateur correspondant ou ``None`` s'il n'existe pas.
+    :rtype: models.Utilisateur | None
+    """
     return db.get(models.Utilisateur, user_id)
