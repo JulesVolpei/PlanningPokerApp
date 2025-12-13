@@ -7,13 +7,31 @@ import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs';
 import {toast} from 'sonner';
 import {accessAuthentification} from "@/context/AuthentificationContext.tsx";
 
+/**
+ * Props du composant.
+ * @category Interfaces
+ */
 interface LoginDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-} // Permet de savoir si on ouvre le popup ou non lorsque l'utilisateur clique dessus
+}
 
+/**
+ * Modale d'authentification unifiée (Connexion & Inscription).
+ *
+ * Ce composant affiche une boîte de dialogue (Dialog) contenant deux onglets :
+ * 1. **Connexion** : Pour les utilisateurs existants.
+ * 2. **Inscription** : Pour la création de compte.
+ *
+ * Il gère automatiquement les appels API via le contexte d'authentification et affiche
+ * des notifications (Toasts) pour informer l'utilisateur du succès ou de l'échec.
+ *
+ * @category Composants/Auth
+ * @param {LoginDialogProps} props - Les propriétés de contrôle de la modale.
+ * @returns {JSX.Element} Le dialogue d'authentification.
+ */
 const PopUpLogin = ({open, onOpenChange}: LoginDialogProps) => {
-    const {connexion, inscription, estConnecte, deconnexion} = accessAuthentification();
+    const {connexion, inscription} = accessAuthentification();
     const [isLoading, setIsLoading] = useState(false);
     const [connexionData, setConnexionData] = useState({nom: '', motDePasse: ''});
     const [inscriptionData, setInscriptionData] = useState({nom: '', motDePasse: ''});
@@ -77,8 +95,7 @@ const PopUpLogin = ({open, onOpenChange}: LoginDialogProps) => {
                                 <Label htmlFor="connexion-motDePasse">Mot de passe</Label>
                                 <Input
                                     id="connexion-motDePasse"
-                                    type="motDePasse"
-                                    placeholder="********"
+                                    type="password"
                                     value={connexionData.motDePasse}
                                     onChange={(e) => setConnexionData({...connexionData, motDePasse: e.target.value})}
                                     required
@@ -108,7 +125,6 @@ const PopUpLogin = ({open, onOpenChange}: LoginDialogProps) => {
                                 <Input
                                     id="inscription-motDePasse"
                                     type="password"
-                                    placeholder="********"
                                     value={inscriptionData.motDePasse}
                                     onChange={(e) => setInscriptionData({
                                         ...inscriptionData,

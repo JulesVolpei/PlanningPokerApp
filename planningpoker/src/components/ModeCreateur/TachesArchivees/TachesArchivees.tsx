@@ -1,9 +1,19 @@
 import {CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card.tsx";
-import {Label} from "@/components/ui/label.tsx";
-import {Input} from "@/components/ui/input.tsx";
-import {Button} from "@/components/ui/button.tsx";
 
 
+/**
+ * Vue des tâches terminées et archivées.
+ *
+ * Ce composant a pour but d'afficher l'historique des sessions de Planning Poker
+ * qui ont été clôturées.
+ *
+ * @remarks
+ * Pas encore développé dans l'application.
+ *
+ * @category Composants/ModeCreateur
+ * @param {props} props - Les informations de l'utilisateur.
+ * @returns {JSX.Element} La structure de la page d'archives.
+ */
 const TachesArchivees = ({informationUtilisateur}) => {
     return (
         <>

@@ -1,6 +1,17 @@
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input.tsx";
 
+
+/**
+ * Champ de saisie avec icône pour le filtrage.
+ *
+ * Ce composant est un simple wrapper autour de l'Input shadcn/ui, ajoutant une icône de loupe
+ * et gérant le style standardisé pour la recherche.
+ *
+ * @category Composants/Index
+ * @param {props} props - Les propriétés du champ.
+ * @returns {JSX.Element} L'input de recherche stylisé.
+ */
 const BarreDeRecherche = ({ value, onChange }: { value: string; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void }) => {
     return (
         <>

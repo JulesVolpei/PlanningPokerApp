@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button.tsx";
+import { Input } from "@/components/ui/input.tsx";
+import { Textarea } from "@/components/ui/textarea.tsx";
 import { Plus, ChevronDown, Minus, Plus as PlusIcon } from "lucide-react";
 
 import {
@@ -10,17 +10,31 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@/components/ui/dialog.tsx";
 
 import {
     DropdownMenu,
     DropdownMenuTrigger,
     DropdownMenuContent,
     DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu.tsx";
 import {createNewTask} from "@/services/api.ts";
 import {toast} from "sonner";
 
+/**
+ * Bouton et Dialogue modal pour la création d'une nouvelle tâche.
+ *
+ * Ce composant affiche un bouton "Créer une tâche". Au clic, il ouvre un formulaire permettant de saisir :
+ * - Titre et description.
+ * - La méthode de vote (Moyenne, Médiane, ...).
+ * - Le nombre maximum de participants.
+ *
+ * Une fois validé, il appelle l'API pour insérer la tâche en base de données.
+ *
+ * @category Composants/ModeCreateur
+ * @param {props} props - Les propriétés du composant.
+ * @returns {JSX.Element} Le bouton déclencheur et sa modale associée.
+ */
 const BoutonCreerTache = ({informationUtilisateur, open, setOpen}) => {
     const [titre, setTitre] = useState("");
     const [description, setDescription] = useState("");
@@ -36,10 +50,10 @@ const BoutonCreerTache = ({informationUtilisateur, open, setOpen}) => {
             const nouvelleTache = {
                 titre:titre,
                 description:description,
-                // Ajouter l'évaluation par la suite,
                 statut:"ouverte",
                 createurId: informationUtilisateur.id,
-                nombreMaxParticipant:maxParticipants
+                nombreMaxParticipant:maxParticipants,
+                methodeEvaluation:evaluation,
             };
 
             const resultat = await createNewTask(nouvelleTache);
@@ -104,7 +118,7 @@ const BoutonCreerTache = ({informationUtilisateur, open, setOpen}) => {
                                     Moyenne
                                 </DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => setEvaluation("Médiane")}>
-                                    Automatique
+                                    Médiane
                                 </DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => setEvaluation("Majorité absolue")}>
                                     Majorité absolue

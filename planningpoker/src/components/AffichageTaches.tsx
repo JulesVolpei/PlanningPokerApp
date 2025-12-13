@@ -16,33 +16,98 @@ import {
     DialogTitle,
     DialogDescription,
 } from "@/components/ui/dialog";
+import {accessAuthentification} from "@/context/AuthentificationContext.tsx";
+import {demanderAccessTache, envoyerEvaluation, fecthAllTaches, getDemandesUtilisateur} from "@/services/api.ts";
+import {useQuery} from "@tanstack/react-query";
+import {toast} from "sonner";
+import {Label} from "@/components/ui/label.tsx";
+import {Input} from "@/components/ui/input.tsx";
+import {Button} from "@/components/ui/button.tsx";
+import VoteDialogContent from "@/components/VoteDialog.tsx";
+import TacheDetailContent from "@/components/DetailsTacheDialog.tsx";
 
-const AffichageTaches = ({ donnees, maxElement }) => {
+/**
+ * Gestionnaire d'affichage des tâches.
+ *
+ * Ce composant est le chef d'orchestre de la vue principale. Il réalise plusieurs actions :
+ * 1. **Pagination** : Découpe la liste des tâches (`donnees`) en pages.
+ * 2. **Gestion d'accès** : Croise les données des tâches avec les demandes d'accès de l'utilisateur.
+ * 3. **Dialogs** : Gère l'ouverture des boîtes de dialogue pour voir les détails (`TacheDetailContent`) ou pour voter (`VoteDialogContent`).
+ *
+ * @category Composants/Tâches
+ * @param {props} props - Les données et configurations d'affichage.
+ * @returns {JSX.Element} La grille de tâches avec pagination et dialogues.
+ */
+const AffichageTaches = ({ donnees, maxElement, listeIdTache }) => {
     const [page, setPage] = useState(1);
     const [open, setOpen] = useState(false);
     const [tacheSelectionnee, setTacheSelectionnee] = useState(null);
+    const {estConnecte, utilisateur} = accessAuthentification();
+    const [openVote, setOpenVote] = useState(false);
+    const [tacheAVoter, setTacheAVoter] = useState(null);
+    const [valeurVote, setValeurVote] = useState("");
+    const {data: demandesAcces = [], isLoading: loadingDemandes} = useQuery({
+        queryKey: ["demandesAcces", utilisateur?.id],
+        queryFn: () => getDemandesUtilisateur(utilisateur.id),
+        enabled: estConnecte && Boolean(utilisateur?.id),
+        refetchInterval: 15000,
+    });
 
     const totalPages = Math.ceil(donnees.length / maxElement);
 
     const debut = (page - 1) * maxElement;
     const fin = debut + maxElement;
+    const mapDemandes = {};
+    if (demandesAcces) {
+        demandesAcces.forEach(demande => {
+            if(demande.tacheId) mapDemandes[demande.tacheId] = demande.statut;
+        });
+    }
+    const donneesPageAvecStatus = donnees.slice(debut, fin).map((tache) => {
+        const tacheModifiee = { ...tache };
+        if (estConnecte && utilisateur && tache.createurId === utilisateur.id) {
+            tacheModifiee.access = "acceptee";
+        }
+        else if (mapDemandes[tache.id]) {
+            tacheModifiee.access = mapDemandes[tache.id];
+        }
 
-    const donneesPage = donnees.slice(debut, fin);
+        return tacheModifiee;
+    });
 
     const ouvrirDialog = (tache) => {
         setTacheSelectionnee(tache);
         setOpen(true);
     };
 
+    const ouvrirDialogVote = (tache) => {
+        setTacheAVoter(tache);
+        setValeurVote(""); // Reset input
+        setOpenVote(true);
+    };
+
+    const handleVoteSubmit = async (valeurRecue) => {
+        console.log("Valeur vote reçue du dialog : ", valeurRecue);
+        if(!valeurRecue) return toast.error("Entrez une valeur !");
+        try {
+            await envoyerEvaluation(utilisateur.id, tacheAVoter.id, valeurRecue);
+            toast.success(`${utilisateur.nom} a voté ${valeurRecue} !`);
+            setOpenVote(false);
+        } catch (error) {
+            toast.error("Erreur lors du vote");
+            console.error(error);
+        }
+    };
+    console.log(`Participants : ${donneesPageAvecStatus[0].participantsActuels}`)
     return (
         <div className="flex flex-col gap-8">
             <div className="text-center py-12 text-muted-foreground grid grid-cols-3 gap-6">
-                {donneesPage.map((donnee) => (
+                {donneesPageAvecStatus.map((donnee) => (
                     <CarteTache
                         key={donnee.id}
                         donneesTache={donnee}
-                        access={"enAttente"}
-                        onClick={() => ouvrirDialog(donnee)}
+                        onClickDetail={() => ouvrirDialog(donnee)}
+                        onClickVote={() => ouvrirDialogVote(donnee)}
                     />
                 ))}
             </div>
@@ -51,7 +116,7 @@ const AffichageTaches = ({ donnees, maxElement }) => {
                     <PaginationItem>
                         <PaginationPrevious
                             onClick={() => setPage((p) => Math.max(1, p - 1))}
-                            className={page === 1 ? "pointer-events-none opacity-40" : ""}
+                            className={page === 1 ? "pointer-events-none opacity-40 " : "cursor-pointer"}
                         />
                     </PaginationItem>
 
@@ -60,6 +125,7 @@ const AffichageTaches = ({ donnees, maxElement }) => {
                             <PaginationLink
                                 isActive={page === i + 1}
                                 onClick={() => setPage(i + 1)}
+                                className={"cursor-pointer"}
                             >
                                 {i + 1}
                             </PaginationLink>
@@ -71,32 +137,27 @@ const AffichageTaches = ({ donnees, maxElement }) => {
                             onClick={() =>
                                 setPage((p) => Math.min(totalPages, p + 1))
                             }
-                            className={page === totalPages ? "pointer-events-none opacity-40" : ""}
+                            className={page === totalPages ? "pointer-events-none opacity-40" : "cursor-pointer"}
                         />
                     </PaginationItem>
                 </PaginationContent>
             </Pagination>
             <Dialog open={open} onOpenChange={setOpen}>
-                <DialogContent>
-                    {tacheSelectionnee && (
-                        <>
-                            <DialogHeader>
-                                <DialogTitle>{tacheSelectionnee.titre}</DialogTitle>
-                                <DialogDescription>
-                                    {tacheSelectionnee.description}
-                                </DialogDescription>
-                            </DialogHeader>
+                <DialogContent className="max-w-2xl">
+                    <TacheDetailContent tache={tacheSelectionnee} />
 
-                            <div className="mt-4 space-y-3">
-                                <p><strong>Participants max :</strong> {tacheSelectionnee.nombreMaxParticipant}</p>
-                                <p><strong>Statut :</strong> {tacheSelectionnee.statut}</p>
-                                <p><strong>Créateur :</strong> {tacheSelectionnee.createurId}</p>
-                            </div>
-                        </>
+                </DialogContent>
+            </Dialog>
+            <Dialog open={openVote} onOpenChange={setOpenVote}>
+                <DialogContent className="max-w-3xl">
+                    {tacheAVoter && (
+                        <VoteDialogContent
+                            tache={tacheAVoter}
+                            onSubmit={handleVoteSubmit}
+                        />
                     )}
                 </DialogContent>
             </Dialog>
-
         </div>
     );
 };

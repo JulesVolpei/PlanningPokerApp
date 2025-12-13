@@ -71,6 +71,7 @@ class Tache(Base):
     statut = Column(String, default="ouverte")
     createurId = Column(Integer, ForeignKey("utilisateurs.id"))
     nombreMaxParticipant = Column(Integer, default=5)
+    methodeEvaluation = Column(String, default="Moyenne")
 
     # Relations
     createur = relationship("Utilisateur", back_populates="tacheCreee")
@@ -103,7 +104,7 @@ class EvaluationTache(Base):
     id = Column(Integer, primary_key=True, autoincrement=True, index=True)
     utilisateurId = Column(Integer, ForeignKey("utilisateurs.id"))
     tacheId = Column(Integer, ForeignKey("taches.id"))
-    valeur = Column(Float, nullable=False)
+    valeur = Column(String, nullable=False)
 
     # Relations
     utilisateur = relationship("Utilisateur", back_populates="evaluations")
