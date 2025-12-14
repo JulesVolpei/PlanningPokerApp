@@ -24,7 +24,7 @@ jobs:
           pip install pytest httpx
 
       - name: Run Pytest
-        run: python -m pytest tests/test.py
+        run: python -m pytest planningpoker/tests/test.py
         env:
           PYTHONPATH: ${{ github.workspace }}
   sphinx-doc:
