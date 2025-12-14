@@ -21,14 +21,6 @@ import {accessAuthentification} from "@/context/AuthentificationContext.tsx";
 import {toast} from "sonner";
 import {demanderAccessTache, relancerTache} from "@/services/api.ts";
 import {useQueryClient} from "@tanstack/react-query";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger
-} from "@/components/ui/dialog.tsx";
 import DetailsDonneesTacheDialog from "@/components/DetailsDonneesTacheDialog.tsx";
 
 /**
@@ -41,11 +33,9 @@ import DetailsDonneesTacheDialog from "@/components/DetailsDonneesTacheDialog.ts
 type AccessType = "enAttente" | "acceptee" | "refusee" | "full" | "demanderAcces";
 
 /**
- * Carte interactive représentant une tâche.
- *
  * Ce composant affiche le résumé d'une tâche et adapte son bouton d'action en fonction
  * du statut de l'utilisateur vis-à-vis de cette tâche :
- * - **Anonyme/Nouveau** : Bouton "Demander accès".
+ * - **Défaut** : Bouton "Demander accès".
  * - **En attente** : Bouton désactivé "En attente".
  * - **Accepté/Créateur** : Bouton "Accéder" pour accéder au dialogue de vote.
  * - **Refusé** : Bouton rouge "Refusé".
@@ -53,7 +43,7 @@ type AccessType = "enAttente" | "acceptee" | "refusee" | "full" | "demanderAcces
  *
  * @category Composants/Index
  * @param {props} props - Les données et gestionnaires d'événements.
- * @returns {JSX.Element} La carte rendue.
+ * @returns {JSX.Element} La carte avec les données de la tâche.
  */
 const CarteTache = ({ donneesTache, onClickDetail, onClickVote }) => {
     const { utilisateur, estConnecte } = accessAuthentification();

@@ -3,13 +3,11 @@ import { Input } from "@/components/ui/input.tsx";
 
 
 /**
- * Champ de saisie avec icône pour le filtrage.
- *
- * Ce composant est un simple wrapper autour de l'Input shadcn/ui, ajoutant une icône de loupe
- * et gérant le style standardisé pour la recherche.
+ * Ce composant sert à filtrer les tâches en fonction du nom de ces dernières et d'une chaine de caractères
+ * rentrée par l'utilisateur.
  *
  * @category Composants/Index
- * @param {props} props - Les propriétés du champ.
+ * @param {props} props - Les propriétés du champ à recherche.
  * @returns {JSX.Element} L'input de recherche stylisé.
  */
 const BarreDeRecherche = ({ value, onChange }: { value: string; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void }) => {

@@ -67,7 +67,7 @@ export async function getTachesWithUserId(id: string) {
  * Crée une nouvelle tâche dans la base de données.
  *
  * @category Tâches
- * @param {Partial<Tache>} nouvelleTache - Objet contenant les infos de la tâche (titre, description, etc.).
+ * @param {Object} nouvelleTache - Objet contenant les infos de la tâche (titre, description, etc.).
  * @returns {Promise<any>} Confirmation de la création (JSON).
  * @throws {Error} Si la création échoue (validation ou erreur serveur).
  */
@@ -151,7 +151,7 @@ export const getDemandesUtilisateur = async (userId: number) => {
 
 /**
  * Récupère les demandes d'accès "en attente" pour les tâches créées par un utilisateur.
- * * Filtre automatiquement les demandes pour ne garder que celles qui nécessitent une action.
+ * Filtre automatiquement les demandes pour ne garder que celles qui nécessitent une action.
  *
  * @category DemandeAccess
  * @param {number} userId - L'ID du créateur (pour voir qui veut rejoindre ses tâches).
@@ -169,7 +169,7 @@ export const getDemandesCreateur = async (userId: number) => {
 };
 
 /**
- * Valide une demande d'accès (passe le statut à "acceptee").
+ * Valide une demande d'accès en passant le statut à "acceptee".
  *
  * @category DemandeAccess
  * @param {number} demandeId - L'ID de la demande à accepter.
@@ -188,7 +188,7 @@ export const accepterDemande = async (demandeId: number) => {
 };
 
 /**
- * Refuse une demande d'accès (passe le statut à "refusee").
+ * Refuse une demande d'accès en passant le statut à "refusee".
  *
  * @category DemandeAccess
  * @param {number} demandeId - L'ID de la demande à refuser.
@@ -207,7 +207,7 @@ export const refuserDemande = async (demandeId: number) => {
 };
 
 /**
- * Envoie un vote (évaluation) pour une tâche donnée.
+ * Envoie un vote pour une tâche donnée.
  *
  * @category Votes
  * @param {number} utilisateurId - L'utilisateur qui vote.

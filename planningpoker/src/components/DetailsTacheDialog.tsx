@@ -12,15 +12,13 @@ import * as React from "react";
 import {Label} from "@/components/ui/label.tsx";
 
 /**
- * Contenu du dialogue de détails d'une tâche.
+ * Ce composant affiche une vue complète des informations d'une tâche.
+ * L'affichage s'adapte dynamiquement selon l'état de la tâche :
  *
- * Ce composant affiche une vue complète des informations d'une tâche :
- * - Titre et description.
- * - Barre de progression des votes en cours.
- * - Métadonnées (Participants, Créateur, Méthode, Statut).
- *
- * Il effectue également une requête pour récupérer et afficher le nom du créateur
- * à partir de son ID.
+ * - **Titre et description** : Informations de base.
+ * - Si la tâche est **en cours** : Affiche une barre de progression des votes.
+ * - Si la tâche est **archivée** : Affiche le résultat final avec le message associé.
+ * - **Métadonnées** : Participants, créateur, méthode de calcul et statut.
  *
  * @category Composants/Tâches
  * @param {props} props - Les données de la tâche à afficher.

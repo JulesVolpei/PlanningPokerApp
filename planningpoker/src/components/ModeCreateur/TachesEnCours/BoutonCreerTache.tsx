@@ -22,11 +22,9 @@ import {createNewTask} from "@/services/api.ts";
 import {toast} from "sonner";
 
 /**
- * Bouton et Dialogue modal pour la création d'une nouvelle tâche.
- *
- * Ce composant affiche un bouton "Créer une tâche". Au clic, il ouvre un formulaire permettant de saisir :
+ * Ce composant affiche un bouton "Créer une tâche". Un formulaire s'ouvre en cliquant permettant de saisir :
  * - Titre et description.
- * - La méthode de vote (Moyenne, Médiane, ...).
+ * - La méthode de vote.
  * - Le nombre maximum de participants.
  *
  * Une fois validé, il appelle l'API pour insérer la tâche en base de données.

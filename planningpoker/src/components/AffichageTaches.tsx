@@ -27,12 +27,10 @@ import VoteDialogContent from "@/components/VoteDialog.tsx";
 import TacheDetailContent from "@/components/DetailsTacheDialog.tsx";
 
 /**
- * Gestionnaire d'affichage des tâches.
- *
  * Ce composant est le chef d'orchestre de la vue principale. Il réalise plusieurs actions :
- * 1. **Pagination** : Découpe la liste des tâches (`donnees`) en pages.
+ * 1. **Pagination** : Découpe la liste des tâches `donnees` en pages.
  * 2. **Gestion d'accès** : Croise les données des tâches avec les demandes d'accès de l'utilisateur.
- * 3. **Dialogs** : Gère l'ouverture des boîtes de dialogue pour voir les détails (`TacheDetailContent`) ou pour voter (`VoteDialogContent`).
+ * 3. **Dialogs** : Gère l'ouverture des boîtes de dialogue pour voir les détails `TacheDetailContent` ou pour voter `VoteDialogContent`.
  *
  * @category Composants/Tâches
  * @param {props} props - Les données et configurations d'affichage.

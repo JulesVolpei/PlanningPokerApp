@@ -15,9 +15,7 @@ import {accessAuthentification} from "@/context/AuthentificationContext.tsx";
 type PageType = "taches" | "demandeAcces" | "tachesArchivees";
 
 /**
- * Routeur interne pour l'affichage du contenu du Mode Créateur.
- *
- * Ce composant agit comme un gestionnaired d'onglets : il reçoit un identifiant de page (`page`)
+ * Ce composant agit comme un gestionnaire d'onglets : il reçoit un identifiant de page (`page`)
  * et rend le composant correspondant (Liste des tâches, Demandes d'accès, ou Archives)
  * à l'intérieur d'une carte qui sert de fond.
  *

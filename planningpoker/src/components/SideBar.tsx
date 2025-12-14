@@ -6,8 +6,6 @@ import PopUpLogin from "@/components/PopUpLogin.tsx";
 import LogOutBouton from "@/components/LogOutBouton.tsx";
 
 /**
- * Sidebar persistante.
- *
  * Ce composant est ancré sur le côté gauche de l'application et gère la navigation principale.
  * Il adapte dynamiquement son contenu selon l'état d'authentification de l'utilisateur.
  *

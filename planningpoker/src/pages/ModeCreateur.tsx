@@ -11,12 +11,10 @@ import TableMatieresModeCreateur from "@/components/ModeCreateur/TableMatieresMo
 
 /**
  * Page principale du Mode Créateur.
- * * Ce composant agit comme le conteneur pour toute la section de l'administration/création des tâches et accès.
+ * Ce composant agit comme le conteneur pour toute la section de l'administration/création des tâches et accès et d'archivage des tâches.
  * Il est responsable de la mise en page globale de cette section et intègre les sous-composants de navigation ou de gestion.
- *  @remarks
- * Actuellement, il charge principalement le composant {@link TableMatieresModeCreateur}.
  * @category Pages
- * @returns {JSX.Element} La structure DOM de la page Mode Créateur.
+ * @returns {JSX.Element} La structure de la page Mode Créateur.
  */
 const ModeCreateur = () => {
     return (

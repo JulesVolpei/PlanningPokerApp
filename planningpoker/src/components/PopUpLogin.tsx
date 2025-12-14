@@ -17,14 +17,12 @@ interface LoginDialogProps {
 }
 
 /**
- * Modale d'authentification unifiée (Connexion & Inscription).
- *
- * Ce composant affiche une boîte de dialogue (Dialog) contenant deux onglets :
+ * Ce composant affiche une boîte de dialogue contenant deux onglets :
  * 1. **Connexion** : Pour les utilisateurs existants.
  * 2. **Inscription** : Pour la création de compte.
  *
  * Il gère automatiquement les appels API via le contexte d'authentification et affiche
- * des notifications (Toasts) pour informer l'utilisateur du succès ou de l'échec.
+ * des notifications pour informer l'utilisateur du succès ou de l'échec.
  *
  * @category Composants/Auth
  * @param {LoginDialogProps} props - Les propriétés de contrôle de la modale.

@@ -193,6 +193,19 @@ def getUserById(db: Session, user_id: int):
     return db.get(models.Utilisateur, user_id)
 
 def createEvaluation(db: Session, evaluation: schemas.EvaluationCreate):
+    """
+    Enregistre un vote pour une tâche et gère l'archivage automatique :
+
+    Si le nombre de votes atteint le nombre maximum de participants,
+    le statut de la tâche s'actualise à "archivee".
+
+    :param db: Session active de base de données.
+    :type db: Session
+    :param evaluation: Données du vote (utilisateur, tâche, valeur du vote).
+    :type evaluation: EvaluationCreate
+    :return: L'objet évaluation créé en base de données.
+    :rtype: models.EvaluationTache
+    """
     dbEvaluation = models.EvaluationTache(
         utilisateurId=evaluation.utilisateurId,
         tacheId=evaluation.tacheId,
@@ -213,8 +226,25 @@ def createEvaluation(db: Session, evaluation: schemas.EvaluationCreate):
             db.refresh(tache)
     return dbEvaluation
 
-def calculNoteFinale(valeurs_votes: list[str], methode: str):
-    notes = [int(i) for i in valeurs_votes if i.isdigit()]
+def calculNoteFinale(valeursVotes: list[str], methode: str):
+    """
+    Calcule le résultat final d'un vote selon la méthode choisie.
+
+    Les méthodes supportées par notre application sont :
+    - Unanimité (valeur par défaut proposée dans l'application)
+    - Moyenne
+    - Médiane
+    - Majorité absolue
+    - Majorité relative
+
+    :param valeursVotes: Liste des votes sous forme de chaînes de caractères (ex : ["5", "8", "café"]).
+    :type valeursVotes: list[str]
+    :param methode: Nom de la méthode d'évaluation.
+    :type methode: str
+    :return: Un dictionnaire contenant l'état ("Reussite" ou "Echec") et le résultat ou message d'erreur.
+    :rtype: dict[str, str]
+    """
+    notes = [int(i) for i in valeursVotes if i.isdigit()]
     if not notes:
         return {
             "etat": "Echec",
@@ -267,8 +297,21 @@ def calculNoteFinale(valeurs_votes: list[str], methode: str):
         "message": "Indéfini."
     }
 
-def getTachesArchiveesCreateur(db: Session, createur_id: int):
-    taches = db.query(models.Tache).filter(models.Tache.createurId == createur_id).all()
+def getTachesArchiveesCreateur(db: Session, createurId: int):
+    """
+    Récupère et calcule les résultats des tâches archivées d'un créateur.
+
+    Cette fonction filtre les tâches dont tous les votes ont été effectués,
+    calcule la note finale pour chacune et retourne une liste de tâches enrichies.
+
+    :param db: Session active de base de données.
+    :type db: Session
+    :param createurId: Identifiant du créateur des tâches.
+    :type createurId: int
+    :return: Liste de dictionnaires représentant les tâches avec leur note finale.
+    :rtype: list[dict]
+    """
+    taches = db.query(models.Tache).filter(models.Tache.createurId == createurId).all()
     tachesArchivees = []
     for tache in taches:
         cmptVotes = len(tache.votes)
@@ -281,12 +324,25 @@ def getTachesArchiveesCreateur(db: Session, createur_id: int):
             tachesArchivees.append(dictTaches)
     return tachesArchivees
 
-def relancerTacheArchivee(db: Session, tache_id: int):
-    tache = db.query(models.Tache).filter(models.Tache.id == tache_id).first()
+def relancerTacheArchivee(db: Session, tacheId: int):
+    """
+    Réinitialise une tâche archivée pour permettre un nouveau vote.
+
+    - Change le statut de "archivee" à "ouverte".
+    - Supprime tous les votes associés à cette tâche.
+
+    :param db: Session active de base de données.
+    :type db: Session
+    :param tacheId: Identifiant de la tâche à relancer.
+    :type tacheId: int
+    :return: La tâche mise à jour ou ``None`` si elle n'existe pas.
+    :rtype: models.Tache | None
+    """
+    tache = db.query(models.Tache).filter(models.Tache.id == tacheId).first()
     if not tache:
         return None
     tache.statut = "ouverte"
-    db.query(models.EvaluationTache).filter(models.EvaluationTache.tacheId == tache_id).delete(synchronize_session=False)
+    db.query(models.EvaluationTache).filter(models.EvaluationTache.tacheId == tacheId).delete(synchronize_session=False)
 
     db.commit()
     db.refresh(tache)

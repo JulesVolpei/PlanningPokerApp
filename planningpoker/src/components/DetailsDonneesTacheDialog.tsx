@@ -11,9 +11,12 @@ import {Button} from "@/components/ui/button.tsx";
 import {Copy, Download, FileJson} from "lucide-react";
 
 /**
- * Composant pour afficher, copier et télécharger des données JSON.
+ * Ce composant permet de visualiser le contenu complet d'une tâche au format JSON en plus d'offrir
+ * deux fonctionnalités d'export :
+ * - **Copier** : Met le JSON dans le presse-papier.
+ * - **Télécharger** : Génère un fichier `.json` nommé selon le titre de la tâche.
  *
- * @param data - Les informations de la tâche à afficher et à convertir au format JSON.
+ * @param {Object} data - Les informations de la tâche à afficher et à convertir au format JSON.
  */
 const DetailsDonneesTacheDialog = ({ data }) => {
     const jsonString = JSON.stringify(data, null, 2);

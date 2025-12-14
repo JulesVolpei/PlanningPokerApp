@@ -6,6 +6,27 @@ on:
       - preprod
 
 jobs:
+  python-tests:
+    name: Run Python Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          if [ -f planningpoker/requirements.txt ]; then pip install -r planningpoker/requirements.txt; fi
+          pip install pytest httpx
+
+      - name: Run Pytest
+        run: python -m pytest tests/tests.py
+        env:
+          PYTHONPATH: ${{ github.workspace }}
   sphinx-doc:
     name: Generate Sphinx Documentation
     runs-on: ubuntu-latest

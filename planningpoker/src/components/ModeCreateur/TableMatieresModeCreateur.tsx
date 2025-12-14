@@ -2,8 +2,6 @@ import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs.tsx
 import TemplatePage from "@/components/ModeCreateur/TemplatePage.tsx";
 
 /**
- * Système d'onglets pour la navigation dans le Mode Créateur.
- *
  * Ce composant structure la page d'administration en trois sections distinctes accessibles via des onglets :
  * 1. **Tâches en cours** : Gestion des tâches actives.
  * 2. **Demande d'accès** : Validation des nouveaux participants.

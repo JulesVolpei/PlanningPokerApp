@@ -429,7 +429,7 @@ def creerEvaluation(eval: schemas.EvaluationCreate, db: Session = Depends(get_se
                 return {"message": "Carte café, vote relancé !", "vote": voteEnregistre}
             valeursFiltrees = [
                 i for i in valeursVote
-                if i is not "?"
+                if i != "?"
             ]
 
             if not valeursFiltrees:

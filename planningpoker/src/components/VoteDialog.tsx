@@ -6,13 +6,12 @@ import { Coffee } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
- * Affiche la grille de sélection des cartes pour le Planning Poker.
- *
- * Ce composant présente les valeurs de la suite de Fibonacci, ainsi que les options spéciales sous forme de cartes interactives.
+ * Ce composant présente les valeurs de vote suivant : 0, 1, 2, 3, 5, 8, 13, 20, 40, 100,
+ * ainsi que les cartes spéciales "Café" (relance) et "?" (incertitude, vote non comptabilisé).
  *
  * @category Composants/Vote
- * @param {any} props - Les propriétés du composant.
- * @returns {JSX.Element} Le contenu du dialogue de vote.
+ * @param {Object} props - Les propriétés du composant (tache : informations de la tâche | onSubmit : fonction appelée lors de la validation)
+ * @returns {JSX.Element} Le contenu du dialogue de vote avec la grille de cartes.
  */
 const VoteDialogContent = ({ tache, onSubmit }) => {
     const [selection, setSelection] = useState(null);

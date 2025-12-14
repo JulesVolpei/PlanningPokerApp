@@ -17,8 +17,6 @@ import {OrbitProgress} from "react-loading-indicators";
 import * as React from "react";
 
 /**
- * Tableau de gestion des demandes d'accès.
- *
  * Ce composant liste toutes les demandes "En attente" pour les tâches créées par l'utilisateur connecté.
  * Il offre deux actions pour chaque demande :
  * - **Valider** : Donne l'accès à l'utilisateur et ferme la demande.

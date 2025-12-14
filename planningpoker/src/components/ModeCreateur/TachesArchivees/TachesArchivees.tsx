@@ -9,17 +9,16 @@ import AffichageTaches from "@/components/AffichageTaches.tsx";
 
 
 /**
- * Vue des tâches terminées et archivées.
- *
- * Ce composant a pour but d'afficher l'historique des sessions de Planning Poker
+ * Ce composant permet d'afficher l'historique des sessions de planning poker
  * qui ont été clôturées.
+ * Les tâches affichées sont des tâches créées par l'utilisateur et le bouton permettant initialement
+ * d'accéder au vote est remplacé pour relancer le vote de la tâche.
+ * Un bouton est également présent pour enregistrer les données de votes.
  *
- * @remarks
- * Pas encore développé dans l'application.
  *
  * @category Composants/ModeCreateur
  * @param {props} props - Les informations de l'utilisateur.
- * @returns {JSX.Element} La structure de la page d'archives.
+ * @returns {JSX.Element} La structure de la page d'archives des tâches avec une barre de recherche pour filtrer les résultats.
  */
 const TachesArchivees = ({informationUtilisateur}) => {
     const [recherche, setRecherche] = useState<string>('');
