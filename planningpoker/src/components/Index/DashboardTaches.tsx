@@ -25,7 +25,8 @@ const DashboardTaches = ({ titre }) => {
     const [pageActuelle, setPageActuelle] = useState(1);
     const nombreDeTachesParPage = 6;
     let donnees = [];
-    const idTaches = []
+    let donneesFiltrees = [];
+    const idTaches = [];
 
 
     const listeTacheQuery = () => {
@@ -36,6 +37,8 @@ const DashboardTaches = ({ titre }) => {
         });
     };
 
+
+
     const test = listeTacheQuery();
 
     if (test.isSuccess) {
@@ -43,8 +46,11 @@ const DashboardTaches = ({ titre }) => {
         donnees.map((donnee, cmpt) => {
             idTaches.push(donnee.createurId);
         })
+        donneesFiltrees = donnees.filter(tache =>
+            tache.titre.toLowerCase().includes(recherche.toLowerCase())
+        );
     }
-    console.log("Data dashboard : ", donnees);
+    console.log("Data dashboard : ", donneesFiltrees);
     return (
         <div className="w-full max-w-6xl mx-auto px-6 py-8">
             <h1 className="text-4xl font-bold bg-gradient-primary bg-clip-text text-black mb-8">
@@ -59,7 +65,7 @@ const DashboardTaches = ({ titre }) => {
 
             {test.isSuccess ? (
                 donnees.length > 0 ? (
-                    <AffichageTaches donnees={donnees} maxElement={6} listeIdTache={idTaches}/>
+                    <AffichageTaches donnees={donneesFiltrees} maxElement={6} listeIdTache={idTaches}/>
                 ) : <div className="text-center py-12 text-muted-foreground grid grid-cols-3 gap-4">
                     <p className="text-center py-12 text-muted-foreground"> No data ? (comme le meme) </p>
                 </div>

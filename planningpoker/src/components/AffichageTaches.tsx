@@ -52,18 +52,26 @@ const AffichageTaches = ({ donnees, maxElement, listeIdTache }) => {
         enabled: estConnecte && Boolean(utilisateur?.id),
         refetchInterval: 15000,
     });
-
-    const totalPages = Math.ceil(donnees.length / maxElement);
-
-    const debut = (page - 1) * maxElement;
-    const fin = debut + maxElement;
     const mapDemandes = {};
     if (demandesAcces) {
         demandesAcces.forEach(demande => {
             if(demande.tacheId) mapDemandes[demande.tacheId] = demande.statut;
         });
     }
-    const donneesPageAvecStatus = donnees.slice(debut, fin).map((tache) => {
+    const tachesVisibles = donnees.filter((tache) => {
+        const estPleine = tache.participantsActuels >= tache.nombreMaxParticipant;
+        const estCreateur = estConnecte && utilisateur && tache.createurId === utilisateur.id;
+        const aUnePlace = mapDemandes[tache.id] === "acceptee";
+        const aAcces = estCreateur || aUnePlace;
+        return !(estPleine && !aAcces);
+    });
+
+    const totalPages = Math.ceil(tachesVisibles.length / maxElement);
+
+    const debut = (page - 1) * maxElement;
+    const fin = debut + maxElement;
+
+    const donneesPageAvecStatus = tachesVisibles.slice(debut, fin).map((tache) => {
         const tacheModifiee = { ...tache };
         if (estConnecte && utilisateur && tache.createurId === utilisateur.id) {
             tacheModifiee.access = "acceptee";
@@ -103,7 +111,7 @@ const AffichageTaches = ({ donnees, maxElement, listeIdTache }) => {
                 {donneesPageAvecStatus.length === 0 ? (
                     <div className="flex flex-col items-center justify-center w-full py-16">
                         <Label className="text-lg text-muted-foreground text-center">
-                            Aucune tâche à afficher pour le moment.
+                            Aucune tâche trouvée.
                         </Label>
                     </div>
                 ) : (
