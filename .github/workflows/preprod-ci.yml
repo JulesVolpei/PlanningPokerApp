@@ -21,7 +21,7 @@ jobs:
       - name: Install dependencies
         run: |
           if [ -f planningpoker/requirements.txt ]; then pip install -r planningpoker/requirements.txt; fi
-          pip install pytest httpx
+          pip install pytest httpx sqlmodel passlib bcrypt
 
       - name: Run Pytest
         run: python -m pytest planningpoker/tests/test.py
