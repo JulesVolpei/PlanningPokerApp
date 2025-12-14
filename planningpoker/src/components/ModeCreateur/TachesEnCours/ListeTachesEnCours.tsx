@@ -32,11 +32,15 @@ const ListeTachesEnCours = ({informationUtilisateur}) => {
     });
     const idTaches = []
     let donnees = [];
+    let donneesFiltrees = [];
     if (tacheUtilisateur.isSuccess) {
         donnees = tacheUtilisateur.data;
         donnees.map((donnee) => {
             idTaches.push(donnee.createurId);
         })
+        donneesFiltrees = donnees.filter(tache =>
+            tache.titre.toLowerCase().includes(recherche.toLowerCase())
+        );
     }
     return (
         <>
@@ -54,7 +58,7 @@ const ListeTachesEnCours = ({informationUtilisateur}) => {
                     </div>
                 </div>
 
-                {tacheUtilisateur.isSuccess ? <AffichageTaches donnees={donnees} maxElement={3} listeIdTache={idTaches} /> : <OrbitProgress color="#000000" size="medium" text="" textColor="" />}
+                {tacheUtilisateur.isSuccess ? <AffichageTaches donnees={donneesFiltrees} maxElement={3} listeIdTache={idTaches} /> : <OrbitProgress color="#000000" size="medium" text="" textColor="" />}
 
             </CardContent>
             <CardFooter>

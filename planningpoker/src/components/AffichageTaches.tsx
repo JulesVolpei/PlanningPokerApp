@@ -52,18 +52,26 @@ const AffichageTaches = ({ donnees, maxElement, listeIdTache }) => {
         enabled: estConnecte && Boolean(utilisateur?.id),
         refetchInterval: 15000,
     });
-
-    const totalPages = Math.ceil(donnees.length / maxElement);
-
-    const debut = (page - 1) * maxElement;
-    const fin = debut + maxElement;
     const mapDemandes = {};
     if (demandesAcces) {
         demandesAcces.forEach(demande => {
             if(demande.tacheId) mapDemandes[demande.tacheId] = demande.statut;
         });
     }
-    const donneesPageAvecStatus = donnees.slice(debut, fin).map((tache) => {
+    const tachesVisibles = donnees.filter((tache) => {
+        const estPleine = tache.participantsActuels >= tache.nombreMaxParticipant;
+        const estCreateur = estConnecte && utilisateur && tache.createurId === utilisateur.id;
+        const aUnePlace = mapDemandes[tache.id] === "acceptee";
+        const aAcces = estCreateur || aUnePlace;
+        return !(estPleine && !aAcces);
+    });
+
+    const totalPages = Math.ceil(tachesVisibles.length / maxElement);
+
+    const debut = (page - 1) * maxElement;
+    const fin = debut + maxElement;
+
+    const donneesPageAvecStatus = tachesVisibles.slice(debut, fin).map((tache) => {
         const tacheModifiee = { ...tache };
         if (estConnecte && utilisateur && tache.createurId === utilisateur.id) {
             tacheModifiee.access = "acceptee";
@@ -98,19 +106,26 @@ const AffichageTaches = ({ donnees, maxElement, listeIdTache }) => {
             console.error(error);
         }
     };
-    console.log(`Participants : ${donneesPageAvecStatus[0].participantsActuels}`)
     return (
         <div className="flex flex-col gap-8">
-            <div className="text-center py-12 text-muted-foreground grid grid-cols-3 gap-6">
-                {donneesPageAvecStatus.map((donnee) => (
-                    <CarteTache
-                        key={donnee.id}
-                        donneesTache={donnee}
-                        onClickDetail={() => ouvrirDialog(donnee)}
-                        onClickVote={() => ouvrirDialogVote(donnee)}
-                    />
-                ))}
-            </div>
+                {donneesPageAvecStatus.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center w-full py-16">
+                        <Label className="text-lg text-muted-foreground text-center">
+                            Aucune tâche trouvée.
+                        </Label>
+                    </div>
+                ) : (
+                    <div className="text-center py-12 text-muted-foreground grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {donneesPageAvecStatus.map((donnee) => (
+                            <CarteTache
+                                key={donnee.id}
+                                donneesTache={donnee}
+                                onClickDetail={() => ouvrirDialog(donnee)}
+                                onClickVote={() => ouvrirDialogVote(donnee)}
+                            />
+                        ))}
+                    </div>
+                )}
             <Pagination>
                 <PaginationContent>
                     <PaginationItem>
