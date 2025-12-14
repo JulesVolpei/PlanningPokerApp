@@ -1,0 +1,71 @@
+name: Preprod Documentation
+
+on:
+  push:
+    branches:
+      - preprod
+
+jobs:
+  sphinx-doc:
+    name: Generate Sphinx Documentation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          if [ -f planningpoker/requirements.txt ]; then pip install -r planningpoker/requirements.txt; fi
+          pip install sphinx sphinx-autobuild sphinx-rtd-theme sphinxcontrib-napoleon
+
+      - name: Build Sphinx documentation
+        working-directory: docs
+        run: |
+          export PYTHONPATH=$PYTHONPATH:../planningpoker/back
+          sphinx-build -b html . _build/html
+
+      - name: Upload Sphinx artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: sphinx-doc
+          path: docs/_build/html
+
+  typedoc-doc:
+    name: Generate TypeDoc Documentation
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./planningpoker
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: 'npm'
+          cache-dependency-path: planningpoker/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          npm install typedoc --save-dev 
+
+      - name: Run TypeDoc
+        run: |
+          npx typedoc
+
+      - name: Upload TypeDoc artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: typedoc-doc
+          path: planningpoker/docs
