@@ -69,3 +69,4 @@ jobs:
         with:
           name: typedoc-doc
           path: planningpoker/docs
+
