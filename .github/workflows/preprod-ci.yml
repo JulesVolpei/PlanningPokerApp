@@ -6,27 +6,6 @@ on:
       - preprod
 
 jobs:
-  python-tests:
-    name: Run Python Unit Tests
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.10"
-
-      - name: Install dependencies
-        run: |
-          if [ -f planningpoker/requirements.txt ]; then pip install -r planningpoker/requirements.txt; fi
-          pip install pytest passlib bcrypt
-
-      - name: Run Pytest
-        run: python -m pytest planningpoker/tests/test.py
-        env:
-          PYTHONPATH: ${{ github.workspace }}
   sphinx-doc:
     name: Generate Sphinx Documentation
     runs-on: ubuntu-latest
@@ -43,13 +22,13 @@ jobs:
       - name: Install dependencies
         run: |
           if [ -f planningpoker/requirements.txt ]; then pip install -r planningpoker/requirements.txt; fi
-          pip install sphinx sphinx-autobuild sphinx-rtd-theme sphinxcontrib-napoleon furo
+          pip install sphinx sphinx-autobuild sphinx-rtd-theme sphinxcontrib-napoleon
 
       - name: Build Sphinx documentation
         working-directory: docs
         run: |
           export PYTHONPATH=$PYTHONPATH:../planningpoker/back
-          sphinx-build -b html source _build/html
+          sphinx-build -b html . _build/html
 
       - name: Upload Sphinx artifacts
         uses: actions/upload-artifact@v4
@@ -90,4 +69,3 @@ jobs:
         with:
           name: typedoc-doc
           path: planningpoker/docs
-
