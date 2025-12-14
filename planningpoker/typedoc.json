@@ -1,0 +1,10 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["./src"],
+  "entryPointStrategy": "expand",
+  "out": "docs",
+  "name": "Documentation Planning Poker",
+  "includeVersion": true,
+  "readme": "README.md",
+  "cleanOutputDir": true
+}
