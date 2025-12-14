@@ -12,7 +12,6 @@ from fastapi.middleware.cors import CORSMiddleware
 import schemas
 import crud
 
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """
@@ -92,13 +91,13 @@ def connexion(data: schemas.ConnexionInscription, db: Session = Depends(get_sess
     :rtype: dict
     :raises HTTPException: Si l'utilisateur n'existe pas ou si le mot de passe est incorrect.
     """
-    utilisateurs = crud.getAllUsers(db)
-    utilisateurDansDB = next(
-        (utilisateur for utilisateur in utilisateurs if utilisateur.nom == data.nom and utilisateur.motDePasse == data.motDePasse),
-        None
-    )
-    if not utilisateurDansDB:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Utilisateur non existant ou mdp incorrect")
+    statement = select(Utilisateur).where(Utilisateur.nom == data.nom)
+    utilisateurDansDB = db.exec(statement).first()
+    if not utilisateurDansDB or not crud.verifierMDPEnClair(data.motDePasse, utilisateurDansDB.motDePasse):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Utilisateur non existant ou mot de passe incorrect"
+        )
     return {
         "message": "Connexion réussie !",
         "utilisateur": {
@@ -425,7 +424,18 @@ def creerEvaluation(eval: schemas.EvaluationCreate, db: Session = Depends(get_se
         if cmptVotes >= tache.nombreMaxParticipant:
             votes = db.exec(select(EvaluationTache).where(EvaluationTache.tacheId == eval.tacheId)).all()
             valeursVote = [str(i.valeur) for i in votes]
-            tache.noteFinale = crud.calculNoteFinale(valeursVote, tache.methodeEvaluation)
+            if any(i.lower() == "cafe" for i in valeursVote):
+                crud.relancerTacheArchivee(db, tache.id)
+                return {"message": "Carte café, vote relancé !", "vote": voteEnregistre}
+            valeursFiltrees = [
+                i for i in valeursVote
+                if i is not "?"
+            ]
+
+            if not valeursFiltrees:
+                tache.noteFinale = "?"
+            else:
+                tache.noteFinale = crud.calculNoteFinale(valeursVote, tache.methodeEvaluation)
             tache.statut = "archivee"
             db.add(tache)
             db.commit()

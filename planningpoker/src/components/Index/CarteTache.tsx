@@ -139,9 +139,9 @@ const CarteTache = ({ donneesTache, onClickDetail, onClickVote }) => {
                 <CardTitle>{donneesTache.titre}</CardTitle>
             </CardHeader>
             <CardContent>
-                {estArchivee && (
+                {estArchivee ? (
                     <DetailsDonneesTacheDialog data={donneesTache}/>
-                )}
+                ) : donneesTache.description}
             </CardContent>
             <CardFooter className="flex-col grid grid-cols-2 gap-6">
                 <Button>
