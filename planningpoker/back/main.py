@@ -17,6 +17,11 @@ import crud
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    """
+    Cette fonction gère le cycle de vie de l'application FastAPI.
+
+    Elle est exécutée au démarrage du serveur et à l'arrêt du serveur
+    """
     print("D2MARRAGE SERVEUR ATTENTION POUSSEZ VOUS")
     yield  # Serveur qui tourne en mode beyblade
     print("Arrêt du serveur ... Avis Interstellar ?")
@@ -33,14 +38,37 @@ app.add_middleware(
 
 @app.get("/")
 def on_startup():
+    """
+    Cette fonction exécute l'initialisation de la base de données au lancement du serveur via `initDb()`.
+    """
     initDb()
 
 @app.get("/users", response_model=list[schemas.Utilisateur])
 async def getUsers(db: Session = Depends(get_session)):
+    """
+    Cette fonction permet de récupérer tous les utilisateurs présents dans la base de données.
+
+    :param db: Session de connexion à la base de données.
+    :type db: Session
+    :return: Liste des utilisateurs enregistrés.
+    :rtype: list[Utilisateur]
+    """
     return crud.getAllUsers(db)
 
 @app.get("/taches", response_model=list[schemas.Taches])
 async def getTaches(db: Session = Depends(get_session)):
+    """
+    Cette fonction permet de récupérer l'ensemble des tâches stockées dans la base de données.
+
+    \nLes champs ajoutés sont :
+    \n- ``participantsActuels`` : nombre de participants acceptés.
+    \n- ``nombreVotes`` : nombre total d'évaluations.
+
+    :param db: Session de connexion à la base de données.
+    :type db: Session
+    :return: Liste de toutes les tâches.
+    :rtype: list[Tache]
+    """
     tachesDb = crud.getAllTache(db)
     tachesAvecInfos = []
     for tache in tachesDb:
@@ -55,6 +83,17 @@ async def getTaches(db: Session = Depends(get_session)):
 
 @app.post("/authentification/connexion")
 def connexion(data: schemas.ConnexionInscription, db: Session = Depends(get_session)):
+    """
+    Cette fonction gère l'authentification d'un utilisateur en vérifiant son nom et son mot de passe.
+
+    :param data: Informations de connexion (nom et mot de passe).
+    :type data: ConnexionInscription
+    :param db: Session de connexion à la base de données.
+    :type db: Session
+    :return: Message de confirmation et informations sur l'utilisateur connecté.
+    :rtype: dict
+    :raises HTTPException: Si l'utilisateur n'existe pas ou si le mot de passe est incorrect.
+    """
     utilisateurs = crud.getAllUsers(db)
     utilisateurDansDB = next(
         (utilisateur for utilisateur in utilisateurs if utilisateur.nom == data.nom and utilisateur.motDePasse == data.motDePasse),
@@ -72,6 +111,17 @@ def connexion(data: schemas.ConnexionInscription, db: Session = Depends(get_sess
 
 @app.post("/authentification/inscription")
 def inscription(data: schemas.ConnexionInscription, db: Session = Depends(get_session)):
+    """
+    Cette fonction gère l'inscription d'un utilisateur si son nom n'existe pas déjà dans la base de données.
+
+    :param data: Informations de connexion (nom et mot de passe).
+    :type data: ConnexionInscription
+    :param db: Session de connexion à la base de données.
+    :type db: Session
+    :return: Message de succès et informations sur le nouvel utilisateur.
+    :rtype: dict
+    :raises HTTPException: Si le nom est déjà utilisé.
+    """
     utilisateurs = crud.getAllUsers(db)
     utilisateursDansDB = next(
         (utilisateur for utilisateur in utilisateurs if utilisateur.nom == data.nom),
@@ -90,6 +140,16 @@ def inscription(data: schemas.ConnexionInscription, db: Session = Depends(get_se
 
 @app.get("/taches/user/{user_id}", response_model=list[schemas.Taches])
 def getUserTaches(user_id: int, db: Session = Depends(get_session)):
+    """
+    Cette fonction permet de récupérer les tâches créées par un utilisateur donné.
+
+    :param user_id: Identifiant de l'utilisateur
+    :type user_id: int
+    :param db: Session de connexion à la base de données.
+    :type db: Session
+    :return: Liste des tâches de l'utilisateur
+    :rtype: list[Tache]
+    """
     tachesDb = crud.getTachesWithUserId(db, user_id)
     tachesAvecInfos = []
     for tache in tachesDb:
@@ -101,9 +161,19 @@ def getUserTaches(user_id: int, db: Session = Depends(get_session)):
         tachesAvecInfos.append(dictTache)
     return tachesAvecInfos
 
-
 @app.post("/taches/creer")
-def creerTache(tache: schemas.TacheCreate, db: Session = Depends(get_session)):
+def creerTache(tache: Taches, db: Session = Depends(get_session)):
+    """
+    Cette fonction permet de créer une tâche. Les attributs du type Tache sont initialisés à partir des informations fournies par l'utilisateur.
+
+   :param tache: Objet contenant les informations fournies par l'utilisateur pour la création d'une tâche.
+   :type tache: Taches
+   :param db: Session de connexion à la base de données.
+   :type db: Session
+   :return: Message de succès et la nouvelle tâche.
+   :rtype: dict
+
+    """
     nouvelleTache = Tache(
         titre=tache.titre,
         description=tache.description,
@@ -124,6 +194,17 @@ def creerTache(tache: schemas.TacheCreate, db: Session = Depends(get_session)):
 
 @app.get("/taches/{tache_id}/createur", response_model=schemas.Utilisateur)
 def getCreateurTache(tache_id: int, db: Session = Depends(get_session)):
+    """
+    Cette fonction retourne le créateur d'une tâche.
+
+   :param tache_id: Identifiant de la tâche.
+   :type tache_id: int
+   :param db: Session de connexion à la base de données.
+   :type db: Session
+   :return: Utilisateur créateur de la tâche.
+   :rtype: Utilisateur
+   :raises HTTPException: Si la tâche ou le créateur n'existe pas.
+    """
     # Étape 1 : récupérer la tâche
     tache = db.get(Tache, tache_id)
     if not tache:
@@ -138,7 +219,19 @@ def getCreateurTache(tache_id: int, db: Session = Depends(get_session)):
 
 @app.post("/demandeAcces", response_model=schemas.DemandeAccessTache)
 def DemanderAcces(demande: schemas.DemandeAccessTacheCreate, db: Session = Depends(get_session)):
+    """
+    Cette fonction permet de créer une demande d'accès à une tâche pour un utilisateur.
 
+    Une vérification est effectuée afin d'éviter les doublons (une seule demande par utilisateur et par tâche).
+
+    :param demande: Données de la demande d'accès
+    :type demande: DemandeAccessTacheCreate
+    :param db: Session de connexion à la base de données
+    :type db: Session
+    :raises HTTPException: Si une demande existe déjà
+    :return: Demande d'accès créée
+    :rtype: DemandeAccessTache
+    """
     demandeExistante = db.exec(
         select(DemandeAccessTache)
         .where(DemandeAccessTache.utilisateurId == demande.utilisateurId)
@@ -163,6 +256,16 @@ def DemanderAcces(demande: schemas.DemandeAccessTacheCreate, db: Session = Depen
 
 @app.get("/demandeAcces/tache/{tacheId}", response_model=list[schemas.DemandeAccessTache])
 def getDemandeParTache(tacheId: int, db: Session = Depends(get_session)):
+    """
+    Cette fonction permet de récupérer toutes les demandes d'accès associées à une tâche donnée.
+
+    :param tacheId: Identifiant de la tâche
+    :type tacheId: int
+    :param db: Session de connexion à la base de données
+    :type db: Session
+    :return: Liste des demandes d'accès pour la tâche
+    :rtype: list[DemandeAccessTache]
+    """
     return db.exec(
         select(DemandeAccessTache).where(DemandeAccessTache.tacheId == tacheId)
     ).all()
@@ -170,12 +273,32 @@ def getDemandeParTache(tacheId: int, db: Session = Depends(get_session)):
 # J'ai renommé cette fonction car elle avait le même nom que la précédente !
 @app.get("/demandeAcces/utilisateur/{utilisateurID}", response_model=list[schemas.DemandeAccessTache])
 def getDemandeParUtilisateur(utilisateurID: int, db: Session = Depends(get_session)):
+    """
+    Cette fonction permet de récupérer toutes les demandes d'accès effectuées par un utilisateur.
+
+    :param utilisateurID: Identifiant de l'utilisateur
+    :type utilisateurID: int
+    :param db: Session de connexion à la base de données
+    :type db: Session
+    :return: Liste des demandes d'accès de l'utilisateur
+    :rtype: list[DemandeAccessTache]
+    """
     return db.exec(
         select(DemandeAccessTache).where(DemandeAccessTache.utilisateurId == utilisateurID)
     ).all()
 
 @app.get("/demandeAcces/createur/{utilisateurID}", response_model=list[schemas.DemandeAccessTacheDetail])
 def demandesCreateur(utilisateurID: int, db: Session = Depends(get_session)):
+    """
+    Cette foncion permet de récupérer toutes les demandes d'accès liées aux tâches créées par un utilisateur donné.
+
+    :param utilisateurID: Identifiant du créateur des tâches
+    :type utilisateurID: int
+    :param db: Session de connexion à la base de données
+    :type db: Session
+    :return: Liste des demandes d'accès pour les tâches du créateur
+    :rtype: list[DemandeAccessTacheDetail]
+    """
     requete = db.exec(
         select(DemandeAccessTache)
         .join(Tache, Tache.id == DemandeAccessTache.tacheId)
@@ -186,6 +309,19 @@ def demandesCreateur(utilisateurID: int, db: Session = Depends(get_session)):
 
 @app.put("/demandeAcces/{demandeId}/accepter")
 def accepterDemande(demandeId: int, db: Session = Depends(get_session)):
+    """
+    Cete fonction permet d'accepter une demande d'accès à une tâche.
+
+    Le statut de la demande passe à ``acceptee``.
+
+    :param demandeId: Identifiant de la demande
+    :type demandeId: int
+    :param db: Session de connexion à la base de données
+    :type db: Session
+    :raises HTTPException: Si la demande n'existe pas
+    :return: Message de confirmation et demande mise à jour
+    :rtype: dict
+    """
     demande = db.get(DemandeAccessTache, demandeId)
 
     if not demande:
@@ -200,6 +336,19 @@ def accepterDemande(demandeId: int, db: Session = Depends(get_session)):
 
 @app.put("/demandeAcces/{demandeId}/refuser")
 def refuserDemande(demandeId: int, db: Session = Depends(get_session)):
+    """
+    Cette fonction permet de refuser une demande d'accès à une tâche.
+
+    Le statut de la demande passe à ``refusee``.
+
+    :param demandeId: Identifiant de la demande
+    :type demandeId: int
+    :param db: Session de connexion à la base de données
+    :type db: Session
+    :raises HTTPException: Si la demande n'existe pas
+    :return: Message de confirmation et demande mise à jour
+    :rtype: dict
+    """
     demande = db.get(DemandeAccessTache, demandeId)
 
     if not demande:
@@ -215,6 +364,16 @@ def refuserDemande(demandeId: int, db: Session = Depends(get_session)):
 
 @app.get("/demandeAcces/tache/{tacheId}/acceptees")
 def demandesAcceptees(tacheId: int, db: Session = Depends(get_session)):
+    """
+    Cette fonction permet de récupérer toutes les demandes d'accès acceptées pour une tâche donnée.
+
+    :param tacheId: Identifiant de la tâche
+    :type tacheId: int
+    :param db: Session de connexion à la base de données
+    :type db: Session
+    :return: Liste des demandes acceptées
+    :rtype: list[DemandeAccessTache]
+    """
     demandes = db.exec(
         select(DemandeAccessTache)
         .where(DemandeAccessTache.tacheId == tacheId)
@@ -225,6 +384,18 @@ def demandesAcceptees(tacheId: int, db: Session = Depends(get_session)):
 
 @app.post("/evaluations/creer")
 def creerEvaluation(eval: schemas.EvaluationCreate, db: Session = Depends(get_session)):
+    """
+    Cette fonction permet de créer ou de mettre à jour une évaluation (vote) pour une tâche.
+
+    Si l'utilisateur a déjà voté pour la tâche, la valeur du vote est mise à jour.
+
+    :param eval: Données de l'évaluation
+    :type eval: EvaluationCreate
+    :param db: Session de connexion à la base de données
+    :type db: Session
+    :return: Message de confirmation et vote enregistré
+    :rtype: dict
+    """
     existe = db.exec(select(EvaluationTache).where(
         EvaluationTache.utilisateurId == eval.utilisateurId,
         EvaluationTache.tacheId == eval.tacheId
