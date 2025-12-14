@@ -1,0 +1,783 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="prev" title="Modèles de données (models.py)" href="models.html">
+
+    <!-- Generated with Sphinx 7.3.7 and Furo 2025.09.25 -->
+        <title>Schémas de données (schemas.py) - Planning Poker 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=580074bf" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">Planning Poker 0.1 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  <span class="sidebar-brand-text">Planning Poker 0.1 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main.html">Fonctions principales (main.py)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">Modèles de données (models.py)</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Schémas de données (schemas.py)</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="_sources/schemas.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="schemas-de-donnees-schemas-py">
+<h1>Schémas de données (schemas.py)<a class="headerlink" href="#schemas-de-donnees-schemas-py" title="Link to this heading">¶</a></h1>
+<p>Ce module définit les schémas Pydantic utilisés par l’API FastAPI.
+Les schémas permettent de :
+<span class="raw-html"><br /></span> - valider les données entrantes
+<span class="raw-html"><br /></span> - structurer les réponses de l’API
+<span class="raw-html"><br /></span> - faire la correspondance entre les modèles de base de données et les données exposées via l’API.</p>
+<hr class="docutils" />
+<section id="schemas-lies-aux-utilisateurs">
+<h2>Schémas liés aux utilisateurs<a class="headerlink" href="#schemas-lies-aux-utilisateurs" title="Link to this heading">¶</a></h2>
+<section id="utilisateur">
+<h3>Utilisateur<a class="headerlink" href="#utilisateur" title="Link to this heading">¶</a></h3>
+<p>Le schéma <code class="docutils literal notranslate"><span class="pre">Utilisateur</span></code> représente un utilisateur de l’application
+tel qu’il est échangé via l’API.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="schemas.Utilisateur">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">schemas.</span></span><span class="sig-name descname"><span class="pre">Utilisateur</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nom</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">motDePasse</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schemas.Utilisateur" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Schéma représentant un utilisateur.</p>
+<p>Ce schéma est utilisé pour les échanges API impliquant
+les informations d’un utilisateur.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>int</em>) – Identifiant unique de l’utilisateur</p></li>
+<li><p><strong>nom</strong> (<em>str</em>) – Nom de l’utilisateur</p></li>
+<li><p><strong>motDePasse</strong> (<em>str</em>) – Mot de passe de l’utilisateur</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="schemas.Utilisateur.Config">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Config</span></span><a class="headerlink" href="#schemas.Utilisateur.Config" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.Utilisateur.Config.from_attributes">
+<span class="sig-name descname"><span class="pre">from_attributes</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#schemas.Utilisateur.Config.from_attributes" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.Utilisateur.id">
+<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#schemas.Utilisateur.id" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.Utilisateur.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'from_attributes':</span> <span class="pre">True}</span></em><a class="headerlink" href="#schemas.Utilisateur.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.Utilisateur.motDePasse">
+<span class="sig-name descname"><span class="pre">motDePasse</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#schemas.Utilisateur.motDePasse" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.Utilisateur.nom">
+<span class="sig-name descname"><span class="pre">nom</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#schemas.Utilisateur.nom" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="connexion-et-inscription">
+<h3>Connexion et inscription<a class="headerlink" href="#connexion-et-inscription" title="Link to this heading">¶</a></h3>
+<p>Le schéma <code class="docutils literal notranslate"><span class="pre">ConnexionInscription</span></code> est utilisé pour l’authentification
+et l’inscription des utilisateurs.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="schemas.ConnexionInscription">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">schemas.</span></span><span class="sig-name descname"><span class="pre">ConnexionInscription</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nom</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">motDePasse</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schemas.ConnexionInscription" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Schéma utilisé pour la connexion et l’inscription d’un utilisateur.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nom</strong> (<em>str</em>) – Nom de l’utilisateur</p></li>
+<li><p><strong>motDePasse</strong> (<em>str</em>) – Mot de passe associé</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.ConnexionInscription.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#schemas.ConnexionInscription.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.ConnexionInscription.motDePasse">
+<span class="sig-name descname"><span class="pre">motDePasse</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#schemas.ConnexionInscription.motDePasse" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.ConnexionInscription.nom">
+<span class="sig-name descname"><span class="pre">nom</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#schemas.ConnexionInscription.nom" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+<hr class="docutils" />
+<section id="schemas-lies-aux-taches">
+<h2>Schémas liés aux tâches<a class="headerlink" href="#schemas-lies-aux-taches" title="Link to this heading">¶</a></h2>
+<section id="tache-lecture-enrichie">
+<h3>Tâche (lecture enrichie)<a class="headerlink" href="#tache-lecture-enrichie" title="Link to this heading">¶</a></h3>
+<p>Le schéma <code class="docutils literal notranslate"><span class="pre">Taches</span></code> représente une tâche telle qu’elle est retournée
+par l’API, incluant des informations calculées dynamiquement.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="schemas.Taches">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">schemas.</span></span><span class="sig-name descname"><span class="pre">Taches</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">titre</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">statut</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">createurId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nombreMaxParticipant</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">methodeEvaluation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">participantsActuels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nombreVotes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schemas.Taches" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Schéma représentant une tâche enrichie retournée par l’API.</p>
+<p>Ce schéma contient :
+- les champs persistés en base de données
+- des champs calculés dynamiquement par l’API</p>
+<p>Champs calculés :
+- <code class="docutils literal notranslate"><span class="pre">participantsActuels</span></code> : nombre de participants acceptés
+- <code class="docutils literal notranslate"><span class="pre">nombreVotes</span></code> : nombre total d’évaluations</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>int</em>) – Identifiant unique de la tâche</p></li>
+<li><p><strong>titre</strong> (<em>str</em>) – Titre de la tâche</p></li>
+<li><p><strong>description</strong> (<em>str</em>) – Description de la tâche</p></li>
+<li><p><strong>statut</strong> (<em>str</em>) – Statut actuel de la tâche</p></li>
+<li><p><strong>createurId</strong> (<em>int</em>) – Identifiant du créateur de la tâche</p></li>
+<li><p><strong>nombreMaxParticipant</strong> (<em>int</em>) – Nombre maximal de participants</p></li>
+<li><p><strong>methodeEvaluation</strong> (<em>str</em>) – Méthode d’évaluation utilisée</p></li>
+<li><p><strong>participantsActuels</strong> (<em>int</em>) – Nombre actuel de participants</p></li>
+<li><p><strong>nombreVotes</strong> (<em>int</em>) – Nombre total de votes</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="schemas.Taches.Config">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Config</span></span><a class="headerlink" href="#schemas.Taches.Config" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.Taches.Config.from_attributes">
+<span class="sig-name descname"><span class="pre">from_attributes</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#schemas.Taches.Config.from_attributes" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.Taches.createurId">
+<span class="sig-name descname"><span class="pre">createurId</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#schemas.Taches.createurId" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.Taches.description">
+<span class="sig-name descname"><span class="pre">description</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#schemas.Taches.description" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.Taches.id">
+<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#schemas.Taches.id" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.Taches.methodeEvaluation">
+<span class="sig-name descname"><span class="pre">methodeEvaluation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#schemas.Taches.methodeEvaluation" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.Taches.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'from_attributes':</span> <span class="pre">True}</span></em><a class="headerlink" href="#schemas.Taches.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.Taches.nombreMaxParticipant">
+<span class="sig-name descname"><span class="pre">nombreMaxParticipant</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#schemas.Taches.nombreMaxParticipant" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.Taches.nombreVotes">
+<span class="sig-name descname"><span class="pre">nombreVotes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#schemas.Taches.nombreVotes" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.Taches.participantsActuels">
+<span class="sig-name descname"><span class="pre">participantsActuels</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#schemas.Taches.participantsActuels" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.Taches.statut">
+<span class="sig-name descname"><span class="pre">statut</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#schemas.Taches.statut" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.Taches.titre">
+<span class="sig-name descname"><span class="pre">titre</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#schemas.Taches.titre" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="creation-d-une-tache">
+<h3>Création d’une tâche<a class="headerlink" href="#creation-d-une-tache" title="Link to this heading">¶</a></h3>
+<p>Le schéma <code class="docutils literal notranslate"><span class="pre">TacheCreate</span></code> est utilisé lors de la création
+d’une nouvelle tâche.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="schemas.TacheCreate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">schemas.</span></span><span class="sig-name descname"><span class="pre">TacheCreate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">titre</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">createurId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nombreMaxParticipant</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">statut</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'ouverte'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">methodeEvaluation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Moyenne'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schemas.TacheCreate" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Schéma utilisé pour la création d’une nouvelle tâche.</p>
+<p>Ce schéma contient uniquement les champs nécessaires
+à la création d’une tâche.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>titre</strong> (<em>str</em>) – Titre de la tâche</p></li>
+<li><p><strong>description</strong> (<em>str</em>) – Description de la tâche</p></li>
+<li><p><strong>createurId</strong> (<em>int</em>) – Identifiant du créateur</p></li>
+<li><p><strong>nombreMaxParticipant</strong> (<em>int</em>) – Nombre maximal de participants</p></li>
+<li><p><strong>statut</strong> (<em>str</em>) – Statut initial de la tâche</p></li>
+<li><p><strong>methodeEvaluation</strong> (<em>str</em>) – Méthode d’évaluation</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.TacheCreate.createurId">
+<span class="sig-name descname"><span class="pre">createurId</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#schemas.TacheCreate.createurId" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.TacheCreate.description">
+<span class="sig-name descname"><span class="pre">description</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#schemas.TacheCreate.description" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.TacheCreate.methodeEvaluation">
+<span class="sig-name descname"><span class="pre">methodeEvaluation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#schemas.TacheCreate.methodeEvaluation" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.TacheCreate.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#schemas.TacheCreate.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.TacheCreate.nombreMaxParticipant">
+<span class="sig-name descname"><span class="pre">nombreMaxParticipant</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#schemas.TacheCreate.nombreMaxParticipant" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.TacheCreate.statut">
+<span class="sig-name descname"><span class="pre">statut</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#schemas.TacheCreate.statut" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.TacheCreate.titre">
+<span class="sig-name descname"><span class="pre">titre</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#schemas.TacheCreate.titre" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="mise-a-jour-d-une-tache">
+<h3>Mise à jour d’une tâche<a class="headerlink" href="#mise-a-jour-d-une-tache" title="Link to this heading">¶</a></h3>
+<p>Le schéma <code class="docutils literal notranslate"><span class="pre">TacheUpdate</span></code> permet la mise à jour partielle
+des informations d’une tâche existante.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="schemas.TacheUpdate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">schemas.</span></span><span class="sig-name descname"><span class="pre">TacheUpdate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">titre</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">statut</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nombreMaxParticipant</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">methodeEvaluation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schemas.TacheUpdate" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Schéma utilisé pour la mise à jour partielle d’une tâche.</p>
+<p>Tous les champs sont optionnels afin de permettre
+une modification partielle (PATCH logique).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>titre</strong> (<em>str</em><em> | </em><em>None</em>) – Nouveau titre de la tâche</p></li>
+<li><p><strong>description</strong> (<em>str</em><em> | </em><em>None</em>) – Nouvelle description</p></li>
+<li><p><strong>statut</strong> (<em>str</em><em> | </em><em>None</em>) – Nouveau statut</p></li>
+<li><p><strong>nombreMaxParticipant</strong> (<em>int</em><em> | </em><em>None</em>) – Nouveau nombre maximal de participants</p></li>
+<li><p><strong>methodeEvaluation</strong> (<em>str</em><em> | </em><em>None</em>) – Nouvelle méthode d’évaluation</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.TacheUpdate.description">
+<span class="sig-name descname"><span class="pre">description</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#schemas.TacheUpdate.description" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.TacheUpdate.methodeEvaluation">
+<span class="sig-name descname"><span class="pre">methodeEvaluation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#schemas.TacheUpdate.methodeEvaluation" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.TacheUpdate.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#schemas.TacheUpdate.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.TacheUpdate.nombreMaxParticipant">
+<span class="sig-name descname"><span class="pre">nombreMaxParticipant</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#schemas.TacheUpdate.nombreMaxParticipant" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.TacheUpdate.statut">
+<span class="sig-name descname"><span class="pre">statut</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#schemas.TacheUpdate.statut" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.TacheUpdate.titre">
+<span class="sig-name descname"><span class="pre">titre</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#schemas.TacheUpdate.titre" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+<hr class="docutils" />
+<section id="schemas-lies-aux-demandes-d-acces">
+<h2>Schémas liés aux demandes d’accès<a class="headerlink" href="#schemas-lies-aux-demandes-d-acces" title="Link to this heading">¶</a></h2>
+<section id="demande-d-acces-base">
+<h3>Demande d’accès (base)<a class="headerlink" href="#demande-d-acces-base" title="Link to this heading">¶</a></h3>
+<p>Le schéma <code class="docutils literal notranslate"><span class="pre">DemandeAccessTache</span></code> représente une demande d’accès
+à une tâche.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="schemas.DemandeAccessTache">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">schemas.</span></span><span class="sig-name descname"><span class="pre">DemandeAccessTache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">utilisateurId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tacheId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">statut</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schemas.DemandeAccessTache" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Schéma représentant une demande d’accès à une tâche.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>int</em>) – Identifiant de la demande</p></li>
+<li><p><strong>utilisateurId</strong> (<em>int</em>) – Identifiant de l’utilisateur demandeur</p></li>
+<li><p><strong>tacheId</strong> (<em>int</em>) – Identifiant de la tâche</p></li>
+<li><p><strong>statut</strong> (<em>str</em>) – Statut de la demande</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="schemas.DemandeAccessTache.Config">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Config</span></span><a class="headerlink" href="#schemas.DemandeAccessTache.Config" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.DemandeAccessTache.Config.from_attributes">
+<span class="sig-name descname"><span class="pre">from_attributes</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#schemas.DemandeAccessTache.Config.from_attributes" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.DemandeAccessTache.id">
+<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#schemas.DemandeAccessTache.id" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.DemandeAccessTache.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'from_attributes':</span> <span class="pre">True}</span></em><a class="headerlink" href="#schemas.DemandeAccessTache.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.DemandeAccessTache.statut">
+<span class="sig-name descname"><span class="pre">statut</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#schemas.DemandeAccessTache.statut" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.DemandeAccessTache.tacheId">
+<span class="sig-name descname"><span class="pre">tacheId</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#schemas.DemandeAccessTache.tacheId" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="schemas.DemandeAccessTache.utilisateurId">
+<span class="sig-name descname"><span class="pre">utilisateurId</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#schemas.DemandeAccessTache.utilisateurId" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="creation-d-une-demande-d-acces">
+<h3>Création d’une demande d’accès<a class="headerlink" href="#creation-d-une-demande-d-acces" title="Link to this heading">¶</a></h3>
+<p>Le schéma <code class="docutils literal notranslate"><span class="pre">DemandeAccessTacheCreate</span></code> est utilisé pour créer
+une nouvelle demande d’accès à une tâche</p>
+</section>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          <a class="prev-page" href="models.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Modèles de données (models.py)</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2025, Jules Volpei &amp; Eoin Brereton Hurley
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Schémas de données (schemas.py)</a><ul>
+<li><a class="reference internal" href="#schemas-lies-aux-utilisateurs">Schémas liés aux utilisateurs</a><ul>
+<li><a class="reference internal" href="#utilisateur">Utilisateur</a><ul>
+<li><a class="reference internal" href="#schemas.Utilisateur"><code class="docutils literal notranslate"><span class="pre">Utilisateur</span></code></a><ul>
+<li><a class="reference internal" href="#schemas.Utilisateur.Config"><code class="docutils literal notranslate"><span class="pre">Utilisateur.Config</span></code></a><ul>
+<li><a class="reference internal" href="#schemas.Utilisateur.Config.from_attributes"><code class="docutils literal notranslate"><span class="pre">Utilisateur.Config.from_attributes</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#schemas.Utilisateur.id"><code class="docutils literal notranslate"><span class="pre">Utilisateur.id</span></code></a></li>
+<li><a class="reference internal" href="#schemas.Utilisateur.model_config"><code class="docutils literal notranslate"><span class="pre">Utilisateur.model_config</span></code></a></li>
+<li><a class="reference internal" href="#schemas.Utilisateur.motDePasse"><code class="docutils literal notranslate"><span class="pre">Utilisateur.motDePasse</span></code></a></li>
+<li><a class="reference internal" href="#schemas.Utilisateur.nom"><code class="docutils literal notranslate"><span class="pre">Utilisateur.nom</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#connexion-et-inscription">Connexion et inscription</a><ul>
+<li><a class="reference internal" href="#schemas.ConnexionInscription"><code class="docutils literal notranslate"><span class="pre">ConnexionInscription</span></code></a><ul>
+<li><a class="reference internal" href="#schemas.ConnexionInscription.model_config"><code class="docutils literal notranslate"><span class="pre">ConnexionInscription.model_config</span></code></a></li>
+<li><a class="reference internal" href="#schemas.ConnexionInscription.motDePasse"><code class="docutils literal notranslate"><span class="pre">ConnexionInscription.motDePasse</span></code></a></li>
+<li><a class="reference internal" href="#schemas.ConnexionInscription.nom"><code class="docutils literal notranslate"><span class="pre">ConnexionInscription.nom</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#schemas-lies-aux-taches">Schémas liés aux tâches</a><ul>
+<li><a class="reference internal" href="#tache-lecture-enrichie">Tâche (lecture enrichie)</a><ul>
+<li><a class="reference internal" href="#schemas.Taches"><code class="docutils literal notranslate"><span class="pre">Taches</span></code></a><ul>
+<li><a class="reference internal" href="#schemas.Taches.Config"><code class="docutils literal notranslate"><span class="pre">Taches.Config</span></code></a><ul>
+<li><a class="reference internal" href="#schemas.Taches.Config.from_attributes"><code class="docutils literal notranslate"><span class="pre">Taches.Config.from_attributes</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#schemas.Taches.createurId"><code class="docutils literal notranslate"><span class="pre">Taches.createurId</span></code></a></li>
+<li><a class="reference internal" href="#schemas.Taches.description"><code class="docutils literal notranslate"><span class="pre">Taches.description</span></code></a></li>
+<li><a class="reference internal" href="#schemas.Taches.id"><code class="docutils literal notranslate"><span class="pre">Taches.id</span></code></a></li>
+<li><a class="reference internal" href="#schemas.Taches.methodeEvaluation"><code class="docutils literal notranslate"><span class="pre">Taches.methodeEvaluation</span></code></a></li>
+<li><a class="reference internal" href="#schemas.Taches.model_config"><code class="docutils literal notranslate"><span class="pre">Taches.model_config</span></code></a></li>
+<li><a class="reference internal" href="#schemas.Taches.nombreMaxParticipant"><code class="docutils literal notranslate"><span class="pre">Taches.nombreMaxParticipant</span></code></a></li>
+<li><a class="reference internal" href="#schemas.Taches.nombreVotes"><code class="docutils literal notranslate"><span class="pre">Taches.nombreVotes</span></code></a></li>
+<li><a class="reference internal" href="#schemas.Taches.participantsActuels"><code class="docutils literal notranslate"><span class="pre">Taches.participantsActuels</span></code></a></li>
+<li><a class="reference internal" href="#schemas.Taches.statut"><code class="docutils literal notranslate"><span class="pre">Taches.statut</span></code></a></li>
+<li><a class="reference internal" href="#schemas.Taches.titre"><code class="docutils literal notranslate"><span class="pre">Taches.titre</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#creation-d-une-tache">Création d’une tâche</a><ul>
+<li><a class="reference internal" href="#schemas.TacheCreate"><code class="docutils literal notranslate"><span class="pre">TacheCreate</span></code></a><ul>
+<li><a class="reference internal" href="#schemas.TacheCreate.createurId"><code class="docutils literal notranslate"><span class="pre">TacheCreate.createurId</span></code></a></li>
+<li><a class="reference internal" href="#schemas.TacheCreate.description"><code class="docutils literal notranslate"><span class="pre">TacheCreate.description</span></code></a></li>
+<li><a class="reference internal" href="#schemas.TacheCreate.methodeEvaluation"><code class="docutils literal notranslate"><span class="pre">TacheCreate.methodeEvaluation</span></code></a></li>
+<li><a class="reference internal" href="#schemas.TacheCreate.model_config"><code class="docutils literal notranslate"><span class="pre">TacheCreate.model_config</span></code></a></li>
+<li><a class="reference internal" href="#schemas.TacheCreate.nombreMaxParticipant"><code class="docutils literal notranslate"><span class="pre">TacheCreate.nombreMaxParticipant</span></code></a></li>
+<li><a class="reference internal" href="#schemas.TacheCreate.statut"><code class="docutils literal notranslate"><span class="pre">TacheCreate.statut</span></code></a></li>
+<li><a class="reference internal" href="#schemas.TacheCreate.titre"><code class="docutils literal notranslate"><span class="pre">TacheCreate.titre</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mise-a-jour-d-une-tache">Mise à jour d’une tâche</a><ul>
+<li><a class="reference internal" href="#schemas.TacheUpdate"><code class="docutils literal notranslate"><span class="pre">TacheUpdate</span></code></a><ul>
+<li><a class="reference internal" href="#schemas.TacheUpdate.description"><code class="docutils literal notranslate"><span class="pre">TacheUpdate.description</span></code></a></li>
+<li><a class="reference internal" href="#schemas.TacheUpdate.methodeEvaluation"><code class="docutils literal notranslate"><span class="pre">TacheUpdate.methodeEvaluation</span></code></a></li>
+<li><a class="reference internal" href="#schemas.TacheUpdate.model_config"><code class="docutils literal notranslate"><span class="pre">TacheUpdate.model_config</span></code></a></li>
+<li><a class="reference internal" href="#schemas.TacheUpdate.nombreMaxParticipant"><code class="docutils literal notranslate"><span class="pre">TacheUpdate.nombreMaxParticipant</span></code></a></li>
+<li><a class="reference internal" href="#schemas.TacheUpdate.statut"><code class="docutils literal notranslate"><span class="pre">TacheUpdate.statut</span></code></a></li>
+<li><a class="reference internal" href="#schemas.TacheUpdate.titre"><code class="docutils literal notranslate"><span class="pre">TacheUpdate.titre</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#schemas-lies-aux-demandes-d-acces">Schémas liés aux demandes d’accès</a><ul>
+<li><a class="reference internal" href="#demande-d-acces-base">Demande d’accès (base)</a><ul>
+<li><a class="reference internal" href="#schemas.DemandeAccessTache"><code class="docutils literal notranslate"><span class="pre">DemandeAccessTache</span></code></a><ul>
+<li><a class="reference internal" href="#schemas.DemandeAccessTache.Config"><code class="docutils literal notranslate"><span class="pre">DemandeAccessTache.Config</span></code></a><ul>
+<li><a class="reference internal" href="#schemas.DemandeAccessTache.Config.from_attributes"><code class="docutils literal notranslate"><span class="pre">DemandeAccessTache.Config.from_attributes</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#schemas.DemandeAccessTache.id"><code class="docutils literal notranslate"><span class="pre">DemandeAccessTache.id</span></code></a></li>
+<li><a class="reference internal" href="#schemas.DemandeAccessTache.model_config"><code class="docutils literal notranslate"><span class="pre">DemandeAccessTache.model_config</span></code></a></li>
+<li><a class="reference internal" href="#schemas.DemandeAccessTache.statut"><code class="docutils literal notranslate"><span class="pre">DemandeAccessTache.statut</span></code></a></li>
+<li><a class="reference internal" href="#schemas.DemandeAccessTache.tacheId"><code class="docutils literal notranslate"><span class="pre">DemandeAccessTache.tacheId</span></code></a></li>
+<li><a class="reference internal" href="#schemas.DemandeAccessTache.utilisateurId"><code class="docutils literal notranslate"><span class="pre">DemandeAccessTache.utilisateurId</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#creation-d-une-demande-d-acces">Création d’une demande d’accès</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=2709fde1"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>
