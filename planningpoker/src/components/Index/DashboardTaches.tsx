@@ -47,7 +47,7 @@ const DashboardTaches = ({ titre }) => {
             idTaches.push(donnee.createurId);
         })
         donneesFiltrees = donnees.filter(tache =>
-            tache.titre.toLowerCase().includes(recherche.toLowerCase())
+            tache.titre.toLowerCase().includes(recherche.toLowerCase()) && tache.statut !== "archivee"
         );
     }
     console.log("Data dashboard : ", donneesFiltrees);

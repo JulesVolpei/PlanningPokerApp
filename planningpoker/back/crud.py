@@ -15,6 +15,7 @@ définies dans le fichier ``main.py``.
 from sqlalchemy.orm import Session
 import models, schemas
 from sqlmodel import select
+import numpy as np
 
 def getAllUsers(db: Session):
     """
@@ -169,3 +170,103 @@ def getUserById(db: Session, user_id: int):
     :rtype: models.Utilisateur | None
     """
     return db.get(models.Utilisateur, user_id)
+
+def createEvaluation(db: Session, evaluation: schemas.EvaluationCreate):
+    dbEvaluation = models.EvaluationTache(
+        utilisateurId=evaluation.utilisateurId,
+        tacheId=evaluation.tacheId,
+        valeur=evaluation.valeur
+    )
+    db.add(dbEvaluation)
+    db.commit()
+    db.refresh(dbEvaluation)
+    tache = db.query(models.Tache).filter(models.Tache.id == evaluation.tacheId).first()
+
+    if tache:
+        cmptVotes = db.query(models.EvaluationTache).filter(models.EvaluationTache.tacheId == evaluation.tacheId).count()
+
+        if cmptVotes >= tache.nombreMaxParticipant:
+            print(f"Tâche #{tache.id} complète ! Archivage de la tâche !")
+            tache.statut = "archivee"
+            db.commit()
+            db.refresh(tache)
+    return dbEvaluation
+
+def calculNoteFinale(valeurs_votes: list[str], methode: str):
+    notes = [int(i) for i in valeurs_votes if i.isdigit()]
+    if not notes:
+        return {
+            "etat": "Echec",
+            "message": "Aucun vote."
+        }
+    arrayNotes = np.array(notes)
+    if methode == "Unanimité":
+        if len(set(notes)) == 1:
+            return {
+                "etat": "Reussite",
+                "message": str(notes[0])
+            }
+        else:
+            return {
+                "etat": "Echec",
+                "message": "Aucune unanimité trouvée."
+            }
+    if methode == "Moyenne":
+        return {
+            "etat": "Reussite",
+            "message": str(round(np.mean(arrayNotes), 1))
+        }
+    elif methode == "Médiane":
+        return {
+            "etat": "Reussite",
+            "message": str(np.median(arrayNotes))
+        }
+    elif methode == "Majorité absolue":
+        valeurs, comptes = np.unique(arrayNotes, return_counts=True)
+        indexMax = np.argmax(comptes)
+        topVote = valeurs[indexMax]
+        cmpt = comptes[indexMax]
+        if cmpt > len(notes) / 2:
+            return {
+                "etat": "Reussite",
+                "message": str(topVote)
+            }
+        return {
+            "etat": "Echec",
+            "messsage": "Désaccord (Pas de majorité absolue)"
+        }
+    elif methode == "Majorité relative":
+        valeurs, comptes = np.unique(arrayNotes, return_counts=True)
+        return {
+            "etat": "Reussite",
+            "message": str(valeurs[np.argmax(comptes)])
+        }
+    return {
+        "etat": "Echec",
+        "message": "Indéfini."
+    }
+
+def getTachesArchiveesCreateur(db: Session, createur_id: int):
+    taches = db.query(models.Tache).filter(models.Tache.createurId == createur_id).all()
+    tachesArchivees = []
+    for tache in taches:
+        cmptVotes = len(tache.votes)
+        if cmptVotes >= tache.nombreMaxParticipant and tache.nombreMaxParticipant > 0:
+            valeurs = [i.valeur for i in tache.votes]
+            noteFinale = calculNoteFinale(valeurs, tache.methodeEvaluation)
+            dictTaches = tache.__dict__.copy()
+            dictTaches['noteFinale'] = noteFinale
+            dictTaches['statut'] = 'archivee'
+            tachesArchivees.append(dictTaches)
+    return tachesArchivees
+
+def relancerTacheArchivee(db: Session, tache_id: int):
+    tache = db.query(models.Tache).filter(models.Tache.id == tache_id).first()
+    if not tache:
+        return None
+    tache.statut = "ouverte"
+    db.query(models.EvaluationTache).filter(models.EvaluationTache.tacheId == tache_id).delete(synchronize_session=False)
+
+    db.commit()
+    db.refresh(tache)
+    return tache

@@ -77,6 +77,7 @@ class Tache(Base):
     createur = relationship("Utilisateur", back_populates="tacheCreee")
     demandeAccess = relationship("DemandeAccessTache", back_populates="tache")
     evaluations = relationship("EvaluationTache", back_populates="tache")
+    votes = relationship("EvaluationTache", back_populates="tache")
 
 
 class EvaluationTache(Base):
