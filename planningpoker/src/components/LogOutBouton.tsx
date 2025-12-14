@@ -2,6 +2,7 @@ import {accessAuthentification} from "@/context/AuthentificationContext.tsx";
 import {toast} from "sonner";
 import { LogOut } from 'lucide-react';
 import {Button} from "@/components/ui/button.tsx";
+import {useNavigate} from "react-router";
 
 /**
  * Bouton de déconnexion.
@@ -15,8 +16,10 @@ import {Button} from "@/components/ui/button.tsx";
  */
 const LogOutBouton = () => {
     const {deconnexion} = accessAuthentification();
+    const redirection = useNavigate();
     const hangleLogOut = () => {
         try {
+            redirection("/");
             deconnexion();
             toast.success("Déconnexion");
         } catch (e) {
