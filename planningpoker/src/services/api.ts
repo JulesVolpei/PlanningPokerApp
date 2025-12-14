@@ -234,3 +234,38 @@ export async function envoyerEvaluation(utilisateurId: number, tacheId: number, 
 
     return await reponse.json();
 }
+
+/**
+ * Récupère les tâches archivées d'un créateur avec leurs notes finales.
+ *
+ * @category Tâches
+ * @param {number} createurId - L'ID du créateur.
+ * @returns {Promise<any[]>} Liste des tâches archivées.
+ */
+export async function getTachesArchivees(createurId: number) {
+    const reponse = await fetch(`${APIURL}/taches/archivees/createur/${createurId}`, {
+        method: "GET",
+    });
+
+    if (!reponse.ok) {
+        throw new Error("Impossible de récupérer les archives");
+    }
+    return reponse.json();
+}
+
+/**
+ * Relance une tâche archivée : remet le statut à "ouverte" et supprime les votes.
+ *
+ * @category Tâches
+ * @param {number} tacheId - L'ID de la tâche à relancer.
+ */
+export async function relancerTache(tacheId: number) {
+    const reponse = await fetch(`${APIURL}/taches/${tacheId}/relancer`, {
+        method: "PUT",
+    });
+
+    if (!reponse.ok) {
+        throw new Error("Erreur lors de la relance de la tâche");
+    }
+    return reponse.json();
+}

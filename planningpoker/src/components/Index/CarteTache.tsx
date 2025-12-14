@@ -1,5 +1,5 @@
 import {Button} from "@/components/ui/button.tsx"
-import {MailOpen, Users} from 'lucide-react';
+import {Copy, Download, FileJson, MailOpen, RotateCcw, Users} from 'lucide-react';
 import { LockKeyhole } from 'lucide-react';
 import { LockKeyholeOpen } from 'lucide-react';
 import { PenOff } from 'lucide-react';
@@ -19,7 +19,17 @@ import {
 import {Label} from "@/components/ui/label.tsx";
 import {accessAuthentification} from "@/context/AuthentificationContext.tsx";
 import {toast} from "sonner";
-import {demanderAccessTache} from "@/services/api.ts";
+import {demanderAccessTache, relancerTache} from "@/services/api.ts";
+import {useQueryClient} from "@tanstack/react-query";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger
+} from "@/components/ui/dialog.tsx";
+import DetailsDonneesTacheDialog from "@/components/DetailsDonneesTacheDialog.tsx";
 
 /**
  * Type représentant les différents niveaux d'accès possibles à une tâche.
@@ -28,7 +38,7 @@ import {demanderAccessTache} from "@/services/api.ts";
  * - `"accepte"` : L'utilisateur a accès à la tâche.
  * - `"refuse"` : L'accès à la tâche a été refusé.
  */
-type AccessType = "enAttente" | "acceptee" | "refuse" | "full" | "demanderAcces";
+type AccessType = "enAttente" | "acceptee" | "refusee" | "full" | "demanderAcces";
 
 /**
  * Carte interactive représentant une tâche.
@@ -47,6 +57,7 @@ type AccessType = "enAttente" | "acceptee" | "refuse" | "full" | "demanderAcces"
  */
 const CarteTache = ({ donneesTache, onClickDetail, onClickVote }) => {
     const { utilisateur, estConnecte } = accessAuthentification();
+    const queryClient = useQueryClient();
     console.log("Data tache : ", donneesTache);
     const handleDemandeAccess = async () => {
         if (!estConnecte) {
@@ -86,7 +97,7 @@ const CarteTache = ({ donneesTache, onClickDetail, onClickVote }) => {
                 <Label className="cursor-pointer"> Accéder </Label>
             </Button>
         ),
-        refuse: (
+        refusee: (
             <Button className="bg-red-600 hover:bg-red-600">
                 <Ban />
                 <Label className="cursor-pointer"> Refusé </Label>
@@ -105,6 +116,20 @@ const CarteTache = ({ donneesTache, onClickDetail, onClickVote }) => {
             </Button>
         )
     };
+    const estCreateur = estConnecte && utilisateur?.id === donneesTache.createurId;
+    const estArchivee = donneesTache.statut === "archivee";
+    const handleRelancer = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+        try {
+            await relancerTache(donneesTache.id);
+            await queryClient.invalidateQueries({ queryKey: ["taches"] });
+            await queryClient.invalidateQueries({ queryKey: ["tachesArchivees"] });
+            toast.success("Le vote a été relancé !");
+        } catch (error) {
+            toast.error("Impossible de relancer la tâche");
+            console.error(error);
+        }
+    };
     return (
         <Card
             className="w-full max-w-sm cursor-pointer hover:shadow-lg transition"
@@ -112,21 +137,31 @@ const CarteTache = ({ donneesTache, onClickDetail, onClickVote }) => {
         >
             <CardHeader>
                 <CardTitle>{donneesTache.titre}</CardTitle>
-                <CardDescription>
-                    Created by ...
-                </CardDescription>
             </CardHeader>
             <CardContent>
-                <Label className="flex justify-center w-full">
-                    Afficher l'état de la tâche
-                </Label>
+                {estArchivee && (
+                    <DetailsDonneesTacheDialog data={donneesTache}/>
+                )}
             </CardContent>
-            <CardFooter className="flex-col gap-2 grid grid-cols-2 gap-6">
+            <CardFooter className="flex-col grid grid-cols-2 gap-6">
                 <Button>
-                    <Label> {donneesTache.participantsActuels} / {donneesTache.nombreMaxParticipant} </Label>
+                    <Label> {donneesTache.statut !== "archivee" ? `${donneesTache.participantsActuels} / ${donneesTache.nombreMaxParticipant}` : `${donneesTache.nombreMaxParticipant} / ${donneesTache.nombreMaxParticipant}`} </Label>
                     <Users />
                 </Button>
-                {donneesTache.access ? differentsBoutonsAcces[donneesTache.access] : differentsBoutonsAcces["demanderAcces"]}
+                {estCreateur && estArchivee ? (
+                    <Button
+                        className="w-full gap-2"
+                        variant="default"
+                        onClick={handleRelancer}
+                    >
+                        <RotateCcw className="w-4 h-4" />
+                        <Label className="cursor-pointer">Relancer</Label>
+                    </Button>
+                ) : (
+                    donneesTache.access
+                        ? differentsBoutonsAcces[donneesTache.access]
+                        : differentsBoutonsAcces["demanderAcces"]
+                )}
             </CardFooter>
         </Card>
     );

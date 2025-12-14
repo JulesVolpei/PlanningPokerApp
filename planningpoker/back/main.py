@@ -1,7 +1,5 @@
 from contextlib import asynccontextmanager
-from contextlib import contextmanager
-from multiprocessing.managers import Token
-
+from sqlalchemy import func
 from fastapi import FastAPI, HTTPException, Depends, status
 from sqlmodel import Session, select
 from models import Utilisateur
@@ -162,7 +160,7 @@ def getUserTaches(user_id: int, db: Session = Depends(get_session)):
     return tachesAvecInfos
 
 @app.post("/taches/creer")
-def creerTache(tache: Taches, db: Session = Depends(get_session)):
+def creerTache(tache: schemas.TacheCreate, db: Session = Depends(get_session)):
     """
     Cette fonction permet de créer une tâche. Les attributs du type Tache sont initialisés à partir des informations fournies par l'utilisateur.
 
@@ -400,20 +398,48 @@ def creerEvaluation(eval: schemas.EvaluationCreate, db: Session = Depends(get_se
         EvaluationTache.utilisateurId == eval.utilisateurId,
         EvaluationTache.tacheId == eval.tacheId
     )).first()
-
     if existe:
         existe.valeur = eval.valeur
         db.add(existe)
         db.commit()
         db.refresh(existe)
-        return {"message": "Vote mis à jour", "vote": existe}
+        voteEnregistre = existe
+        message_retour = "Vote mis à jour"
+    else:
+        nouveauVote = EvaluationTache(
+            utilisateurId=eval.utilisateurId,
+            tacheId=eval.tacheId,
+            valeur=eval.valeur
+        )
+        db.add(nouveauVote)
+        db.commit()
+        db.refresh(nouveauVote)
+        voteEnregistre = nouveauVote
+        message_retour = "A voté !"
+    tache = db.get(Tache, eval.tacheId)
 
-    nouveauVote = EvaluationTache(
-        utilisateurId=eval.utilisateurId,
-        tacheId=eval.tacheId,
-        valeur=eval.valeur
-    )
-    db.add(nouveauVote)
-    db.commit()
-    db.refresh(nouveauVote)
-    return {"message": "A voté !", "vote": nouveauVote}
+    if tache:
+        cmptVotes = db.exec(select(func.count()).select_from(EvaluationTache).where(
+            EvaluationTache.tacheId == eval.tacheId
+        )).one()
+        if cmptVotes >= tache.nombreMaxParticipant:
+            votes = db.exec(select(EvaluationTache).where(EvaluationTache.tacheId == eval.tacheId)).all()
+            valeursVote = [str(i.valeur) for i in votes]
+            tache.noteFinale = crud.calculNoteFinale(valeursVote, tache.methodeEvaluation)
+            tache.statut = "archivee"
+            db.add(tache)
+            db.commit()
+
+    return {"message": message_retour, "vote": voteEnregistre}
+
+@app.get("/taches/archivees/createur/{createur_id}")
+def getTachesArchivees(createur_id: int, db: Session = Depends(get_session)):
+    taches = crud.getTachesArchiveesCreateur(db, createur_id)
+    return taches
+
+@app.put("/taches/{tache_id}/relancer")
+def relancerVote(tache_id: int, db: Session = Depends(get_session)):
+    tache = crud.relancerTacheArchivee(db, tache_id)
+    if not tache:
+        raise HTTPException(status_code=404, detail="Tâche introuvable")
+    return {"message": "Vote relancé avec succès", "tache": tache}
