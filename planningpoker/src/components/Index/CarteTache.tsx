@@ -130,24 +130,6 @@ const CarteTache = ({ donneesTache, onClickDetail, onClickVote }) => {
             console.error(error);
         }
     };
-    const jsonString = JSON.stringify(donneesTache, null, 2);
-
-    const handleCopyJson = () => {
-        navigator.clipboard.writeText(jsonString);
-        toast.success("JSON copié dans le presse-papier");
-    };
-    const handleDownloadJson = () => {
-        const blob = new Blob([jsonString], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = `tache_${donneesTache.id}_export.json`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-        toast.success("Fichier JSON téléchargé");
-    };
     return (
         <Card
             className="w-full max-w-sm cursor-pointer hover:shadow-lg transition"
