@@ -1,22 +1,38 @@
-import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { toast } from 'sonner';
+import {useState} from 'react';
+import {Dialog, DialogContent, DialogHeader, DialogTitle} from '@/components/ui/dialog';
+import {Input} from '@/components/ui/input';
+import {Button} from '@/components/ui/button';
+import {Label} from '@/components/ui/label';
+import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs';
+import {toast} from 'sonner';
 import {accessAuthentification} from "@/context/AuthentificationContext.tsx";
 
+/**
+ * Props du composant.
+ * @category Interfaces
+ */
 interface LoginDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-} // Permet de savoir si on ouvre le popup ou non lorsque l'utilisateur clique dessus
+}
 
-const PopUpLogin = ({ open, onOpenChange }: LoginDialogProps) => {
-    const { connexion, inscription } = accessAuthentification();
+/**
+ * Ce composant affiche une boîte de dialogue contenant deux onglets :
+ * 1. **Connexion** : Pour les utilisateurs existants.
+ * 2. **Inscription** : Pour la création de compte.
+ *
+ * Il gère automatiquement les appels API via le contexte d'authentification et affiche
+ * des notifications pour informer l'utilisateur du succès ou de l'échec.
+ *
+ * @category Composants/Auth
+ * @param {LoginDialogProps} props - Les propriétés de contrôle de la modale.
+ * @returns {JSX.Element} Le dialogue d'authentification.
+ */
+const PopUpLogin = ({open, onOpenChange}: LoginDialogProps) => {
+    const {connexion, inscription} = accessAuthentification();
     const [isLoading, setIsLoading] = useState(false);
-    const [connexionData, setConnexionData] = useState({ nom: '', motDePasse: '' });
-    const [inscriptionData, setInscriptionData] = useState({ nom: '', motDePasse: ''});
+    const [connexionData, setConnexionData] = useState({nom: '', motDePasse: ''});
+    const [inscriptionData, setInscriptionData] = useState({nom: '', motDePasse: ''});
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -25,7 +41,7 @@ const PopUpLogin = ({ open, onOpenChange }: LoginDialogProps) => {
             await connexion(connexionData.nom, connexionData.motDePasse); // Faire marcher la fonction de connexion que j'avais fait
             toast.success(`Bienvenue ${connexionData.nom} !`);
             onOpenChange(false);
-            setConnexionData({ nom: '', motDePasse: '' });
+            setConnexionData({nom: '', motDePasse: ''});
         } catch (error) {
             toast.error(`Erreur de connexion : ${error}`);
         } finally {
@@ -40,14 +56,13 @@ const PopUpLogin = ({ open, onOpenChange }: LoginDialogProps) => {
             await inscription(inscriptionData.nom, inscriptionData.motDePasse); // Pareil pour ici
             toast.success(`Création de ton compte réussie ${inscriptionData.nom}, bienvenue !`);
             onOpenChange(false);
-            setInscriptionData({ nom: '', motDePasse: ''});
+            setInscriptionData({nom: '', motDePasse: ''});
         } catch (error) {
             toast.error(`Erreur lors de la création du compte : ${error}`);
         } finally {
             setIsLoading(false);
         }
     };
-
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-md">
@@ -70,7 +85,7 @@ const PopUpLogin = ({ open, onOpenChange }: LoginDialogProps) => {
                                     type="text"
                                     value={connexionData.nom}
                                     placeholder="Ton nom"
-                                    onChange={(e) => setConnexionData({ ...connexionData, nom: e.target.value })}
+                                    onChange={(e) => setConnexionData({...connexionData, nom: e.target.value})}
                                     required
                                 />
                             </div>
@@ -78,10 +93,9 @@ const PopUpLogin = ({ open, onOpenChange }: LoginDialogProps) => {
                                 <Label htmlFor="connexion-motDePasse">Mot de passe</Label>
                                 <Input
                                     id="connexion-motDePasse"
-                                    type="motDePasse"
-                                    placeholder="********"
+                                    type="password"
                                     value={connexionData.motDePasse}
-                                    onChange={(e) => setConnexionData({ ...connexionData, motDePasse: e.target.value })}
+                                    onChange={(e) => setConnexionData({...connexionData, motDePasse: e.target.value})}
                                     required
                                 />
                             </div>
@@ -100,7 +114,7 @@ const PopUpLogin = ({ open, onOpenChange }: LoginDialogProps) => {
                                     type="text"
                                     placeholder="Ton nom"
                                     value={inscriptionData.nom}
-                                    onChange={(e) => setInscriptionData({ ...inscriptionData, nom: e.target.value })}
+                                    onChange={(e) => setInscriptionData({...inscriptionData, nom: e.target.value})}
                                     required
                                 />
                             </div>
@@ -109,9 +123,11 @@ const PopUpLogin = ({ open, onOpenChange }: LoginDialogProps) => {
                                 <Input
                                     id="inscription-motDePasse"
                                     type="password"
-                                    placeholder="********"
                                     value={inscriptionData.motDePasse}
-                                    onChange={(e) => setInscriptionData({ ...inscriptionData, motDePasse: e.target.value })}
+                                    onChange={(e) => setInscriptionData({
+                                        ...inscriptionData,
+                                        motDePasse: e.target.value
+                                    })}
                                     required
                                 />
                             </div>
