@@ -1,5 +1,5 @@
 import {Button} from "@/components/ui/button.tsx"
-import {MailOpen, RotateCcw, Users} from 'lucide-react';
+import {Copy, Download, FileJson, MailOpen, RotateCcw, Users} from 'lucide-react';
 import { LockKeyhole } from 'lucide-react';
 import { LockKeyholeOpen } from 'lucide-react';
 import { PenOff } from 'lucide-react';
@@ -21,6 +21,15 @@ import {accessAuthentification} from "@/context/AuthentificationContext.tsx";
 import {toast} from "sonner";
 import {demanderAccessTache, relancerTache} from "@/services/api.ts";
 import {useQueryClient} from "@tanstack/react-query";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger
+} from "@/components/ui/dialog.tsx";
+import DetailsDonneesTacheDialog from "@/components/DetailsDonneesTacheDialog.tsx";
 
 /**
  * Type représentant les différents niveaux d'accès possibles à une tâche.
@@ -121,6 +130,24 @@ const CarteTache = ({ donneesTache, onClickDetail, onClickVote }) => {
             console.error(error);
         }
     };
+    const jsonString = JSON.stringify(donneesTache, null, 2);
+
+    const handleCopyJson = () => {
+        navigator.clipboard.writeText(jsonString);
+        toast.success("JSON copié dans le presse-papier");
+    };
+    const handleDownloadJson = () => {
+        const blob = new Blob([jsonString], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `tache_${donneesTache.id}_export.json`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        toast.success("Fichier JSON téléchargé");
+    };
     return (
         <Card
             className="w-full max-w-sm cursor-pointer hover:shadow-lg transition"
@@ -130,7 +157,9 @@ const CarteTache = ({ donneesTache, onClickDetail, onClickVote }) => {
                 <CardTitle>{donneesTache.titre}</CardTitle>
             </CardHeader>
             <CardContent>
-                {/* Si la tâche est archivée, on fait un bouton JSON qui permet de voir le vote au format JSON */}
+                {estArchivee && (
+                    <DetailsDonneesTacheDialog data={donneesTache}/>
+                )}
             </CardContent>
             <CardFooter className="flex-col grid grid-cols-2 gap-6">
                 <Button>
