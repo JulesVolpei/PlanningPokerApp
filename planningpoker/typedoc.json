@@ -7,5 +7,6 @@
   "includeVersion": true,
   "readme": "README.md",
   "cleanOutputDir": true,
-  "tsconfig": "./tsconfig.app.json"
+  "tsconfig": "./tsconfig.app.json",
+  "skipErrorChecking": true
 }
