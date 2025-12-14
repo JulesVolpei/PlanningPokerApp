@@ -22,11 +22,9 @@ import {createNewTask} from "@/services/api.ts";
 import {toast} from "sonner";
 
 /**
- * Bouton et Dialogue modal pour la création d'une nouvelle tâche.
- *
- * Ce composant affiche un bouton "Créer une tâche". Au clic, il ouvre un formulaire permettant de saisir :
+ * Ce composant affiche un bouton "Créer une tâche". Un formulaire s'ouvre en cliquant permettant de saisir :
  * - Titre et description.
- * - La méthode de vote (Moyenne, Médiane, ...).
+ * - La méthode de vote.
  * - Le nombre maximum de participants.
  *
  * Une fois validé, il appelle l'API pour insérer la tâche en base de données.
@@ -38,9 +36,8 @@ import {toast} from "sonner";
 const BoutonCreerTache = ({informationUtilisateur, open, setOpen}) => {
     const [titre, setTitre] = useState("");
     const [description, setDescription] = useState("");
-    const [evaluation, setEvaluation] = useState("Aucune");
+    const [evaluation, setEvaluation] = useState("Unanimité");
     const [maxParticipants, setMaxParticipants] = useState(1);
-    const [dialogOpen, setDialogOpen] = useState(false); // Faire ça plus tard
 
     const increment = () => setMaxParticipants((prev) => Math.min(prev + 1, 99));
     const decrement = () => setMaxParticipants((prev) => Math.max(prev - 1, 1));
@@ -114,6 +111,9 @@ const BoutonCreerTache = ({informationUtilisateur, open, setOpen}) => {
                             </DropdownMenuTrigger>
 
                             <DropdownMenuContent className={"w-[var(--radix-popper-anchor-width)]"}>
+                                <DropdownMenuItem onClick={() => setEvaluation("Unanimité")}>
+                                    Unanimité
+                                </DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => setEvaluation("Moyenne")}>
                                     Moyenne
                                 </DropdownMenuItem>

@@ -9,11 +9,9 @@ import * as React from "react";
 import AffichageTaches from "@/components/AffichageTaches.tsx";
 
 /**
- * Tableau de bord principal de l'application.
- *
  * Ce composant agit comme le contrôleur de la page d'accueil. Il est responsable de :
  * 1. **Récupérer** la liste complète des tâches depuis l'API.
- * 2. **Filtrer** ces tâches via la barre de recherche (filtrage côté client).
+ * 2. **Filtrer** ces tâches via la barre de recherche.
  * 3. **Afficher** le résultat via le composant de présentation {@link AffichageTaches}.
  *
  * @category Composants/Pages
@@ -47,7 +45,7 @@ const DashboardTaches = ({ titre }) => {
             idTaches.push(donnee.createurId);
         })
         donneesFiltrees = donnees.filter(tache =>
-            tache.titre.toLowerCase().includes(recherche.toLowerCase())
+            tache.titre.toLowerCase().includes(recherche.toLowerCase()) && tache.statut !== "archivee"
         );
     }
     console.log("Data dashboard : ", donneesFiltrees);

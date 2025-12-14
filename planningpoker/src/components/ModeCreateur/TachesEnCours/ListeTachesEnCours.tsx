@@ -10,12 +10,10 @@ import {OrbitProgress} from "react-loading-indicators";
 import BoutonCreerTache from "@/components/ModeCreateur/TachesEnCours/BoutonCreerTache.tsx";
 
 /**
- * Tableau de bord des tâches actives de l'utilisateur.
- *
  * Ce composant gère l'affichage principal du mode créateur :
  * - Message de bienvenue personnalisé.
  * - Barre de recherche.
- * - Récupération automatique des tâches toutes les 15 secondes.
+ * - Récupération automatique des tâches toutes les 5 secondes.
  * - Affichage de la grille de tâches ou d'un indicateur de chargement.
  *
  * @category Composants/ModeCreateur
@@ -28,7 +26,7 @@ const ListeTachesEnCours = ({informationUtilisateur}) => {
     const tacheUtilisateur = useQuery({
         queryKey: ["tachesUser", informationUtilisateur.id],
         queryFn: () => getTachesWithUserId(informationUtilisateur.id),
-        refetchInterval: 15000,
+        refetchInterval: 5000,
     });
     const idTaches = []
     let donnees = [];
@@ -39,7 +37,7 @@ const ListeTachesEnCours = ({informationUtilisateur}) => {
             idTaches.push(donnee.createurId);
         })
         donneesFiltrees = donnees.filter(tache =>
-            tache.titre.toLowerCase().includes(recherche.toLowerCase())
+            tache.titre.toLowerCase().includes(recherche.toLowerCase()) && tache.statut !== "archivee"
         );
     }
     return (

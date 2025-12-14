@@ -1,4 +1,5 @@
 import {createContext, type ReactNode, useContext, useEffect, useState} from "react";
+import {useNavigate} from "react-router";
 
 /**
  * Représente les données d'un utilisateur connecté stockées dans l'application.
