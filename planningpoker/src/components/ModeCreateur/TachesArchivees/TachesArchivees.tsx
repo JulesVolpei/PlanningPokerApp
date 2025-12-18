@@ -26,14 +26,13 @@ const TachesArchivees = ({informationUtilisateur}) => {
     const { data: archives = [], isSuccess} = useQuery({
         queryKey: ["tachesArchivees", informationUtilisateur?.id],
         queryFn: () => getTachesArchivees(informationUtilisateur.id),
-        enabled: !!informationUtilisateur?.id, // Ne lance pas la requête si pas d'ID
+        enabled: !!informationUtilisateur?.id,
     });
     if (isSuccess) {
         donneesFiltrees = archives.filter(tache =>
             tache.titre.toLowerCase().includes(recherche.toLowerCase())
         );
     }
-    console.log("Data archivées : ", donneesFiltrees);
 
     return (
         <>

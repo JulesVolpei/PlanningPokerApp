@@ -57,7 +57,6 @@ const BoutonCreerTache = ({informationUtilisateur, open, setOpen}) => {
             toast.success(`Tâche ${titre} crée`);
             setOpen(false);
         } catch (error) {
-            console.error(error);
             toast.error(error);
         }
     };
