@@ -21,10 +21,10 @@ jobs:
       - name: Install dependencies
         run: |
           if [ -f planningpoker/requirements.txt ]; then pip install -r planningpoker/requirements.txt; fi
-          pip install pytest httpx
+          pip install pytest passlib bcrypt
 
       - name: Run Pytest
-        run: python -m pytest tests/tests.py
+        run: python -m pytest planningpoker/tests/test.py
         env:
           PYTHONPATH: ${{ github.workspace }}
   sphinx-doc:

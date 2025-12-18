@@ -48,7 +48,6 @@ const DashboardTaches = ({ titre }) => {
             tache.titre.toLowerCase().includes(recherche.toLowerCase()) && tache.statut !== "archivee"
         );
     }
-    console.log("Data dashboard : ", donneesFiltrees);
     return (
         <div className="w-full max-w-6xl mx-auto px-6 py-8">
             <h1 className="text-4xl font-bold bg-gradient-primary bg-clip-text text-black mb-8">

@@ -48,7 +48,6 @@ type AccessType = "enAttente" | "acceptee" | "refusee" | "full" | "demanderAcces
 const CarteTache = ({ donneesTache, onClickDetail, onClickVote }) => {
     const { utilisateur, estConnecte } = accessAuthentification();
     const queryClient = useQueryClient();
-    console.log("Data tache : ", donneesTache);
     const handleDemandeAccess = async () => {
         if (!estConnecte) {
             toast.error("Tu dois être connecté pour demander l'accès !");
@@ -117,7 +116,6 @@ const CarteTache = ({ donneesTache, onClickDetail, onClickVote }) => {
             toast.success("Le vote a été relancé !");
         } catch (error) {
             toast.error("Impossible de relancer la tâche");
-            console.error(error);
         }
     };
     return (
