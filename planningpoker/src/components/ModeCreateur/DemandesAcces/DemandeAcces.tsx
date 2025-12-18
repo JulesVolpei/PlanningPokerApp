@@ -36,7 +36,6 @@ const DemandeAcces = ({informationUtilisateur}) => {
     });
     const resultats = data || [];
     const resultatsFiltres = resultats;
-    console.log(resultatsFiltres);
     return (
         <>
             <CardHeader>

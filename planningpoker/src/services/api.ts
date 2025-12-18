@@ -72,7 +72,6 @@ export async function getTachesWithUserId(id: string) {
  * @throws {Error} Si la création échoue (validation ou erreur serveur).
  */
 export async function createNewTask(nouvelleTache: any) {
-    console.log("NOUVELLE TACHE : ", nouvelleTache);
     const reponse = await fetch(`${APIURL}/taches/creer`, {
         method: "POST",
         headers: {
@@ -176,7 +175,6 @@ export const getDemandesCreateur = async (userId: number) => {
  * @returns {Promise<DemandeAccess>} La demande mise à jour.
  */
 export const accepterDemande = async (demandeId: number) => {
-    console.log("Envoyé à API : ", demandeId);
     const response = await fetch(`${APIURL}/demandeAcces/${demandeId}/accepter`, {
         method: "PUT",
     });
@@ -195,7 +193,6 @@ export const accepterDemande = async (demandeId: number) => {
  * @returns {Promise<DemandeAccess>} La demande mise à jour.
  */
 export const refuserDemande = async (demandeId: number) => {
-    console.log("Envoyé à API : ", demandeId);
     const response = await fetch(`${APIURL}/demandeAcces/${demandeId}/refuser`, {
         method: "PUT",
     });

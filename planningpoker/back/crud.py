@@ -318,9 +318,20 @@ def getTachesArchiveesCreateur(db: Session, createurId: int):
         if cmptVotes >= tache.nombreMaxParticipant and tache.nombreMaxParticipant > 0:
             valeurs = [i.valeur for i in tache.votes]
             noteFinale = calculNoteFinale(valeurs, tache.methodeEvaluation)
+            voteComplet = []
+            for vote in tache.votes:
+                votant = db.get(models.Utilisateur, vote.utilisateurId)
+                nom_votant = votant.nom if votant else "Utilisateur inconnu"
+                voteComplet.append({
+                    "votant": nom_votant,
+                    "valeur": vote.valeur
+                })
             dictTaches = tache.__dict__.copy()
+            dictTaches['votes'] = voteComplet
             dictTaches['noteFinale'] = noteFinale
             dictTaches['statut'] = 'archivee'
+            if "_sa_instance_state" in dictTaches:
+                del dictTaches["_sa_instance_state"]
             tachesArchivees.append(dictTaches)
     return tachesArchivees
 
