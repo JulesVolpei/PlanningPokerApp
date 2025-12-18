@@ -93,7 +93,6 @@ const AffichageTaches = ({ donnees, maxElement, listeIdTache }) => {
     };
 
     const handleVoteSubmit = async (valeurRecue) => {
-        console.log("Valeur vote reçue du dialog : ", valeurRecue);
         if(!valeurRecue) return toast.error("Entrez une valeur !");
         try {
             await envoyerEvaluation(utilisateur.id, tacheAVoter.id, valeurRecue);
@@ -101,7 +100,6 @@ const AffichageTaches = ({ donnees, maxElement, listeIdTache }) => {
             setOpenVote(false);
         } catch (error) {
             toast.error("Erreur lors du vote");
-            console.error(error);
         }
     };
     return (
