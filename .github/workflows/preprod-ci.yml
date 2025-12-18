@@ -45,6 +45,9 @@ jobs:
           if [ -f planningpoker/requirements.txt ]; then pip install -r planningpoker/requirements.txt; fi
           pip install sphinx sphinx-autobuild sphinx-rtd-theme sphinxcontrib-napoleon furo
 
+      - name: Debug - Trouver conf.py
+        run: find . -name conf.py
+
       - name: Build Sphinx documentation
         working-directory: docs
         run: |
