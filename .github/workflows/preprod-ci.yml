@@ -46,7 +46,7 @@ jobs:
           pip install sphinx sphinx-autobuild sphinx-rtd-theme sphinxcontrib-napoleon furo
 
       - name: Build Sphinx documentation
-        working-directory: docs
+        working-directory: planningpoker/docs
         run: |
           export PYTHONPATH=$PYTHONPATH:../planningpoker/back
           sphinx-build -b html . _build/html
@@ -55,7 +55,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: sphinx-doc
-          path: docs/_build/html
+          path: planningpoker/docs/_build/html
 
   typedoc-doc:
     name: Generate TypeDoc Documentation
@@ -90,4 +90,3 @@ jobs:
         with:
           name: typedoc-doc
           path: planningpoker/docs
-
