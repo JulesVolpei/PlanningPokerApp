@@ -45,8 +45,11 @@ jobs:
           if [ -f planningpoker/requirements.txt ]; then pip install -r planningpoker/requirements.txt; fi
           pip install sphinx sphinx-autobuild sphinx-rtd-theme sphinxcontrib-napoleon furo
 
+      - name: Debug - Trouver conf.py
+        run: find . -name conf.py
+
       - name: Build Sphinx documentation
-        working-directory: planningpoker/docs
+        working-directory: docs
         run: |
           export PYTHONPATH=$PYTHONPATH:../planningpoker/back
           sphinx-build -b html source _build/html
@@ -55,7 +58,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: sphinx-doc
-          path: planningpoker/docs/_build/html
+          path: docs/_build/html
 
   typedoc-doc:
     name: Generate TypeDoc Documentation
